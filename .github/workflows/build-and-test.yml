@@ -1,5 +1,5 @@
 #
-# This source file is part of the TemplatePackage open source project
+# This source file is part of the CardinalKit open-source project
 #
 # SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
 #
@@ -16,22 +16,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_and_test-spm:
+  buildandtest:
     name: Build and Test Swift Package
-    uses: StanfordBDHG/.github/.github/workflows/build-and-test-xcodebuild-spm.yml@v1
+    uses: StanfordBDHG/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
     with:
-      scheme: TemplatePackage
-  build_and_test-uitests:
-    name: Build and Test UITest App
-    uses: StanfordBDHG/.github/.github/workflows/build-and-test-xcodebuild.yml@v1
+      artifactname: CardinalKitFHIR-Package.xcresult
+      runsonlabels: '["macOS", "self-hosted"]'
+      scheme: CardinalKitFHIR-Package
+  buildandtestuitests:
+    name: Build and Test UI Tests
+    uses: StanfordBDHG/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
     with:
-      xcodeprojname: Tests/UITests/UITests.xcodeproj
+      artifactname: TestApp.xcresult
+      runsonlabels: '["macOS", "self-hosted"]'
+      path: Tests/UITests
       scheme: TestApp
-  create-and-upload-coverage-report:
-    name: Create and Upload Coverage Report
-    needs: [build_and_test-spm, build_and_test-uitests]
-    uses: StanfordBDHG/.github/.github/workflows/create-and-upload-coverage-report.yml@v1
+  uploadcoveragereport:
+    name: Upload Coverage Report
+    needs: [buildandtest, buildandtestuitests]
+    uses: StanfordBDHG/.github/.github/workflows/create-and-upload-coverage-report.yml@v2
     with:
-      coveragereports: TemplatePackage.xcresult TemplatePackage.xcresult
-    secrets:
-      token: ${{ secrets.CODECOV_TOKEN }}
+      coveragereports: CardinalKitFHIR-Package.xcresult TestApp.xcresult

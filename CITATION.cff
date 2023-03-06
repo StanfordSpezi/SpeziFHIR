@@ -1,10 +1,10 @@
 #
-# This source file is part of the TemplatePackage open source project
+# This source file is part of the CardinalKit open-source project
 #
 # SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
 #
 # SPDX-License-Identifier: MIT
-# 
+#
 
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
@@ -12,6 +12,5 @@ authors:
 - family-names: "Schmiedmayer"
   given-names: "Paul"
   orcid: "https://orcid.org/0000-0002-8607-9148"
-title: "TemplatePackage"
-doi: 10.5281/zenodo.7538165
-url: "https://github.com/StanfordBDHG/SwiftPackageTemplate"
+title: "CardinalKitFHIR"
+url: "https://github.com/StanfordBDHG/CardinalKitFHIR"

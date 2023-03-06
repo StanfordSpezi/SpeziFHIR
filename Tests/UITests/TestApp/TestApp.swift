@@ -1,5 +1,5 @@
 //
-// This source file is part of the TemplatePackage open-source project
+// This source file is part of the CardinalKit open-source project
 //
 // SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
@@ -7,14 +7,45 @@
 //
 
 import SwiftUI
-import TemplatePackage
 
 
 @main
 struct UITestsApp: App {
+    enum Tests: String, CaseIterable, Identifiable {
+        case fhirMockDataStorageProvider = "FHIRMockDataStorageProvider"
+        
+        
+        var id: RawValue {
+            self.rawValue
+        }
+        
+        @MainActor
+        @ViewBuilder
+        func view(withNavigationPath path: Binding<NavigationPath>) -> some View {
+            switch self {
+            case .fhirMockDataStorageProvider:
+                FHIRMockDataStorageProviderTestsView()
+            }
+        }
+    }
+    
+    
+    @UIApplicationDelegateAdaptor(TestAppDelegate.self) var appDelegate
+    @State private var path = NavigationPath()
+    
+    
     var body: some Scene {
         WindowGroup {
-            Text(TemplatePackage().stanford)
+            NavigationStack(path: $path) {
+                List(Tests.allCases) { test in
+                    NavigationLink(test.rawValue, value: test)
+                }
+                    .navigationDestination(for: Tests.self) { test in
+                        test.view(withNavigationPath: $path)
+                    }
+                    .navigationTitle("UITest")
+            }
+                .cardinalKit(appDelegate)
         }
     }
 }
