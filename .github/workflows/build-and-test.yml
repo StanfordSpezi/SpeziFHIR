@@ -1,5 +1,5 @@
 #
-# This source file is part of the TemplatePackage open source project
+# This source file is part of the CardinalKit open-source project
 #
 # SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
 #
@@ -16,22 +16,26 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_and_test-spm:
+  buildandtest:
     name: Build and Test Swift Package
-    uses: StanfordBDHG/.github/.github/workflows/build-and-test-xcodebuild-spm.yml@v1
+    uses: StanfordBDHG/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
     with:
-      scheme: TemplatePackage
-  build_and_test-uitests:
-    name: Build and Test UITest App
-    uses: StanfordBDHG/.github/.github/workflows/build-and-test-xcodebuild.yml@v1
+      artifactname: CardinalKitFHIR-Package.xcresult
+      runsonlabels: '["macOS", "self-hosted"]'
+      scheme: CardinalKitFHIR-Package
+  buildandtestuitests:
+    name: Build and Test UI Tests
+    uses: StanfordBDHG/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
     with:
-      xcodeprojname: Tests/UITests/UITests.xcodeproj
-      scheme: TestApp
-  create-and-upload-coverage-report:
-    name: Create and Upload Coverage Report
-    needs: [build_and_test-spm, build_and_test-uitests]
-    uses: StanfordBDHG/.github/.github/workflows/create-and-upload-coverage-report.yml@v1
+      artifactname: UITests.xcresult
+      runsonlabels: '["macOS", "self-hosted"]'
+      setupfirebaseemulator: true
+      path: Tests/UITests
+      customcommand: |
+          firebase emulators:exec 'set -o pipefail && xcodebuild test -project UITests.xcodeproj -scheme TestApp -destination "name=iPhone 14 Pro Max" -resultBundlePath UITests.xcresult -derivedDataPath ".derivedData" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty'
+  uploadcoveragereport:
+    name: Upload Coverage Report
+    needs: [buildandtest, buildandtestuitests]
+    uses: StanfordBDHG/.github/.github/workflows/create-and-upload-coverage-report.yml@v2
     with:
-      coveragereports: TemplatePackage.xcresult TemplatePackage.xcresult
-    secrets:
-      token: ${{ secrets.CODECOV_TOKEN }}
+      coveragereports: CardinalKitFHIR-Package.xcresult UITests.xcresult
