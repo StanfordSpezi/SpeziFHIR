@@ -11,6 +11,10 @@ SPDX-License-Identifier: MIT
 # CardinalKit FHIR
 
 [![Build and Test](https://github.com/StanfordBDHG/CardinalKitFHIR/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/StanfordBDHG/CardinalKitFHIR/actions/workflows/build-and-test.yml)
+[![codecov](https://codecov.io/gh/StanfordBDHG/CardinalKitFHIR/branch/main/graph/badge.svg?token=zVpvbIrHL6)](https://codecov.io/gh/StanfordBDHG/CardinalKitFHIR)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7803123.svg)](https://doi.org/10.5281/zenodo.7803123)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordBDHG%2FCardinalKitFHIR%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/StanfordBDHG/CardinalKitFHIR)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordBDHG%2FCardinalKitFHIR%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/StanfordBDHG/CardinalKitFHIR)
 
 The FHIR Standard and related modules build a code building block of standard-based mobile appications using CardinalKit.
 
