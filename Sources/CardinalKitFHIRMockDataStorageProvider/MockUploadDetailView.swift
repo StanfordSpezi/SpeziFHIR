@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+import CardinalKitViews
 import SwiftUI
-import Views
 
 
 struct MockUploadDetailView: View {

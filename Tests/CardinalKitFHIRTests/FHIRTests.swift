@@ -131,7 +131,7 @@ final class DataStorageProviderTests: XCTestCase {
             }
         )
         
-        wait(for: [expectation], timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
         XCTAssertEqual(count, 4)
     }
     
