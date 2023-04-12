@@ -12,7 +12,6 @@
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
 		2F746D9F29962B2A00BF54FE /* XCTestExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2F746D9E29962B2A00BF54FE /* XCTestExtensions */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
-		2FCF659129B5C9CF0041B496 /* Views in Frameworks */ = {isa = PBXBuildFile; productRef = 2FCF659029B5C9CF0041B496 /* Views */; };
 		2FCF659829B5CA630041B496 /* XCTHealthKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2FCF659729B5CA630041B496 /* XCTHealthKit */; };
 		2FD021D6299E0E0B00E5B91B /* CardinalKitFHIR in Frameworks */ = {isa = PBXBuildFile; productRef = 2FD021D5299E0E0B00E5B91B /* CardinalKitFHIR */; };
 		2FD021D8299E0E0B00E5B91B /* CardinalKitFHIRMockDataStorageProvider in Frameworks */ = {isa = PBXBuildFile; productRef = 2FD021D7299E0E0B00E5B91B /* CardinalKitFHIRMockDataStorageProvider */; };
@@ -51,7 +50,6 @@
 				2FD021DB299E0E2F00E5B91B /* CardinalKit in Frameworks */,
 				2FD021D6299E0E0B00E5B91B /* CardinalKitFHIR in Frameworks */,
 				2FD021D8299E0E0B00E5B91B /* CardinalKitFHIRMockDataStorageProvider in Frameworks */,
-				2FCF659129B5C9CF0041B496 /* Views in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,7 +141,6 @@
 				2FD021D5299E0E0B00E5B91B /* CardinalKitFHIR */,
 				2FD021D7299E0E0B00E5B91B /* CardinalKitFHIRMockDataStorageProvider */,
 				2FD021DA299E0E2F00E5B91B /* CardinalKit */,
-				2FCF659029B5C9CF0041B496 /* Views */,
 			);
 			productName = Example;
 			productReference = 2F6D139228F5F384007C25D6 /* TestApp.app */;
@@ -526,7 +523,7 @@
 			repositoryURL = "https://github.com/StanfordBDHG/XCTestExtensions";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.3.0;
+				minimumVersion = 0.4.0;
 			};
 		};
 		2FCF659429B5CA400041B496 /* XCRemoteSwiftPackageReference "XCTHealthKit" */ = {
@@ -542,7 +539,7 @@
 			repositoryURL = "https://github.com/StanfordBDHG/CardinalKit.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.3.3;
+				minimumVersion = 0.4.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -552,11 +549,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2F746D9D29962B2A00BF54FE /* XCRemoteSwiftPackageReference "XCTestExtensions" */;
 			productName = XCTestExtensions;
-		};
-		2FCF659029B5C9CF0041B496 /* Views */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2FD021D9299E0E2F00E5B91B /* XCRemoteSwiftPackageReference "CardinalKit" */;
-			productName = Views;
 		};
 		2FCF659729B5CA630041B496 /* XCTHealthKit */ = {
 			isa = XCSwiftPackageProductDependency;

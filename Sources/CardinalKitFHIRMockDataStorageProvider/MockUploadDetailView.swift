@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Views
+import CardinalKitViews
 
 
 struct MockUploadDetailView: View {
