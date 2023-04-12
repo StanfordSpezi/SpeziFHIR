@@ -34,6 +34,6 @@ jobs:
   uploadcoveragereport:
     name: Upload Coverage Report
     needs: [buildandtest, buildandtestuitests]
-    uses: StanfordBDHG/.github/.github/workflows/create-and-upload-coverage-report.yml@v2
+    uses: StanfordBDHG/.github/.github/workflows/create-and-upload-coverage-report.yml@updateCodeCov
     with:
       coveragereports: CardinalKitFHIR-Package.xcresult TestApp.xcresult
