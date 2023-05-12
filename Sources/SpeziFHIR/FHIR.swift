@@ -1,26 +1,26 @@
 //
-// This source file is part of the CardinalKit open-source project
+// This source file is part of the Stanford Spezi open-source project
 //
 // SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
 
-import CardinalKit
 import Foundation
 @_exported @preconcurrency import ModelsR4
+import Spezi
 import XCTRuntimeAssertions
 
 
-/// The ``FHIR/FHIR`` standard provides a CardinalKit `Standard` that utilizes HL7® FHIR® as the central standard for your CardinalKit application.
+/// The ``FHIR/FHIR`` standard provides a Spezi `Standard` that utilizes HL7® FHIR® as the central standard for your Spezi application.
 ///
 ///
 /// If you import the FHIR module using `import FHIR` you can specify all FHIR compatible components and modules in the configuration builder:
 /// ```swift
 /// import FHIR
-/// import CardinalKit
+/// import Spezi
 ///
-/// public class ExampleCardinalKitAppDelegate: CardinalKitAppDelegate {
+/// public class ExampleSpeziAppDelegate: SpeziAppDelegate {
 ///     override public var configuration: Configuration {
 ///         Configuration {
 ///             FHIRComponentExample()
@@ -32,9 +32,9 @@ import XCTRuntimeAssertions
 /// You can also manually specify the FHIR Standard by passing it into the `configuration` initializer:
 /// ```swift
 /// import FHIR
-/// import CardinalKit
+/// import Spezi
 ///
-/// public class ExampleCardinalKitAppDelegate: CardinalKitAppDelegate {
+/// public class ExampleSpeziAppDelegate: SpeziAppDelegate {
 ///     override public var configuration: Configuration {
 ///         Configuration(standard: FHIR()) {
 ///             FHIRComponentExample()

@@ -1,13 +1,13 @@
 //
-// This source file is part of the CardinalKit open-source project
+// This source file is part of the Stanford Spezi open-source project
 //
 // SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
 
-@testable import CardinalKit
-@testable import CardinalKitFHIR
+@testable import Spezi
+@testable import SpeziFHIR
 import XCTest
 
 
@@ -59,7 +59,7 @@ final class DataStorageProviderTests: XCTestCase {
         }
     }
     
-    private class DataStorageProviderApplicationDelegate: CardinalKitAppDelegate {
+    private class DataStorageProviderApplicationDelegate: SpeziAppDelegate {
         let mockUpload: (MockUpload) -> Void
         
         
@@ -119,8 +119,8 @@ final class DataStorageProviderTests: XCTestCase {
         )
         
         
-        let cardinalKit = try XCTUnwrap(delegate.cardinalKit as? CardinalKit<FHIR>)
-        await cardinalKit.standard.registerDataSource(
+        let spezi = try XCTUnwrap(delegate.spezi as? Spezi<FHIR>)
+        await spezi.standard.registerDataSource(
             asyncStream: AsyncStream { continuation in
                 continuation.yield(.addition(observation1))
                 continuation.yield(.addition(observation2))
