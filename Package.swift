@@ -23,8 +23,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordBDHG/Spezi", .upToNextMinor(from: "0.4.1")),
-        .package(url: "https://github.com/StanfordBDHG/SpeziViews", .upToNextMinor(from: "0.2.1"))
+        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.5.0")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.3.0"))
     ],
     targets: [
         .target(

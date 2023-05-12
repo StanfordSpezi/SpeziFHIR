@@ -6,9 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
 import Foundation
 @_exported @preconcurrency import ModelsR4
+import Spezi
 import XCTRuntimeAssertions
 
 

@@ -6,9 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import Spezi
 import SpeziFHIR
-import Foundation
 
 
 /// A data storage provider that collects all uploads and displays them in a user interface using the ``MockUploadList``.

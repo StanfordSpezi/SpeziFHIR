@@ -520,10 +520,10 @@
 /* Begin XCRemoteSwiftPackageReference section */
 		2F746D9D29962B2A00BF54FE /* XCRemoteSwiftPackageReference "XCTestExtensions" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/StanfordBDHG/XCTestExtensions";
+			repositoryURL = "https://github.com/StanfordSpezi/XCTestExtensions";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.4.0;
+				minimumVersion = 0.4.1;
 			};
 		};
 		2FCF659429B5CA400041B496 /* XCRemoteSwiftPackageReference "XCTHealthKit" */ = {
@@ -536,10 +536,10 @@
 		};
 		2FD021D9299E0E2F00E5B91B /* XCRemoteSwiftPackageReference "Spezi" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/StanfordBDHG/Spezi.git";
+			repositoryURL = "https://github.com/StanfordSpezi/Spezi.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.4.0;
+				minimumVersion = 0.5.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

@@ -1,24 +1,6 @@
 {
   "pins" : [
     {
-      "identity" : "spezi",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordBDHG/Spezi",
-      "state" : {
-        "revision" : "4c4284f8ef44cd6346248ae44b88ce3c4c1f0a88",
-        "version" : "0.4.0"
-      }
-    },
-    {
-      "identity" : "speziviews",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordBDHG/SpeziViews",
-      "state" : {
-        "revision" : "7d8162f0396176faa0768e7b10b7931ef2203055",
-        "version" : "0.2.0"
-      }
-    },
-    {
       "identity" : "fhirmodels",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/FHIRModels",
@@ -28,12 +10,30 @@
       }
     },
     {
+      "identity" : "spezi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StanfordSpezi/Spezi",
+      "state" : {
+        "revision" : "46722660026008cdd51da6d39de82aa4743016e8",
+        "version" : "0.5.0"
+      }
+    },
+    {
+      "identity" : "speziviews",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StanfordSpezi/SpeziViews",
+      "state" : {
+        "revision" : "c6975e84c735b8b8a13740012c1c194f48893fa8",
+        "version" : "0.3.0"
+      }
+    },
+    {
       "identity" : "xctestextensions",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordBDHG/XCTestExtensions",
+      "location" : "https://github.com/StanfordSpezi/XCTestExtensions",
       "state" : {
-        "revision" : "3037f2e8ad1cd2e08a0dfbe5f0a4866445102150",
-        "version" : "0.4.0"
+        "revision" : "3c9313ba697be8b0a7070cc8fafd1a499ec23c28",
+        "version" : "0.4.1"
       }
     },
     {
@@ -48,10 +48,10 @@
     {
       "identity" : "xctruntimeassertions",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordBDHG/XCTRuntimeAssertions",
+      "location" : "https://github.com/StanfordSpezi/XCTRuntimeAssertions",
       "state" : {
-        "revision" : "585ec9d1caa29bacc0d82eb70d4287401dfa452b",
-        "version" : "0.2.0"
+        "revision" : "e3978f198c9a51648ce00def596b8ff0bf835e44",
+        "version" : "0.2.2"
       }
     }
   ],
