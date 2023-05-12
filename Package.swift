@@ -1,7 +1,7 @@
 // swift-tools-version:5.7
 
 //
-// This source file is part of the CardinalKit open-source project
+// This source file is part of the Stanford Spezi open-source project
 //
 // SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
@@ -12,40 +12,40 @@ import PackageDescription
 
 
 let package = Package(
-    name: "CardinalKitFHIR",
+    name: "SpeziFHIR",
     defaultLocalization: "en",
     platforms: [
         .iOS(.v16)
     ],
     products: [
-        .library(name: "CardinalKitFHIR", targets: ["CardinalKitFHIR"]),
-        .library(name: "CardinalKitFHIRMockDataStorageProvider", targets: ["CardinalKitFHIRMockDataStorageProvider"])
+        .library(name: "SpeziFHIR", targets: ["SpeziFHIR"]),
+        .library(name: "SpeziFHIRMockDataStorageProvider", targets: ["SpeziFHIRMockDataStorageProvider"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordBDHG/CardinalKit", .upToNextMinor(from: "0.4.1")),
-        .package(url: "https://github.com/StanfordBDHG/CardinalKitViews", .upToNextMinor(from: "0.2.1"))
+        .package(url: "https://github.com/StanfordBDHG/Spezi", .upToNextMinor(from: "0.4.1")),
+        .package(url: "https://github.com/StanfordBDHG/SpeziViews", .upToNextMinor(from: "0.2.1"))
     ],
     targets: [
         .target(
-            name: "CardinalKitFHIR",
+            name: "SpeziFHIR",
             dependencies: [
-                .product(name: "CardinalKit", package: "CardinalKit"),
+                .product(name: "Spezi", package: "Spezi"),
                 .product(name: "ModelsR4", package: "FHIRModels")
             ]
         ),
         .testTarget(
-            name: "CardinalKitFHIRTests",
+            name: "SpeziFHIRTests",
             dependencies: [
-                .target(name: "CardinalKitFHIR")
+                .target(name: "SpeziFHIR")
             ]
         ),
         .target(
-            name: "CardinalKitFHIRMockDataStorageProvider",
+            name: "SpeziFHIRMockDataStorageProvider",
             dependencies: [
-                .target(name: "CardinalKitFHIR"),
-                .product(name: "CardinalKit", package: "CardinalKit"),
-                .product(name: "CardinalKitViews", package: "CardinalKitViews")
+                .target(name: "SpeziFHIR"),
+                .product(name: "Spezi", package: "Spezi"),
+                .product(name: "SpeziViews", package: "SpeziViews")
             ],
             resources: [
                 .process("Resources")

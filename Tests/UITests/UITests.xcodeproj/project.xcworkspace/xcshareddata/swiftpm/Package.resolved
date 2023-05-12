@@ -1,18 +1,18 @@
 {
   "pins" : [
     {
-      "identity" : "cardinalkit",
+      "identity" : "spezi",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordBDHG/CardinalKit",
+      "location" : "https://github.com/StanfordBDHG/Spezi",
       "state" : {
         "revision" : "4c4284f8ef44cd6346248ae44b88ce3c4c1f0a88",
         "version" : "0.4.0"
       }
     },
     {
-      "identity" : "cardinalkitviews",
+      "identity" : "speziviews",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordBDHG/CardinalKitViews",
+      "location" : "https://github.com/StanfordBDHG/SpeziViews",
       "state" : {
         "revision" : "7d8162f0396176faa0768e7b10b7931ef2203055",
         "version" : "0.2.0"
