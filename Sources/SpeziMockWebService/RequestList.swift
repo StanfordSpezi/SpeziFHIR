@@ -9,14 +9,14 @@
 import SwiftUI
 
 
-/// Displays the recoded uploads collected by the ``MockDataStorageProvider``.
-public struct MockUploadList: View {
-    @EnvironmentObject var mockDataStorageProvider: MockDataStorageProvider
+/// Displays the recoded uploads collected by the ``MockWebService``.
+public struct RequestList: View {
+    @EnvironmentObject var webService: MockWebService
     
     
     public var body: some View {
         Group {
-            if mockDataStorageProvider.mockUploads.isEmpty {
+            if webService.requests.isEmpty {
                 VStack(spacing: 32) {
                     Image(systemName: "server.rack")
                         .font(.system(size: 100))
@@ -25,15 +25,15 @@ public struct MockUploadList: View {
                 }
                     .padding(32)
             } else {
-                List(mockDataStorageProvider.mockUploads) { mockUpload in
-                    NavigationLink(value: mockUpload) {
-                        MockUploadHeader(mockUpload: mockUpload)
+                List(webService.requests) { request in
+                    NavigationLink(value: request) {
+                        RequestHeader(request: request)
                     }
                 }
             }
         }
-            .navigationDestination(for: MockUpload.self) { mockUpload in
-                MockUploadDetailView(mockUpload: mockUpload)
+            .navigationDestination(for: Request.self) { request in
+                RequestDetailView(request: request)
             }
             .navigationTitle(String(localized: "MOCK_UPLOAD_LIST_TITLE", bundle: .module))
     }
@@ -52,11 +52,11 @@ public struct MockUploadList: View {
 
 
 #if DEBUG
-struct MockUploadsList_Previews: PreviewProvider {
+struct WebServicesList_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            MockUploadList()
-                .environmentObject(MockDataStorageProvider())
+            RequestList()
+                .environmentObject(MockWebService())
         }
     }
 }

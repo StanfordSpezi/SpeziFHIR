@@ -9,14 +9,13 @@
 import Foundation
 
 
-struct MockUpload: Identifiable, Hashable {
+struct Request: Identifiable, Hashable {
     enum UploadType {
         case add
         case delete
     }
     
     
-    let identifier: String
     let date = Date()
     let type: UploadType
     let path: String
@@ -24,12 +23,11 @@ struct MockUpload: Identifiable, Hashable {
     
     
     var id: String {
-        "\(type): \(path)/\(identifier) at \(date.debugDescription)"
+        "\(type): \(path) at \(date.debugDescription)"
     }
     
     
-    init(id: String, type: UploadType, path: String, body: String? = nil) {
-        self.identifier = id
+    init(type: UploadType, path: String, body: String? = nil) {
         self.type = type
         self.path = path
         self.body = body

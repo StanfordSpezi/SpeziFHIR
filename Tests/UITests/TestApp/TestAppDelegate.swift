@@ -8,14 +8,14 @@
 
 import Spezi
 import SpeziFHIR
-import SpeziFHIRMockDataStorageProvider
+import SpeziMockWebService
 import SwiftUI
 
 
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
-        Configuration(standard: FHIR()) {
-            MockDataStorageProvider()
+        Configuration {
+            MockWebService()
         }
     }
 }

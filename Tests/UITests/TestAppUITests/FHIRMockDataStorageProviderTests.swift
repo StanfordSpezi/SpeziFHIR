@@ -11,36 +11,27 @@ import XCTestExtensions
 import XCTHealthKit
 
 
-final class FHIRMockDataStorageProviderTests: XCTestCase {
-    func testFHIRMockDataStorageProviderTests() throws {
+final class FHIRMockWebServiceTests: XCTestCase {
+    func testFHIRMockWebServiceTests() throws {
         let app = XCUIApplication()
         app.launch()
         
-        app.buttons["FHIRMockDataStorageProvider"].tap()
+        app.buttons["FHIRMockWebService"].tap()
         
-        try assertObservationCellPresent(false)
+        XCTAssert(app.buttons["Mock Requests"].waitForExistence(timeout: 2))
+        app.buttons["Mock Requests"].tap()
         
-        XCTAssert(app.buttons["Inject Observation"].waitForExistence(timeout: 2))
-        app.buttons["Inject Observation"].tap()
+        XCTAssert(app.images["Previous Page"].waitForExistence(timeout: 2))
+        app.images["Previous Page"].tap()
         
-        try assertObservationCellPresent(true, pressIfPresent: true)
-        try assertObservationCellPresent(true, pressIfPresent: false)
-    }
-    
-    
-    private func assertObservationCellPresent(_ shouldBePresent: Bool, pressIfPresent: Bool = true) throws {
-        let app = XCUIApplication()
+        XCTAssert(app.staticTexts["/Test/"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["{\"test\": \"test\"}"].waitForExistence(timeout: 2))
         
-        let observationText = "/Observation/"
-        let predicate = NSPredicate(format: "label CONTAINS[c] %@", observationText)
+        app.navigationBars.buttons["Mock Upload"].tap()
         
-        if shouldBePresent {
-            XCTAssertTrue(app.staticTexts.containing(predicate).firstMatch.waitForExistence(timeout: 5))
-            if pressIfPresent {
-                app.staticTexts.containing(predicate).firstMatch.tap()
-            }
-        } else {
-            XCTAssertFalse(app.staticTexts.containing(predicate).firstMatch.waitForExistence(timeout: 5))
-        }
+        XCTAssert(app.images["Trash"].waitForExistence(timeout: 2))
+        app.images["Trash"].tap()
+        
+        XCTAssert(app.staticTexts["/TestRemoval/"].waitForExistence(timeout: 2))
     }
 }

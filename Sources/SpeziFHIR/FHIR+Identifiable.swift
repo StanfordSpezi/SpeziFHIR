@@ -13,7 +13,9 @@ extension Resource: Identifiable {
     public typealias ID = FHIRPrimitive<FHIRString>?
 }
 
+
 extension FHIRPrimitive: Identifiable where PrimitiveType: Identifiable { }
+
 
 extension Optional: Identifiable where Wrapped == FHIRPrimitive<FHIRString> {
     public var id: FHIRPrimitive<FHIRString>? {

@@ -13,10 +13,10 @@
 		2F746D9F29962B2A00BF54FE /* XCTestExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2F746D9E29962B2A00BF54FE /* XCTestExtensions */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
 		2FCF659829B5CA630041B496 /* XCTHealthKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2FCF659729B5CA630041B496 /* XCTHealthKit */; };
-		2FD021D6299E0E0B00E5B91B /* SpeziFHIR in Frameworks */ = {isa = PBXBuildFile; productRef = 2FD021D5299E0E0B00E5B91B /* SpeziFHIR */; };
-		2FD021D8299E0E0B00E5B91B /* SpeziFHIRMockDataStorageProvider in Frameworks */ = {isa = PBXBuildFile; productRef = 2FD021D7299E0E0B00E5B91B /* SpeziFHIRMockDataStorageProvider */; };
 		2FD021DB299E0E2F00E5B91B /* Spezi in Frameworks */ = {isa = PBXBuildFile; productRef = 2FD021DA299E0E2F00E5B91B /* Spezi */; };
 		2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */; };
+		2FF6813D2A849F37002897C6 /* SpeziMockWebService in Frameworks */ = {isa = PBXBuildFile; productRef = 2FF6813C2A849F37002897C6 /* SpeziMockWebService */; };
+		2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */ = {isa = PBXBuildFile; productRef = 2FF6813E2A849F77002897C6 /* SpeziFHIR */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,8 +48,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2FD021DB299E0E2F00E5B91B /* Spezi in Frameworks */,
-				2FD021D6299E0E0B00E5B91B /* SpeziFHIR in Frameworks */,
-				2FD021D8299E0E0B00E5B91B /* SpeziFHIRMockDataStorageProvider in Frameworks */,
+				2FF6813D2A849F37002897C6 /* SpeziMockWebService in Frameworks */,
+				2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,9 +138,9 @@
 			);
 			name = TestApp;
 			packageProductDependencies = (
-				2FD021D5299E0E0B00E5B91B /* SpeziFHIR */,
-				2FD021D7299E0E0B00E5B91B /* SpeziFHIRMockDataStorageProvider */,
 				2FD021DA299E0E2F00E5B91B /* Spezi */,
+				2FF6813C2A849F37002897C6 /* SpeziMockWebService */,
+				2FF6813E2A849F77002897C6 /* SpeziFHIR */,
 			);
 			productName = Example;
 			productReference = 2F6D139228F5F384007C25D6 /* TestApp.app */;
@@ -523,7 +523,7 @@
 			repositoryURL = "https://github.com/StanfordSpezi/XCTestExtensions";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.4.1;
+				minimumVersion = 0.4.6;
 			};
 		};
 		2FCF659429B5CA400041B496 /* XCRemoteSwiftPackageReference "XCTHealthKit" */ = {
@@ -531,7 +531,7 @@
 			repositoryURL = "https://github.com/StanfordBDHG/XCTHealthKit";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.3.3;
+				minimumVersion = 0.3.5;
 			};
 		};
 		2FD021D9299E0E2F00E5B91B /* XCRemoteSwiftPackageReference "Spezi" */ = {
@@ -539,7 +539,7 @@
 			repositoryURL = "https://github.com/StanfordSpezi/Spezi.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.5.0;
+				minimumVersion = 0.7.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -555,18 +555,18 @@
 			package = 2FCF659429B5CA400041B496 /* XCRemoteSwiftPackageReference "XCTHealthKit" */;
 			productName = XCTHealthKit;
 		};
-		2FD021D5299E0E0B00E5B91B /* SpeziFHIR */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SpeziFHIR;
-		};
-		2FD021D7299E0E0B00E5B91B /* SpeziFHIRMockDataStorageProvider */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SpeziFHIRMockDataStorageProvider;
-		};
 		2FD021DA299E0E2F00E5B91B /* Spezi */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2FD021D9299E0E2F00E5B91B /* XCRemoteSwiftPackageReference "Spezi" */;
 			productName = Spezi;
+		};
+		2FF6813C2A849F37002897C6 /* SpeziMockWebService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SpeziMockWebService;
+		};
+		2FF6813E2A849F77002897C6 /* SpeziFHIR */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SpeziFHIR;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

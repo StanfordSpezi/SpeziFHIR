@@ -10,17 +10,17 @@ import SpeziViews
 import SwiftUI
 
 
-struct MockUploadDetailView: View {
-    let mockUpload: MockUpload
+struct RequestDetailView: View {
+    let request: Request
     
     
     var body: some View {
         List {
             Section(String(localized: "MOCK_UPLOAD_DETAIL_HEADER", bundle: .module)) {
-                MockUploadHeader(mockUpload: mockUpload)
+                RequestHeader(request: request)
             }
             Section(String(localized: "MOCK_UPLOAD_DETAIL_BODY", bundle: .module)) {
-                LazyText(text: mockUpload.body ?? "")
+                LazyText(text: request.body ?? "")
             }
         }
             .listStyle(.insetGrouped)
@@ -30,11 +30,10 @@ struct MockUploadDetailView: View {
 
 
 #if DEBUG
-struct MockUploadDetailView_Previews: PreviewProvider {
+struct RequestDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        MockUploadDetailView(
-            mockUpload: MockUpload(
-                id: UUID().uuidString,
+        RequestDetailView(
+            request: Request(
                 type: .add,
                 path: "A Path",
                 body: "A Body ..."

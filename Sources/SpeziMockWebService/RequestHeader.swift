@@ -9,14 +9,14 @@
 import SwiftUI
 
 
-struct MockUploadHeader: View {
-    let mockUpload: MockUpload
+struct RequestHeader: View {
+    let request: Request
     
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .center, spacing: 12) {
-                switch mockUpload.type {
+                switch request.type {
                 case .add:
                     Image(systemName: "arrow.up.doc.fill")
                         .foregroundColor(.green)
@@ -24,16 +24,13 @@ struct MockUploadHeader: View {
                     Image(systemName: "trash.fill")
                         .foregroundColor(.red)
                 }
-                Text("/\(mockUpload.path)/")
+                Text("/\(request.path)/")
             }
                 .font(.title3)
                 .bold()
                 .padding(.bottom, 12)
-            Text("On \(format(mockUpload.date))")
+            Text("On \(format(request.date))")
                 .font(.subheadline)
-            Text("\(mockUpload.identifier)")
-                .font(.footnote)
-                .foregroundColor(.gray)
         }
     }
     
@@ -48,11 +45,10 @@ struct MockUploadHeader: View {
 
 
 #if DEBUG
-struct MockUploadHeader_Previews: PreviewProvider {
+struct RequestHeader_Previews: PreviewProvider {
     static var previews: some View {
-        MockUploadHeader(
-            mockUpload: MockUpload(
-                id: UUID().uuidString,
+        RequestHeader(
+            request: Request(
                 type: .add,
                 path: "A Path"
             )

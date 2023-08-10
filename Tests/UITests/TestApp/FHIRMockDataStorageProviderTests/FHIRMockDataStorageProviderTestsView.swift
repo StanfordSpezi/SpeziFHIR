@@ -8,19 +8,19 @@
 
 import Spezi
 import SpeziFHIR
-import SpeziFHIRMockDataStorageProvider
+import SpeziMockWebService
 import SwiftUI
 
 
-struct FHIRMockDataStorageProviderTestsView: View {
-    @EnvironmentObject var fhirStandard: FHIR
+struct FHIRMockWebServiceTestsView: View {
+    @EnvironmentObject var webService: MockWebService
     
     
     var body: some View {
-        MockUploadList()
+        RequestList()
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Inject Observation") {
+                    Button("Mock Requests") {
                         injectNewObservations()
                     }
                 }
@@ -29,31 +29,18 @@ struct FHIRMockDataStorageProviderTestsView: View {
     
     
     private func injectNewObservations() {
-        let observations = [
-            Observation(
-                code: .init(),
-                id: UUID().uuidString.asFHIRStringPrimitive(),
-                status: FHIRPrimitive(.final)
-            )
-        ]
-        
-        _Concurrency.Task {
-            await fhirStandard.registerDataSource(
-                AsyncStream { continuation in
-                    for observation in observations {
-                        continuation.yield(.addition(observation))
-                    }
-                }
-            )
+        Task {
+            try await webService.upload(path: "Test", body: #"{"test": "test"}"#)
+            try await webService.remove(path: "TestRemoval")
         }
     }
 }
 
 
 #if DEBUG
-struct FHIRMockDataStorageProviderTestsView_Previews: PreviewProvider {
+struct FHIRMockWebServiceTestsView_Previews: PreviewProvider {
     static var previews: some View {
-        FHIRMockDataStorageProviderTestsView()
+        FHIRMockWebServiceTestsView()
     }
 }
 #endif

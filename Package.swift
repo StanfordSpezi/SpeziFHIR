@@ -19,12 +19,12 @@ let package = Package(
     ],
     products: [
         .library(name: "SpeziFHIR", targets: ["SpeziFHIR"]),
-        .library(name: "SpeziFHIRMockDataStorageProvider", targets: ["SpeziFHIRMockDataStorageProvider"])
+        .library(name: "SpeziMockWebService", targets: ["SpeziMockWebService"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.3.0"))
+        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.7.0")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.4.0"))
     ],
     targets: [
         .target(
@@ -41,7 +41,7 @@ let package = Package(
             ]
         ),
         .target(
-            name: "SpeziFHIRMockDataStorageProvider",
+            name: "SpeziMockWebService",
             dependencies: [
                 .target(name: "SpeziFHIR"),
                 .product(name: "Spezi", package: "Spezi"),

@@ -12,19 +12,20 @@ import SwiftUI
 @main
 struct UITestsApp: App {
     enum Tests: String, CaseIterable, Identifiable {
-        case fhirMockDataStorageProvider = "FHIRMockDataStorageProvider"
+        case fhirMockWebService = "FHIRMockWebService"
         
         
         var id: RawValue {
             self.rawValue
         }
         
+        
         @MainActor
         @ViewBuilder
         func view(withNavigationPath path: Binding<NavigationPath>) -> some View {
             switch self {
-            case .fhirMockDataStorageProvider:
-                FHIRMockDataStorageProviderTestsView()
+            case .fhirMockWebService:
+                FHIRMockWebServiceTestsView()
             }
         }
     }

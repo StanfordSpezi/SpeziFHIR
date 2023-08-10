@@ -12,7 +12,7 @@ import XCTest
 
 
 final class DataStorageProviderTests: XCTestCase {
-    private enum MockUpload {
+    private enum WebService {
         case post(String)
         case delete(String)
         
@@ -39,11 +39,11 @@ final class DataStorageProviderTests: XCTestCase {
         typealias ComponentStandard = FHIR
         
         
-        let mockUpload: (MockUpload) -> Void
+        let webService: (WebService) -> Void
         
         
-        init(mockUpload: @escaping (MockUpload) -> Void) {
-            self.mockUpload = mockUpload
+        init(webService: @escaping (WebService) -> Void) {
+            self.webService = webService
         }
         
         
@@ -52,26 +52,26 @@ final class DataStorageProviderTests: XCTestCase {
             case let .addition(element):
                 let data = try JSONEncoder().encode(element)
                 let string = String(decoding: data, as: UTF8.self)
-                mockUpload(.post(string))
+                webService(.post(string))
             case let .removal(removalContext):
-                mockUpload(.delete(removalContext.id.description))
+                webService(.delete(removalContext.id.description))
             }
         }
     }
     
     private class DataStorageProviderApplicationDelegate: SpeziAppDelegate {
-        let mockUpload: (MockUpload) -> Void
+        let webService: (WebService) -> Void
         
         
         override var configuration: Configuration {
             Configuration {
-                FHIRDataStorageExample(mockUpload: mockUpload)
+                FHIRDataStorageExample(webService: webService)
             }
         }
         
         
-        init(mockUpload: @escaping (MockUpload) -> Void) {
-            self.mockUpload = mockUpload
+        init(webService: @escaping (WebService) -> Void) {
+            self.webService = webService
         }
     }
     
@@ -82,16 +82,16 @@ final class DataStorageProviderTests: XCTestCase {
         expectation.isInverted = true
         
         var count = 0
-        let delegate = DataStorageProviderApplicationDelegate { mockUpload in
+        let delegate = DataStorageProviderApplicationDelegate { webService in
             switch count {
             case 0:
-                mockUpload.assertPost(is: #"{"status":"final","id":"1","code":{},"resourceType":"Observation"}"#)
+                webService.assertPost(is: #"{"status":"final","id":"1","code":{},"resourceType":"Observation"}"#)
             case 1:
-                mockUpload.assertPost(is: #"{"status":"final","id":"2","code":{},"resourceType":"Observation"}"#)
+                webService.assertPost(is: #"{"status":"final","id":"2","code":{},"resourceType":"Observation"}"#)
             case 2:
-                mockUpload.assertPost(is: #"{"status":"final","id":"3","code":{},"resourceType":"Observation"}"#)
+                webService.assertPost(is: #"{"status":"final","id":"3","code":{},"resourceType":"Observation"}"#)
             case 3:
-                mockUpload.assertDelete(is: "1")
+                webService.assertDelete(is: "1")
             default:
                 XCTFail("Too many calls to the mock upload function.")
             }
