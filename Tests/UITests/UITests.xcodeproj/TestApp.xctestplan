@@ -9,6 +9,20 @@
     }
   ],
   "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:..\/..",
+          "identifier" : "SpeziFHIR",
+          "name" : "SpeziFHIR"
+        },
+        {
+          "containerPath" : "container:..\/..",
+          "identifier" : "SpeziMockWebService",
+          "name" : "SpeziMockWebService"
+        }
+      ]
+    },
     "targetForVariableExpansion" : {
       "containerPath" : "container:UITests.xcodeproj",
       "identifier" : "2F6D139128F5F384007C25D6",
