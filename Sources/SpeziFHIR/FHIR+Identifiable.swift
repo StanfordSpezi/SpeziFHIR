@@ -15,15 +15,3 @@ extension Resource: Identifiable {
 
 
 extension FHIRPrimitive: Identifiable where PrimitiveType: Identifiable { }
-
-
-extension Optional: Identifiable where Wrapped == FHIRPrimitive<FHIRString> {
-    public var id: FHIRPrimitive<FHIRString>? {
-        switch self {
-        case let .some(value):
-            return value
-        case .none:
-            return nil
-        }
-    }
-}
