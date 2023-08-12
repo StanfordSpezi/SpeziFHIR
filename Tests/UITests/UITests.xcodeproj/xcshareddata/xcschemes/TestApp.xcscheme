@@ -14,20 +14,6 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "SpeziMockWebService"
-               BuildableName = "SpeziMockWebService"
-               BlueprintName = "SpeziMockWebService"
-               ReferencedContainer = "container:../..">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "SpeziFHIR"
                BuildableName = "SpeziFHIR"
                BlueprintName = "SpeziFHIR"

@@ -19,33 +19,6 @@
       }
     },
     {
-      "identity" : "speziviews",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordSpezi/SpeziViews",
-      "state" : {
-        "revision" : "10ae4b1e7c7af5e36db4cdc0e1eea697f112ce72",
-        "version" : "0.4.0"
-      }
-    },
-    {
-      "identity" : "xctestextensions",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordSpezi/XCTestExtensions",
-      "state" : {
-        "revision" : "625477e0937294cb3fd6e7bbf72b78f951644b1d",
-        "version" : "0.4.6"
-      }
-    },
-    {
-      "identity" : "xcthealthkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordBDHG/XCTHealthKit",
-      "state" : {
-        "revision" : "6e9344a2d632b801d94fe3bbd1d891817e032103",
-        "version" : "0.3.5"
-      }
-    },
-    {
       "identity" : "xctruntimeassertions",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordBDHG/XCTRuntimeAssertions",

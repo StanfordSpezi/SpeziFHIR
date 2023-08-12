@@ -7,15 +7,11 @@
 //
 
 import Spezi
-import SpeziFHIR
-import SpeziMockWebService
 import SwiftUI
 
 
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
-        Configuration {
-            MockWebService()
-        }
+        Configuration { }
     }
 }

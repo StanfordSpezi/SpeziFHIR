@@ -7,15 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F36AD2F299DB11D00B1077C /* FHIRMockDataStorageProviderTestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F36AD2E299DB11D00B1077C /* FHIRMockDataStorageProviderTestsView.swift */; };
 		2F36AD33299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F36AD32299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift */; };
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
-		2F746D9F29962B2A00BF54FE /* XCTestExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2F746D9E29962B2A00BF54FE /* XCTestExtensions */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
-		2FCF659829B5CA630041B496 /* XCTHealthKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2FCF659729B5CA630041B496 /* XCTHealthKit */; };
 		2FD021DB299E0E2F00E5B91B /* Spezi in Frameworks */ = {isa = PBXBuildFile; productRef = 2FD021DA299E0E2F00E5B91B /* Spezi */; };
 		2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */; };
-		2FF6813D2A849F37002897C6 /* SpeziMockWebService in Frameworks */ = {isa = PBXBuildFile; productRef = 2FF6813C2A849F37002897C6 /* SpeziMockWebService */; };
 		2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */ = {isa = PBXBuildFile; productRef = 2FF6813E2A849F77002897C6 /* SpeziFHIR */; };
 /* End PBXBuildFile section */
 
@@ -30,8 +26,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2F01E8CE291493560089C46B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		2F36AD2E299DB11D00B1077C /* FHIRMockDataStorageProviderTestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FHIRMockDataStorageProviderTestsView.swift; sourceTree = "<group>"; };
 		2F36AD32299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FHIRMockDataStorageProviderTests.swift; sourceTree = "<group>"; };
 		2F6D139228F5F384007C25D6 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F6D139928F5F386007C25D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -48,7 +42,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2FD021DB299E0E2F00E5B91B /* Spezi in Frameworks */,
-				2FF6813D2A849F37002897C6 /* SpeziMockWebService in Frameworks */,
 				2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -57,22 +50,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F746D9F29962B2A00BF54FE /* XCTestExtensions in Frameworks */,
-				2FCF659829B5CA630041B496 /* XCTHealthKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2F36AD2D299DB0FF00B1077C /* FHIRMockDataStorageProviderTests */ = {
-			isa = PBXGroup;
-			children = (
-				2F36AD2E299DB11D00B1077C /* FHIRMockDataStorageProviderTestsView.swift */,
-			);
-			path = FHIRMockDataStorageProviderTests;
-			sourceTree = "<group>";
-		};
 		2F6D138928F5F384007C25D6 = {
 			isa = PBXGroup;
 			children = (
@@ -99,9 +82,7 @@
 			children = (
 				2FA7382B290ADFAA007ACEB9 /* TestApp.swift */,
 				2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */,
-				2F36AD2D299DB0FF00B1077C /* FHIRMockDataStorageProviderTests */,
 				2F6D139928F5F386007C25D6 /* Assets.xcassets */,
-				2F01E8CE291493560089C46B /* Info.plist */,
 			);
 			path = TestApp;
 			sourceTree = "<group>";
@@ -139,7 +120,6 @@
 			name = TestApp;
 			packageProductDependencies = (
 				2FD021DA299E0E2F00E5B91B /* Spezi */,
-				2FF6813C2A849F37002897C6 /* SpeziMockWebService */,
 				2FF6813E2A849F77002897C6 /* SpeziFHIR */,
 			);
 			productName = Example;
@@ -161,8 +141,6 @@
 			);
 			name = TestAppUITests;
 			packageProductDependencies = (
-				2F746D9E29962B2A00BF54FE /* XCTestExtensions */,
-				2FCF659729B5CA630041B496 /* XCTHealthKit */,
 			);
 			productName = ExampleUITests;
 			productReference = 2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */;
@@ -197,9 +175,7 @@
 			);
 			mainGroup = 2F6D138928F5F384007C25D6;
 			packageReferences = (
-				2F746D9D29962B2A00BF54FE /* XCRemoteSwiftPackageReference "XCTestExtensions" */,
 				2FD021D9299E0E2F00E5B91B /* XCRemoteSwiftPackageReference "Spezi" */,
-				2FCF659429B5CA400041B496 /* XCRemoteSwiftPackageReference "XCTHealthKit" */,
 			);
 			productRefGroup = 2F6D139328F5F384007C25D6 /* Products */;
 			projectDirPath = "";
@@ -234,7 +210,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F36AD2F299DB11D00B1077C /* FHIRMockDataStorageProviderTestsView.swift in Sources */,
 				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
 				2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */,
 			);
@@ -386,7 +361,6 @@
 				DEVELOPMENT_TEAM = 637867499T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = TestApp/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "The TestApp accesses your HealthKit data to run the tests.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -421,7 +395,6 @@
 				DEVELOPMENT_TEAM = 637867499T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = TestApp/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "The TestApp accesses your HealthKit data to run the tests.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -518,22 +491,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		2F746D9D29962B2A00BF54FE /* XCRemoteSwiftPackageReference "XCTestExtensions" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/StanfordSpezi/XCTestExtensions";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 0.4.6;
-			};
-		};
-		2FCF659429B5CA400041B496 /* XCRemoteSwiftPackageReference "XCTHealthKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/StanfordBDHG/XCTHealthKit";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 0.3.5;
-			};
-		};
 		2FD021D9299E0E2F00E5B91B /* XCRemoteSwiftPackageReference "Spezi" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/StanfordSpezi/Spezi.git";
@@ -545,24 +502,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2F746D9E29962B2A00BF54FE /* XCTestExtensions */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2F746D9D29962B2A00BF54FE /* XCRemoteSwiftPackageReference "XCTestExtensions" */;
-			productName = XCTestExtensions;
-		};
-		2FCF659729B5CA630041B496 /* XCTHealthKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2FCF659429B5CA400041B496 /* XCRemoteSwiftPackageReference "XCTHealthKit" */;
-			productName = XCTHealthKit;
-		};
 		2FD021DA299E0E2F00E5B91B /* Spezi */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2FD021D9299E0E2F00E5B91B /* XCRemoteSwiftPackageReference "Spezi" */;
 			productName = Spezi;
-		};
-		2FF6813C2A849F37002897C6 /* SpeziMockWebService */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SpeziMockWebService;
 		};
 		2FF6813E2A849F77002897C6 /* SpeziFHIR */ = {
 			isa = XCSwiftPackageProductDependency;

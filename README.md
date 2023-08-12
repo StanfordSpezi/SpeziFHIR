@@ -21,11 +21,6 @@ The Spezi FHIR modules build a building block of FHIR-based mobile appications u
 For more information, please refer to the [API documentation](https://swiftpackageindex.com/StanfordSpezi/SpeziFHIR/documentation).
 
 
-## The Spezi Template Application
-
-The [Spezi Template Application](https://github.com/StanfordSpezi/SpeziTemplateApplication) provides a great starting point and example using the Spezi FHIR Standard.
-
-
 ## Contributing
 
 Contributions to this project are welcome. Please make sure to read the [contribution guidelines](https://github.com/StanfordSpezi/.github/blob/main/CONTRIBUTING.md) and the [contributor covenant code of conduct](https://github.com/StanfordSpezi/.github/blob/main/CODE_OF_CONDUCT.md) first.
