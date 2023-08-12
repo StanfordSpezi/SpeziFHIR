@@ -12,4 +12,3 @@ builder:
     - platform: ios
       documentation_targets:
       - SpeziFHIR
-      - SpeziFHIRMockDataStorageProvider

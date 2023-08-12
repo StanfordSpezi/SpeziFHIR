@@ -6,45 +6,18 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SwiftUI
 
 
 @main
 struct UITestsApp: App {
-    enum Tests: String, CaseIterable, Identifiable {
-        case fhirMockDataStorageProvider = "FHIRMockDataStorageProvider"
-        
-        
-        var id: RawValue {
-            self.rawValue
-        }
-        
-        @MainActor
-        @ViewBuilder
-        func view(withNavigationPath path: Binding<NavigationPath>) -> some View {
-            switch self {
-            case .fhirMockDataStorageProvider:
-                FHIRMockDataStorageProviderTestsView()
-            }
-        }
-    }
-    
-    
     @UIApplicationDelegateAdaptor(TestAppDelegate.self) var appDelegate
-    @State private var path = NavigationPath()
     
     
     var body: some Scene {
         WindowGroup {
-            NavigationStack(path: $path) {
-                List(Tests.allCases) { test in
-                    NavigationLink(test.rawValue, value: test)
-                }
-                    .navigationDestination(for: Tests.self) { test in
-                        test.view(withNavigationPath: $path)
-                    }
-                    .navigationTitle("UITest")
-            }
+            Text("FHIR")
                 .spezi(appDelegate)
         }
     }

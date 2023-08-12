@@ -6,14 +6,12 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziFHIR
 import XCTest
 
 
-final class FHIRMockWebServiceTests: XCTestCase {
-    func testFHIRMockWebServiceTests() throws {
-        let app = XCUIApplication()
-        app.launch()
-        
-        XCTAssert(app.staticTexts["FHIR"].waitForExistence(timeout: 2))
+final class SpeziFHIRTests: XCTestCase {
+    func testSpeziFHIR() throws {
+        XCTAssert(true)
     }
 }

@@ -14,44 +14,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/Spezi",
       "state" : {
-        "revision" : "46722660026008cdd51da6d39de82aa4743016e8",
-        "version" : "0.5.0"
-      }
-    },
-    {
-      "identity" : "speziviews",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordSpezi/SpeziViews",
-      "state" : {
-        "revision" : "c6975e84c735b8b8a13740012c1c194f48893fa8",
-        "version" : "0.3.0"
-      }
-    },
-    {
-      "identity" : "xctestextensions",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordSpezi/XCTestExtensions",
-      "state" : {
-        "revision" : "3c9313ba697be8b0a7070cc8fafd1a499ec23c28",
-        "version" : "0.4.1"
-      }
-    },
-    {
-      "identity" : "xcthealthkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordBDHG/XCTHealthKit",
-      "state" : {
-        "revision" : "19395bbd14a2554e4c9d3fe5cf38aa626c807269",
-        "version" : "0.3.3"
+        "revision" : "9ad506d4d2e36eb7a0c1ff8cc6bb0ef9c972724c",
+        "version" : "0.7.1"
       }
     },
     {
       "identity" : "xctruntimeassertions",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordSpezi/XCTRuntimeAssertions",
+      "location" : "https://github.com/StanfordBDHG/XCTRuntimeAssertions",
       "state" : {
-        "revision" : "e3978f198c9a51648ce00def596b8ff0bf835e44",
-        "version" : "0.2.2"
+        "revision" : "9226052589b8faece98861bc3d7b33b3ebfe4f5a",
+        "version" : "0.2.5"
       }
     }
   ],
