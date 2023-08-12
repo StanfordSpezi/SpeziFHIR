@@ -15,11 +15,6 @@
           "containerPath" : "container:..\/..",
           "identifier" : "SpeziFHIR",
           "name" : "SpeziFHIR"
-        },
-        {
-          "containerPath" : "container:..\/..",
-          "identifier" : "SpeziMockWebService",
-          "name" : "SpeziMockWebService"
         }
       ]
     },
