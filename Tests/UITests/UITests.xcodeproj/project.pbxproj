@@ -10,7 +10,6 @@
 		2F36AD33299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F36AD32299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift */; };
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
-		2FD021DB299E0E2F00E5B91B /* Spezi in Frameworks */ = {isa = PBXBuildFile; productRef = 2FD021DA299E0E2F00E5B91B /* Spezi */; };
 		2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */; };
 		2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */ = {isa = PBXBuildFile; productRef = 2FF6813E2A849F77002897C6 /* SpeziFHIR */; };
 /* End PBXBuildFile section */
@@ -41,7 +40,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2FD021DB299E0E2F00E5B91B /* Spezi in Frameworks */,
 				2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -119,7 +117,6 @@
 			);
 			name = TestApp;
 			packageProductDependencies = (
-				2FD021DA299E0E2F00E5B91B /* Spezi */,
 				2FF6813E2A849F77002897C6 /* SpeziFHIR */,
 			);
 			productName = Example;
@@ -175,7 +172,6 @@
 			);
 			mainGroup = 2F6D138928F5F384007C25D6;
 			packageReferences = (
-				2FD021D9299E0E2F00E5B91B /* XCRemoteSwiftPackageReference "Spezi" */,
 			);
 			productRefGroup = 2F6D139328F5F384007C25D6 /* Products */;
 			projectDirPath = "";
@@ -285,7 +281,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -340,7 +336,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -366,7 +362,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -400,7 +395,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -490,23 +484,7 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		2FD021D9299E0E2F00E5B91B /* XCRemoteSwiftPackageReference "Spezi" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/StanfordSpezi/Spezi.git";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 0.7.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		2FD021DA299E0E2F00E5B91B /* Spezi */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2FD021D9299E0E2F00E5B91B /* XCRemoteSwiftPackageReference "Spezi" */;
-			productName = Spezi;
-		};
 		2FF6813E2A849F77002897C6 /* SpeziFHIR */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SpeziFHIR;
