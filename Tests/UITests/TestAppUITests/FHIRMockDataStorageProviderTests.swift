@@ -9,11 +9,11 @@
 import XCTest
 
 
-final class FHIRMockWebServiceTests: XCTestCase {
-    func testFHIRMockWebServiceTests() throws {
+final class SpeziFHIRTests: XCTestCase {
+    func testSpeziFHIR() throws {
         let app = XCUIApplication()
         app.launch()
         
-        XCTAssert(app.staticTexts["FHIR"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Spezi FHIR"].waitForExistence(timeout: 2))
     }
 }
