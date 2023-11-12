@@ -8,20 +8,6 @@
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "SpeziFHIR"
-               BuildableName = "SpeziFHIR"
-               BlueprintName = "SpeziFHIR"
-               ReferencedContainer = "container:../..">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
             buildForRunning = "YES"
             buildForProfiling = "YES"
             buildForArchiving = "YES"
@@ -32,6 +18,20 @@
                BuildableName = "TestApp.app"
                BlueprintName = "TestApp"
                ReferencedContainer = "container:UITests.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SpeziFHIR"
+               BuildableName = "SpeziFHIR"
+               BlueprintName = "SpeziFHIR"
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
