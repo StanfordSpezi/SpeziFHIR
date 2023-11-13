@@ -8,7 +8,7 @@
 
 
 extension FHIRResource {
-    public func matchesDisplayName(with searchText: String) -> Bool {
+    func matchesDisplayName(with searchText: String) -> Bool {
         let formattedSearchText = searchText
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .lowercased()
@@ -18,6 +18,9 @@ extension FHIRResource {
 
 
 extension Array where Element == FHIRResource {
+    /// Filters the FHIR resources using the provided search text.
+    /// - Parameter searchText: Filters the FHIR resources using the provided search text.
+    /// - Returns: The filtered FHIR resources.
     public func filterByDisplayName(with searchText: String) -> [FHIRResource] {
         if searchText.isEmpty {
             return self

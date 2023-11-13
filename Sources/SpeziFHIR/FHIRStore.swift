@@ -12,61 +12,61 @@ import class ModelsR4.Bundle
 import enum ModelsDSTU2.ResourceProxy
 
 
-/// <#Description#>
+/// Manage FHIR resources grouped into automatically computed and updated categories.
 @Observable
 public class FHIRStore {
     @ObservationIgnored private var _resources: [FHIRResource]
     
     
-    /// <#Description#>
+    /// Allergy intolerances.
     public var allergyIntolerances: [FHIRResource] {
         access(keyPath: \.allergyIntolerances)
         return _resources.filter { $0.category == .allergyIntolerance }
     }
     
-    /// <#Description#>
+    /// Conditions.
     var conditions: [FHIRResource] {
         access(keyPath: \.conditions)
         return _resources.filter { $0.category == .condition }
     }
     
-    /// <#Description#>
+    /// Diagnostics.
     var diagnostics: [FHIRResource] {
         access(keyPath: \.diagnostics)
         return _resources.filter { $0.category == .diagnostic }
     }
     
-    /// <#Description#>
+    /// Encounters.
     var encounters: [FHIRResource] {
         access(keyPath: \.encounters)
         return _resources.filter { $0.category == .encounter }
     }
     
-    /// <#Description#>
+    /// Immunizations.
     var immunizations: [FHIRResource] {
         access(keyPath: \.immunizations)
         return _resources.filter { $0.category == .immunization }
     }
     
-    /// <#Description#>
+    /// Medications.
     var medications: [FHIRResource] {
         access(keyPath: \.medications)
         return _resources.filter { $0.category == .medication }
     }
     
-    /// <#Description#>
+    /// Observations.
     var observations: [FHIRResource] {
         access(keyPath: \.observations)
         return _resources.filter { $0.category == .observation }
     }
     
-    /// <#Description#>
+    /// Other resources that could not be classified on the other categories.
     var otherResources: [FHIRResource] {
         access(keyPath: \.otherResources)
         return _resources.filter { $0.category == .other }
     }
     
-    /// <#Description#>
+    /// Procedures.
     var procedures: [FHIRResource] {
         access(keyPath: \.procedures)
         return _resources.filter { $0.category == .procedure }
@@ -78,6 +78,9 @@ public class FHIRStore {
     }
     
     
+    /// Inserts a FHIR resource into the store.
+    /// The resource is appended to the appropriate category based on its type.
+    /// - Parameter resource: The `FHIRResource` to be inserted.
     public func insert(resource: FHIRResource) {
         switch resource.category {
         case .allergyIntolerance:
@@ -119,17 +122,18 @@ public class FHIRStore {
         }
     }
     
-    /// <#Description#>
-    /// - Parameter bundle: <#bundle description#>
+    /// Loads resources from a given FHIR `Bundle`.
+    ///
+    /// - Parameter bundle: The FHIR `Bundle` containing resources to be loaded.
     public func load(bundle: Bundle) {
-        let resourceProxies = bundle.entry?.compactMap({ $0.resource }) ?? []
+        let resourceProxies = bundle.entry?.compactMap { $0.resource } ?? []
         
         for resourceProxy in resourceProxies {
             insert(resource: FHIRResource(resource: resourceProxy.get(), displayName: resourceProxy.resourceType))
         }
     }
     
-    /// <#Description#>
+    /// Removes all resources from the store.
     public func removeAllResources() {
         // Not really ideal but seems to be a path to ensure that all observables are called.
         _$observationRegistrar.willSet(self, keyPath: \.allergyIntolerances)
