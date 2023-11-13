@@ -11,6 +11,8 @@
 		2F36AD33299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F36AD32299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift */; };
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
+		2FBD9AF92B01E4A000237A04 /* SpeziFHIRMockPatients in Frameworks */ = {isa = PBXBuildFile; productRef = 2FBD9AF82B01E4A000237A04 /* SpeziFHIRMockPatients */; };
+		2FBD9AFB2B01E4A800237A04 /* SpeziFHIRHealthKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2FBD9AFA2B01E4A800237A04 /* SpeziFHIRHealthKit */; };
 		2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */; };
 		2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */ = {isa = PBXBuildFile; productRef = 2FF6813E2A849F77002897C6 /* SpeziFHIR */; };
 /* End PBXBuildFile section */
@@ -41,7 +43,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FBD9AFB2B01E4A800237A04 /* SpeziFHIRHealthKit in Frameworks */,
 				2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */,
+				2FBD9AF92B01E4A000237A04 /* SpeziFHIRMockPatients in Frameworks */,
 				2F35E9D62B015EB200CB89FF /* SpeziFHIRInterpretation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -122,6 +126,8 @@
 			packageProductDependencies = (
 				2FF6813E2A849F77002897C6 /* SpeziFHIR */,
 				2F35E9D52B015EB200CB89FF /* SpeziFHIRInterpretation */,
+				2FBD9AF82B01E4A000237A04 /* SpeziFHIRMockPatients */,
+				2FBD9AFA2B01E4A800237A04 /* SpeziFHIRHealthKit */,
 			);
 			productName = Example;
 			productReference = 2F6D139228F5F384007C25D6 /* TestApp.app */;
@@ -513,6 +519,14 @@
 		2F35E9D52B015EB200CB89FF /* SpeziFHIRInterpretation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SpeziFHIRInterpretation;
+		};
+		2FBD9AF82B01E4A000237A04 /* SpeziFHIRMockPatients */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SpeziFHIRMockPatients;
+		};
+		2FBD9AFA2B01E4A800237A04 /* SpeziFHIRHealthKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SpeziFHIRHealthKit;
 		};
 		2FF6813E2A849F77002897C6 /* SpeziFHIR */ = {
 			isa = XCSwiftPackageProductDependency;

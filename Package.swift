@@ -3,7 +3,7 @@
 //
 // This source file is part of the Stanford Spezi open-source project
 //
-// SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
@@ -20,7 +20,8 @@ let package = Package(
     products: [
         .library(name: "SpeziFHIR", targets: ["SpeziFHIR"]),
         .library(name: "SpeziFHIRHealthKit", targets: ["SpeziFHIRHealthKit"]),
-        .library(name: "SpeziFHIRInterpretation", targets: ["SpeziFHIRInterpretation"])
+        .library(name: "SpeziFHIRInterpretation", targets: ["SpeziFHIRInterpretation"]),
+        .library(name: "SpeziFHIRMockPatients", targets: ["SpeziFHIRMockPatients"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.5.0")),
@@ -54,6 +55,15 @@ let package = Package(
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "ModelsR4", package: "FHIRModels"),
                 .product(name: "SpeziOpenAI", package: "SpeziML")
+            ],
+            resources: [
+                .process("Resources")
+            ]
+        ),
+        .target(
+            name: "SpeziFHIRMockPatients",
+            dependencies: [
+                .target(name: "SpeziFHIR")
             ],
             resources: [
                 .process("Resources")

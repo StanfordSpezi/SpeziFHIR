@@ -25,49 +25,49 @@ public class FHIRStore {
     }
     
     /// Conditions.
-    var conditions: [FHIRResource] {
+    public var conditions: [FHIRResource] {
         access(keyPath: \.conditions)
         return _resources.filter { $0.category == .condition }
     }
     
     /// Diagnostics.
-    var diagnostics: [FHIRResource] {
+    public var diagnostics: [FHIRResource] {
         access(keyPath: \.diagnostics)
         return _resources.filter { $0.category == .diagnostic }
     }
     
     /// Encounters.
-    var encounters: [FHIRResource] {
+    public var encounters: [FHIRResource] {
         access(keyPath: \.encounters)
         return _resources.filter { $0.category == .encounter }
     }
     
     /// Immunizations.
-    var immunizations: [FHIRResource] {
+    public var immunizations: [FHIRResource] {
         access(keyPath: \.immunizations)
         return _resources.filter { $0.category == .immunization }
     }
     
     /// Medications.
-    var medications: [FHIRResource] {
+    public var medications: [FHIRResource] {
         access(keyPath: \.medications)
         return _resources.filter { $0.category == .medication }
     }
     
     /// Observations.
-    var observations: [FHIRResource] {
+    public var observations: [FHIRResource] {
         access(keyPath: \.observations)
         return _resources.filter { $0.category == .observation }
     }
     
     /// Other resources that could not be classified on the other categories.
-    var otherResources: [FHIRResource] {
+    public var otherResources: [FHIRResource] {
         access(keyPath: \.otherResources)
         return _resources.filter { $0.category == .other }
     }
     
     /// Procedures.
-    var procedures: [FHIRResource] {
+    public var procedures: [FHIRResource] {
         access(keyPath: \.procedures)
         return _resources.filter { $0.category == .procedure }
     }
