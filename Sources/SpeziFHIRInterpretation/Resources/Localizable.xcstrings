@@ -1,0 +1,141 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Chat with the user in the same language they chat in.\nChat with the user in %@" : {
+      "comment" : "The passed in string is the current locale of the device as a IETF BCP 47 language tag.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat with the user in the same language they chat in.\nChat with the user in %@"
+          }
+        }
+      }
+    },
+    "Customize the %@ prompt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Customize the %@ prompt."
+          }
+        }
+      }
+    },
+    "FHIR_MULTIPLE_RESOURCE_INTERPRETATION_PROMPT %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your task is to interpret FHIR resources from the user's clinical records.\nThroughout the conversation with the user, use the get_resource_titles function to obtain the FHIR health resources necessary to properly answer the users question. For example, if the user asks about their allergies, you must use get_resource_titles to output the FHIR resource titles for allergy records so you can then use them to answer the question. The output of get_resource_titles has to be the name of a resource or resources with the exact same title as in the list provided.\n\nAnswer the users question, the health record provided is not always related. The end goal is to answer the users question in the best way possible.\n\nInterpret the resources by explaining its data relevant to the user's health.\nExplain the relevant medical context in a language understandable by a user who is not a medical professional.\nYou should provide factual and precise information in a compact summary in short responses.\n\nTell the user that they can ask any question about their health records and then create a short summary of the main categories of health records of the user which you have access to. These are the resource titles:\n%@\n\nImmediately return a short summary of the users health records to start the conversation.\nThe initial summary should be a short and simple summary with the following specifications:\n1. Short summary of the health records categories\n2. 5th grade reading level\n3. End with a question asking user if they have any questions. Make sure that this question is not generic but specific to their health records.\nDo not introduce yourself at the beginning, and start with your interpretation.\nMake sure your response is in the same language the user writes to you in.\nThe tense should be present."
+          }
+        }
+      }
+    },
+    "FHIR_RESOURCE_INTERPRETATION_PROMPT %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your task is to interpret the following FHIR resource from the user's clinical record.\n\nInterpret the resource by explaining its data relevant to the user's health.\nExplain the relevant medical context in a language understandable by a user who is not a medical professional.\nYou should provide factual and precise information in a compact summary in short responses.\n\nThe following JSON representation defines the FHIR resource that you should interpret:\n%@\n\nImmediately return an interpretation to the user, starting the conversation.\nDo not introduce yourself at the beginning, and start with your interpretation."
+          }
+        }
+      }
+    },
+    "FHIR_RESOURCE_INTERPRETATION_PROMPT %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "FHIR_RESOURCE_INTERPRETATION_PROMPT %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "FHIR_RESOURCE_SUMMARY_PROMPT %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your task is to interpret the following FHIR resource from the user's clinical record.\n \nThe following JSON representation defines the FHIR resource that you should interpret:\n%@\n \nProvide a short one-sentence summary of the resource in less than 40 words. \nEnsure that the summary only focuses on the essential information that a patient would need and, e.g., excludes the person who prescribed a medication or similar metadata.\nDo NOT respond with more content than the single line containing the summary.\nDirectly provide the content without any additional structure."
+          }
+        }
+      }
+    },
+    "FHIR_RESOURCE_SUMMARY_PROMPT %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "FHIR_RESOURCE_SUMMARY_PROMPT %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "Interpretation Prompt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interpretation Prompt"
+          }
+        }
+      }
+    },
+    "Interpretation Prompt for Multiple Resources" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interpretation Prompt for Multiple Resources"
+          }
+        }
+      }
+    },
+    "Load Resource Summary" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load Resource Summary"
+          }
+        }
+      }
+    },
+    "Place %@ at the position in the prompt where the FHIR resource should be inserted." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Place %@ at the position in the prompt where the FHIR resource should be inserted."
+          }
+        }
+      }
+    },
+    "Save Prompt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Prompt"
+          }
+        }
+      }
+    },
+    "Summary Prompt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summary Prompt"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

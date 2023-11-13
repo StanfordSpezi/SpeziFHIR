@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F35E9D62B015EB200CB89FF /* SpeziFHIRInterpretation in Frameworks */ = {isa = PBXBuildFile; productRef = 2F35E9D52B015EB200CB89FF /* SpeziFHIRInterpretation */; };
 		2F36AD33299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F36AD32299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift */; };
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
@@ -41,6 +42,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */,
+				2F35E9D62B015EB200CB89FF /* SpeziFHIRInterpretation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,6 +112,7 @@
 				2F6D138E28F5F384007C25D6 /* Sources */,
 				2F6D138F28F5F384007C25D6 /* Frameworks */,
 				2F6D139028F5F384007C25D6 /* Resources */,
+				2FBD9AF52B01D32F00237A04 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -118,6 +121,7 @@
 			name = TestApp;
 			packageProductDependencies = (
 				2FF6813E2A849F77002897C6 /* SpeziFHIR */,
+				2F35E9D52B015EB200CB89FF /* SpeziFHIRInterpretation */,
 			);
 			productName = Example;
 			productReference = 2F6D139228F5F384007C25D6 /* TestApp.app */;
@@ -200,6 +204,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2FBD9AF52B01D32F00237A04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Debug\" ]; then\n  export PATH=\"$PATH:/opt/homebrew/bin\"\n  if which swiftlint > /dev/null; then\n    cd ../../ && swiftlint\n  else\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\n  fi\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2F6D138E28F5F384007C25D6 /* Sources */ = {
@@ -485,6 +510,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2F35E9D52B015EB200CB89FF /* SpeziFHIRInterpretation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SpeziFHIRInterpretation;
+		};
 		2FF6813E2A849F77002897C6 /* SpeziFHIR */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SpeziFHIR;

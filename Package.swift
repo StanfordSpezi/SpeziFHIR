@@ -18,18 +18,45 @@ let package = Package(
         .iOS(.v17)
     ],
     products: [
-        .library(name: "SpeziFHIR", targets: ["SpeziFHIR"])
+        .library(name: "SpeziFHIR", targets: ["SpeziFHIR"]),
+        .library(name: "SpeziFHIRHealthKit", targets: ["SpeziFHIRHealthKit"]),
+        .library(name: "SpeziFHIRInterpretation", targets: ["SpeziFHIRInterpretation"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.8.0"))
+        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.4")),
+        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.8.0")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", .upToNextMinor(from: "0.4.0")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziML.git", .upToNextMinor(from: "0.3.0"))
     ],
     targets: [
         .target(
             name: "SpeziFHIR",
             dependencies: [
                 .product(name: "Spezi", package: "Spezi"),
-                .product(name: "ModelsR4", package: "FHIRModels")
+                .product(name: "ModelsR4", package: "FHIRModels"),
+                .product(name: "ModelsDSTU2", package: "FHIRModels"),
+                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR")
+            ]
+        ),
+        .target(
+            name: "SpeziFHIRHealthKit",
+            dependencies: [
+                .target(name: "SpeziFHIR"),
+                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
+                .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
+            ]
+        ),
+        .target(
+            name: "SpeziFHIRInterpretation",
+            dependencies: [
+                .target(name: "SpeziFHIR"),
+                .product(name: "Spezi", package: "Spezi"),
+                .product(name: "ModelsR4", package: "FHIRModels"),
+                .product(name: "SpeziOpenAI", package: "SpeziML")
+            ],
+            resources: [
+                .process("Resources")
             ]
         ),
         .testTarget(
