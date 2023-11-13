@@ -13,7 +13,7 @@ import SpeziLocalStorage
 import SpeziOpenAI
 
 
-/// <#Description#>
+/// Responsible for interpreting FHIR resources.
 @Observable
 public class FHIRResourceInterpreter {
     private let resourceProcesser: FHIRResourceProcesser
@@ -29,11 +29,12 @@ public class FHIRResourceInterpreter {
     }
     
     
-    /// <#Description#>
+    /// Interprets a given FHIR resource. Returns a human-readable interpretation.
+    ///
     /// - Parameters:
-    ///   - resource: <#resource description#>
-    ///   - forceReload: <#forceReload description#>
-    /// - Returns: <#description#>
+    ///   - resource: The `FHIRResource` to be interpreted.
+    ///   - forceReload: A boolean value that indicates whether to reload and reprocess the resource.
+    /// - Returns: An asynchronous `String` representing the interpretation of the resource.
     @discardableResult
     public func summarize(resource: FHIRResource, forceReload: Bool = false) async throws -> String {
         try await resourceProcesser.process(resource: resource, forceReload: forceReload)

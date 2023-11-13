@@ -13,19 +13,56 @@ import enum ModelsDSTU2.ResourceProxy
 // swiftlint:disable file_length
 // We disable the file length here to ensure that we cover all switch cases explicitly.
 extension FHIRResource {
+    /// Enum representing different categories of FHIR resources.
+    /// This categorization helps in classifying FHIR resources into common healthcare scenarios and types.
     enum FHIRResourceCategory {
+        /// Represents an observation-type resource (e.g., patient measurements, lab results).
         case observation
+        /// Represents an encounter-type resource (e.g., patient visits, admissions).
         case encounter
+        ///  Represents a condition-type resource (e.g., diagnoses, patient conditions).
         case condition
+        /// Represents a diagnostic-type resource (e.g., radiology, pathology reports).
         case diagnostic
+        /// Represents a procedure-type resource (e.g., surgical procedures, therapies).
         case procedure
+        /// Represents an immunization-type resource (e.g., vaccine administrations).
         case immunization
+        /// Represents an allergy or intolerance-type resource.
         case allergyIntolerance
+        /// Represents a medication-type resource (e.g., prescriptions, medication administrations).
         case medication
+        /// Represents other types of resources not covered by the above categories.
         case other
     }
     
+    var storeKeyPath: KeyPath<FHIRStore, [FHIRResource]> {
+        switch self.category {
+        case .observation:
+            \.observations
+        case .encounter:
+            \.encounters
+        case .condition:
+            \.conditions
+        case .diagnostic:
+            \.diagnostics
+        case .procedure:
+            \.procedures
+        case .immunization:
+            \.immunizations
+        case .allergyIntolerance:
+            \.allergyIntolerances
+        case .medication:
+            \.medications
+        case .other:
+            \.otherResources
+        }
+    }
     
+        
+    /// Category of the FHIR resource.
+    ///
+    /// Analyzes the type of the underlying resource and assigns it to an appropriate category.
     var category: FHIRResourceCategory {
         switch versionedResource {
         case let .r4(resource):

@@ -79,46 +79,24 @@ public class FHIRStore {
     
     
     /// Inserts a FHIR resource into the store.
-    /// The resource is appended to the appropriate category based on its type.
+    ///
     /// - Parameter resource: The `FHIRResource` to be inserted.
     public func insert(resource: FHIRResource) {
-        switch resource.category {
-        case .allergyIntolerance:
-            withMutation(keyPath: \.allergyIntolerances) {
-                _resources.append(resource)
-            }
-        case .condition:
-            withMutation(keyPath: \.conditions) {
-                _resources.append(resource)
-            }
-        case .diagnostic:
-            withMutation(keyPath: \.diagnostics) {
-                _resources.append(resource)
-            }
-        case .encounter:
-            withMutation(keyPath: \.encounters) {
-                _resources.append(resource)
-            }
-        case .immunization:
-            withMutation(keyPath: \.immunizations) {
-                _resources.append(resource)
-            }
-        case .medication:
-            withMutation(keyPath: \.medications) {
-                _resources.append(resource)
-            }
-        case .observation:
-            withMutation(keyPath: \.observations) {
-                _resources.append(resource)
-            }
-        case .other:
-            withMutation(keyPath: \.otherResources) {
-                _resources.append(resource)
-            }
-        case .procedure:
-            withMutation(keyPath: \.procedures) {
-                _resources.append(resource)
-            }
+        withMutation(keyPath: resource.storeKeyPath) {
+            _resources.append(resource)
+        }
+    }
+    
+    /// Removes a FHIR resource from the store.
+    ///
+    /// - Parameter resource: The `FHIRResource` identifier to be inserted.
+    public func remove(resource resourceId: FHIRResource.ID) {
+        guard let resource = _resources.first(where: { $0.id == resourceId }) else {
+            return
+        }
+        
+        withMutation(keyPath: resource.storeKeyPath) {
+            _resources.removeAll(where: { $0.id == resourceId })
         }
     }
     

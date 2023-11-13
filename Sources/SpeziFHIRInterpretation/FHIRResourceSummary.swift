@@ -13,7 +13,7 @@ import SpeziLocalStorage
 import SpeziOpenAI
 
 
-/// <#Description#>
+/// Responsible for summarizing FHIR resources.
 @Observable
 public class FHIRResourceSummary {
     private let resourceProcesser: FHIRResourceProcesser
@@ -29,11 +29,12 @@ public class FHIRResourceSummary {
     }
     
     
-    /// <#Description#>
+    /// Summarizes a given FHIR resource. Returns a human-readable summary.
+    ///
     /// - Parameters:
-    ///   - resource: <#resource description#>
-    ///   - forceReload: <#forceReload description#>
-    /// - Returns: <#description#>
+    ///   - resource: The `FHIRResource` to be summarized.
+    ///   - forceReload: A boolean value that indicates whether to reload and reprocess the resource.
+    /// - Returns: An asynchronous `String` representing the summarization of the resource.
     @discardableResult
     public func summarize(resource: FHIRResource, forceReload: Bool = false) async throws -> String {
         try await resourceProcesser.process(resource: resource, forceReload: forceReload)

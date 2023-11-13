@@ -11,6 +11,7 @@ import SpeziViews
 import SwiftUI
 
 
+/// Displays a FHIR resource, a summary if loaded, and provides a mechanism to load a summary using a context menu.
 public struct FHIRResourceSummaryView: View {
     @Environment(FHIRResourceSummary.self) private var fhirResourceSummary
     @State private var summary: String?

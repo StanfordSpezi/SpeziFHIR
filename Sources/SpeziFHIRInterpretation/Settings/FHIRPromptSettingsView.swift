@@ -9,13 +9,16 @@
 import SwiftUI
 
 
-struct PromptSettingsView: View {
+/// Customize LLM ``FHIRPrompt``s.
+///
+/// Allows users to edit and save a prompt associated with a specific ``FHIRPrompt`` type, including where to insert FHIR resources dynamically in the prompt.
+public struct PromptSettingsView: View {
     private let promptType: FHIRPrompt
+    private let onSave: () -> Void
     @State private var prompt: String = ""
-    @Binding private var path: NavigationPath
     
     
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 16) {
             Text("Customize the \(promptType.localizedDescription.lowercased()) prompt.")
                 .multilineTextAlignment(.leading)
@@ -27,7 +30,7 @@ struct PromptSettingsView: View {
             Button(
                 action: {
                     promptType.save(prompt: prompt)
-                    path.removeLast()
+                    onSave()
                 },
                 label: {
                     Text("Save Prompt")
@@ -41,17 +44,13 @@ struct PromptSettingsView: View {
     }
     
     
-    init(promptType: FHIRPrompt, path: Binding<NavigationPath>) {
+    /// Initializes a new `PromptSettingsView` with the specified ``FHIRPrompt`` and a save action.
+    /// - Parameters:
+    ///   - promptType: The ``FHIRPrompt`` instance whose settings are being modified. It holds the information about the specific prompt being edited.
+    ///   - onSave: A closure to be called when the user saves the prompt. This allows for custom actions, like dismissing the view.
+    public init(promptType: FHIRPrompt, onSave: @escaping () -> Void) {
         self.promptType = promptType
+        self.onSave = onSave
         self._prompt = State(initialValue: promptType.prompt)
-        self._path = path
-    }
-}
-
-struct PromptSettingsView_Previews: PreviewProvider {
-    @State private static var path = NavigationPath()
-    
-    static var previews: some View {
-        PromptSettingsView(promptType: FHIRPrompt.summary, path: $path)
     }
 }

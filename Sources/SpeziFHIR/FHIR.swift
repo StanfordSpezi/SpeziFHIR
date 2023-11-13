@@ -44,7 +44,7 @@ import Spezi
 ///
 /// > Tip: You can learn more about how to use the store in the ``FHIRStore`` documentation.
 public actor FHIR: Standard {
-    @Model private var store: FHIRStore
+    @Model public private(set) var store: FHIRStore
     
     
     public init() {
