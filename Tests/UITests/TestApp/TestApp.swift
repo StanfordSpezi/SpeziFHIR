@@ -17,7 +17,7 @@ struct UITestsApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Text("Spezi FHIR")
+            ContentView()
                 .spezi(appDelegate)
         }
     }

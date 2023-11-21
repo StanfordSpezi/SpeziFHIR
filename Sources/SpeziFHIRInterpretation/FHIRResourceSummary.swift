@@ -43,11 +43,22 @@ public class FHIRResourceSummary {
 
 
 extension FHIRPrompt {
-    static let summary: FHIRPrompt = {
+    /// Prompt used to summarize FHIR resources
+    ///
+    /// This prompt is used by the ``FHIRResourceSummary``.
+    public static let summary: FHIRPrompt = {
         FHIRPrompt(
             storageKey: "prompt.summary",
-            localizedDescription: String(localized: "Summary Prompt"),
-            defaultPrompt: String(localized: "FHIR_RESOURCE_SUMMARY_PROMPT \(FHIRPrompt.promptPlaceholder) \(Locale.preferredLanguages[0])")
+            localizedDescription: String(
+                localized: "Summary Prompt",
+                bundle: .module,
+                comment: "Title of the summary prompt."
+            ),
+            defaultPrompt: String(
+                localized: "Summary Prompt Content",
+                bundle: .module,
+                comment: "Content of the summary prompt."
+            )
         )
     }()
 }

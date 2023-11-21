@@ -70,7 +70,7 @@ class FHIRResourceProcesser {
     private func systemPrompt(forResource resource: FHIRResource) -> Chat {
         Chat(
             role: .system,
-            content: prompt.prompt.replacingOccurrences(of: FHIRPrompt.promptPlaceholder, with: resource.jsonDescription)
+            content: prompt.prompt(withFHIRResource: resource.jsonDescription)
         )
     }
 }

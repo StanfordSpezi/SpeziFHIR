@@ -20,11 +20,11 @@ public struct PromptSettingsView: View {
     
     public var body: some View {
         VStack(spacing: 16) {
-            Text("Customize the \(promptType.localizedDescription.lowercased()) prompt.")
+            Text("Customize the \(promptType.localizedDescription.lowercased()).")
                 .multilineTextAlignment(.leading)
             TextEditor(text: $prompt)
                 .fontDesign(.monospaced)
-            Text("Place \(FHIRPrompt.promptPlaceholder) at the position in the prompt where the FHIR resource should be inserted.")
+            Text("Place \(FHIRPrompt.fhirResourcePlaceholder) at the position in the prompt where the FHIR resource should be inserted. Optionally place \(FHIRPrompt.localePlaceholder) where you would like to insert the current locale.")
                 .multilineTextAlignment(.leading)
                 .font(.caption)
             Button(

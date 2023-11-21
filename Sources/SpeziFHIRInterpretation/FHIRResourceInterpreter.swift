@@ -43,11 +43,22 @@ public class FHIRResourceInterpreter {
 
 
 extension FHIRPrompt {
-    static let interpretation: FHIRPrompt = {
+    /// Prompt used to interpret FHIR resources
+    ///
+    /// This prompt is used by the ``FHIRResourceInterpreter``.
+    public static let interpretation: FHIRPrompt = {
         FHIRPrompt(
             storageKey: "prompt.interpretation",
-            localizedDescription: String(localized: "Interpretation Prompt"),
-            defaultPrompt: String(localized: "FHIR_RESOURCE_INTERPRETATION_PROMPT \(FHIRPrompt.promptPlaceholder) \(Locale.preferredLanguages[0])")
+            localizedDescription: String(
+                localized: "Interpretation Prompt",
+                bundle: .module,
+                comment: "Title of the interpretation prompt."
+            ),
+            defaultPrompt: String(
+                localized: "Interpretation Prompt Content",
+                bundle: .module,
+                comment: "Content of the interpretation prompt."
+            )
         )
     }()
 }

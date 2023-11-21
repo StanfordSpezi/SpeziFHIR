@@ -10,9 +10,11 @@ import Foundation
 
 
 /// Handle dynamic, localized LLM prompts for FHIR resources.
-public struct FHIRPrompt {
-    /// Placeholder for dynamic content in prompts.
-    public static let promptPlaceholder = "%@"
+public struct FHIRPrompt: Hashable {
+    /// Placeholder for FHIR resource in prompts.
+    public static let fhirResourcePlaceholder = "{{FHIR_RESOURCE}}"
+    /// Placeholder for the current locale in a prompt
+    public static let localePlaceholder = "{{LOCALE}}"
     
     /// The key used for storing and retrieving the prompt.
     public let storageKey: String
@@ -20,21 +22,10 @@ public struct FHIRPrompt {
     public let localizedDescription: String
     /// The default prompt text to be used if no custom prompt is set.
     public let defaultPrompt: String
-
+    
     /// The current prompt, either from UserDefaults or the default, appended with a localized message that adapts to the user's language settings.
     public var prompt: String {
-        var prompt = UserDefaults.standard.string(forKey: storageKey) ?? defaultPrompt
-        
-        prompt += String(
-            localized:
-            """
-            Chat with the user in the same language they chat in.
-            Chat with the user in \(Locale.preferredLanguages[0])
-            """,
-            comment: "The passed in string is the current locale of the device as a IETF BCP 47 language tag."
-        )
-        
-        return prompt
+        UserDefaults.standard.string(forKey: storageKey) ?? defaultPrompt
     }
     
     
@@ -57,5 +48,22 @@ public struct FHIRPrompt {
     /// - Parameter prompt: The new prompt.
     public func save(prompt: String) {
         UserDefaults.standard.set(prompt, forKey: storageKey)
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(storageKey)
+    }
+    
+    /// Creates a prompt based in the variable input.
+    ///
+    /// Use ``FHIRPrompt/fhirResourcePlaceholder`` and ``FHIRPrompt/localePlaceholder`` to define the elements that should be replaced.
+    /// - Parameters:
+    ///   - resource: The resource that should be inserted in the prompt.
+    ///   - locale: The current locale that should be inserted in the prompt.
+    /// - Returns: The constructed prompt.
+    public func prompt(withFHIRResource resource: String, locale: String = Locale.preferredLanguages[0]) -> String {
+        prompt
+            .replacingOccurrences(of: FHIRPrompt.fhirResourcePlaceholder, with: resource)
+            .replacingOccurrences(of: FHIRPrompt.localePlaceholder, with: locale)
     }
 }
