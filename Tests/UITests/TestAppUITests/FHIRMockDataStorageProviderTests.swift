@@ -14,6 +14,6 @@ final class SpeziFHIRTests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         
-        XCTAssert(app.staticTexts["Spezi FHIR"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
     }
 }
