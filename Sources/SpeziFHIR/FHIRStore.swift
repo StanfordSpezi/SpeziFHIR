@@ -10,11 +10,14 @@ import Combine
 import Observation
 import class ModelsR4.Bundle
 import enum ModelsDSTU2.ResourceProxy
+import Spezi
 
 
-/// Manage FHIR resources grouped into automatically computed and updated categories.
+/// Module to manage FHIR resources grouped into automatically computed and updated categories.
+///
+/// The ``FHIRStore`` is automatically injected in the environment if you use the ``FHIR`` standard or can be used as a standalone module.
 @Observable
-public class FHIRStore {
+public class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable {
     @ObservationIgnored private var _resources: [FHIRResource]
     
     
@@ -73,7 +76,7 @@ public class FHIRStore {
     }
     
     
-    init() {
+    public required init() {
         self._resources = []
     }
     
