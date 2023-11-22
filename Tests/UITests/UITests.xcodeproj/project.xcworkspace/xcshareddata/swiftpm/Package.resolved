@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordBDHG/HealthKitOnFHIR",
       "state" : {
-        "revision" : "fdf8e4543718a940643598e4bd5e750e9c4c5540",
-        "version" : "0.2.4"
+        "revision" : "825e96007d83ed83f81ee49eb3ebab29d7b7ba2f",
+        "version" : "0.2.5"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/MacPaw/OpenAI",
       "state" : {
-        "revision" : "c45f3320ffa760f043c0239f724850c0e4f8bde5",
-        "version" : "0.2.4"
+        "revision" : "ac5892fd0de8d283362ddc30f8e9f1a0eaba8cc0",
+        "version" : "0.2.5"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/Spezi",
       "state" : {
-        "revision" : "b82fb371ab7f0446846ae8aeb56ffac56377890a",
-        "version" : "0.8.0"
+        "revision" : "092eabc50a3600d8a03b43ad0d2dcd02914b223f",
+        "version" : "0.8.1"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziML.git",
       "state" : {
-        "branch" : "publicModel",
-        "revision" : "50dbb5f61fa88d200e80136040ddf021e40f4b8b"
+        "revision" : "786dbba6023feaedf59aeff2f92d324cc7afaaba",
+        "version" : "0.3.1"
       }
     },
     {
