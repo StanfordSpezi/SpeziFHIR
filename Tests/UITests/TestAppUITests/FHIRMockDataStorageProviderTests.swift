@@ -1,7 +1,7 @@
 //
 // This source file is part of the Stanford Spezi open-source project
 //
-// SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
@@ -10,10 +10,77 @@ import XCTest
 
 
 final class SpeziFHIRTests: XCTestCase {
-    func testSpeziFHIR() throws {
+    func testSpeziFHIRMockPatients() throws {
         let app = XCUIApplication()
         app.launch()
         
-        XCTAssert(app.staticTexts["Spezi FHIR"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Conditions: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Diagnostics: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Encounters: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Immunizations: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Medications: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Observations: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Other Resources: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Procedures: 0"].waitForExistence(timeout: 2))
+        
+        app.buttons["Select Mock Patient"].tap()
+        
+        XCTAssert(app.buttons["Jamison785 Denesik803"].waitForExistence(timeout: 20))
+        app.buttons["Jamison785 Denesik803"].tap()
+        
+        sleep(3)
+        
+        app.navigationBars["Select Mock Patient"].buttons["Dismiss"].tap()
+        
+        XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Conditions: 70"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Diagnostics: 205"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Encounters: 82"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Immunizations: 12"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Medications: 31"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Observations: 769"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Other Resources: 302"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Procedures: 106"].waitForExistence(timeout: 2))
+        
+        app.buttons["Select Mock Patient"].tap()
+        
+        XCTAssert(app.buttons["Maye976 Dickinson688"].waitForExistence(timeout: 20))
+        app.buttons["Maye976 Dickinson688"].tap()
+        
+        sleep(3)
+        
+        app.navigationBars["Select Mock Patient"].buttons["Dismiss"].tap()
+        
+        XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Conditions: 37"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Diagnostics: 113"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Encounters: 86"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Immunizations: 11"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Medications: 55"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Observations: 169"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Other Resources: 322"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Procedures: 225"].waitForExistence(timeout: 2))
+    }
+    
+    
+    func testPromptSettings() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        XCTAssert(app.buttons["Settings"].waitForExistence(timeout: 2))
+        app.buttons["Settings"].tap()
+        
+        XCTAssert(app.buttons["Summary Prompt"].waitForExistence(timeout: 2))
+        app.buttons["Summary Prompt"].tap()
+        
+        XCTAssert(app.buttons["Save Prompt"].waitForExistence(timeout: 2))
+        app.buttons["Save Prompt"].tap()
+        app.navigationBars["Summary Prompt"].buttons["Prompt Settings"].tap()
+        
+        XCTAssert(app.buttons["Interpretation Prompt"].waitForExistence(timeout: 2))
+        app.buttons["Interpretation Prompt"].tap()
+        app.navigationBars["Interpretation Prompt"].buttons["Prompt Settings"].tap()
+        app.navigationBars["Prompt Settings"].buttons["Dismiss"].tap()
     }
 }

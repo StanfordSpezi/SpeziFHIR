@@ -7,9 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F34D14E2B0CF1F1009300C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F34D14D2B0CF1F1009300C1 /* ContentView.swift */; };
+		2F34D1502B0CF42F009300C1 /* PromptSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F34D14F2B0CF42F009300C1 /* PromptSettings.swift */; };
+		2F34D1522B0CF59A009300C1 /* MockPatientSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F34D1512B0CF59A009300C1 /* MockPatientSelection.swift */; };
+		2F34D1542B0D833F009300C1 /* ExampleModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F34D1532B0D833F009300C1 /* ExampleModule.swift */; };
+		2F35E9D62B015EB200CB89FF /* SpeziFHIRInterpretation in Frameworks */ = {isa = PBXBuildFile; productRef = 2F35E9D52B015EB200CB89FF /* SpeziFHIRInterpretation */; };
 		2F36AD33299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F36AD32299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift */; };
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
+		2FBD9AF92B01E4A000237A04 /* SpeziFHIRMockPatients in Frameworks */ = {isa = PBXBuildFile; productRef = 2FBD9AF82B01E4A000237A04 /* SpeziFHIRMockPatients */; };
+		2FBD9AFB2B01E4A800237A04 /* SpeziFHIRHealthKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2FBD9AFA2B01E4A800237A04 /* SpeziFHIRHealthKit */; };
 		2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */; };
 		2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */ = {isa = PBXBuildFile; productRef = 2FF6813E2A849F77002897C6 /* SpeziFHIR */; };
 /* End PBXBuildFile section */
@@ -25,6 +32,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2F34D14D2B0CF1F1009300C1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2F34D14F2B0CF42F009300C1 /* PromptSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptSettings.swift; sourceTree = "<group>"; };
+		2F34D1512B0CF59A009300C1 /* MockPatientSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPatientSelection.swift; sourceTree = "<group>"; };
+		2F34D1532B0D833F009300C1 /* ExampleModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleModule.swift; sourceTree = "<group>"; };
 		2F36AD32299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FHIRMockDataStorageProviderTests.swift; sourceTree = "<group>"; };
 		2F6D139228F5F384007C25D6 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F6D139928F5F386007C25D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -40,7 +51,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FBD9AFB2B01E4A800237A04 /* SpeziFHIRHealthKit in Frameworks */,
 				2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */,
+				2FBD9AF92B01E4A000237A04 /* SpeziFHIRMockPatients in Frameworks */,
+				2F35E9D62B015EB200CB89FF /* SpeziFHIRInterpretation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +94,10 @@
 			children = (
 				2FA7382B290ADFAA007ACEB9 /* TestApp.swift */,
 				2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */,
+				2F34D1532B0D833F009300C1 /* ExampleModule.swift */,
+				2F34D14D2B0CF1F1009300C1 /* ContentView.swift */,
+				2F34D1512B0CF59A009300C1 /* MockPatientSelection.swift */,
+				2F34D14F2B0CF42F009300C1 /* PromptSettings.swift */,
 				2F6D139928F5F386007C25D6 /* Assets.xcassets */,
 			);
 			path = TestApp;
@@ -110,6 +128,7 @@
 				2F6D138E28F5F384007C25D6 /* Sources */,
 				2F6D138F28F5F384007C25D6 /* Frameworks */,
 				2F6D139028F5F384007C25D6 /* Resources */,
+				2FBD9AF52B01D32F00237A04 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -118,6 +137,9 @@
 			name = TestApp;
 			packageProductDependencies = (
 				2FF6813E2A849F77002897C6 /* SpeziFHIR */,
+				2F35E9D52B015EB200CB89FF /* SpeziFHIRInterpretation */,
+				2FBD9AF82B01E4A000237A04 /* SpeziFHIRMockPatients */,
+				2FBD9AFA2B01E4A800237A04 /* SpeziFHIRHealthKit */,
 			);
 			productName = Example;
 			productReference = 2F6D139228F5F384007C25D6 /* TestApp.app */;
@@ -151,7 +173,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1410;
-				LastUpgradeCheck = 1410;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					2F6D139128F5F384007C25D6 = {
 						CreatedOnToolsVersion = 14.1;
@@ -201,6 +223,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2FBD9AF52B01D32F00237A04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Debug\" ]; then\n  export PATH=\"$PATH:/opt/homebrew/bin\"\n  if which swiftlint > /dev/null; then\n    cd ../../ && swiftlint\n  else\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\n  fi\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2F6D138E28F5F384007C25D6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -208,6 +251,10 @@
 			files = (
 				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
 				2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */,
+				2F34D1542B0D833F009300C1 /* ExampleModule.swift in Sources */,
+				2F34D1502B0CF42F009300C1 /* PromptSettings.swift in Sources */,
+				2F34D1522B0CF59A009300C1 /* MockPatientSelection.swift in Sources */,
+				2F34D14E2B0CF1F1009300C1 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,6 +281,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -295,6 +343,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -485,6 +534,18 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2F35E9D52B015EB200CB89FF /* SpeziFHIRInterpretation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SpeziFHIRInterpretation;
+		};
+		2FBD9AF82B01E4A000237A04 /* SpeziFHIRMockPatients */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SpeziFHIRMockPatients;
+		};
+		2FBD9AFA2B01E4A800237A04 /* SpeziFHIRHealthKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SpeziFHIRHealthKit;
+		};
 		2FF6813E2A849F77002897C6 /* SpeziFHIR */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SpeziFHIR;

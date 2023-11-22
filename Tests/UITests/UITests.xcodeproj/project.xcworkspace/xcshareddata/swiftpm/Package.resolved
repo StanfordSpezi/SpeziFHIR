@@ -10,12 +10,30 @@
       }
     },
     {
+      "identity" : "healthkitonfhir",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StanfordBDHG/HealthKitOnFHIR",
+      "state" : {
+        "revision" : "825e96007d83ed83f81ee49eb3ebab29d7b7ba2f",
+        "version" : "0.2.5"
+      }
+    },
+    {
+      "identity" : "openai",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MacPaw/OpenAI",
+      "state" : {
+        "revision" : "ac5892fd0de8d283362ddc30f8e9f1a0eaba8cc0",
+        "version" : "0.2.5"
+      }
+    },
+    {
       "identity" : "spezi",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/Spezi",
       "state" : {
-        "revision" : "b82fb371ab7f0446846ae8aeb56ffac56377890a",
-        "version" : "0.8.0"
+        "revision" : "092eabc50a3600d8a03b43ad0d2dcd02914b223f",
+        "version" : "0.8.1"
       }
     },
     {
@@ -25,6 +43,60 @@
       "state" : {
         "revision" : "683c66f922a4cfe0882c4a86a43854f613b48541",
         "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "spezihealthkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StanfordSpezi/SpeziHealthKit.git",
+      "state" : {
+        "revision" : "30e12a0f66bed98830dddd6ab2be06140d078aaa",
+        "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "speziml",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StanfordSpezi/SpeziML.git",
+      "state" : {
+        "revision" : "786dbba6023feaedf59aeff2f92d324cc7afaaba",
+        "version" : "0.3.1"
+      }
+    },
+    {
+      "identity" : "spezionboarding",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StanfordSpezi/SpeziOnboarding",
+      "state" : {
+        "revision" : "70d1a740a0da8a5bc83d95bcff177ebd3e7402c0",
+        "version" : "0.7.0"
+      }
+    },
+    {
+      "identity" : "spezistorage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StanfordSpezi/SpeziStorage",
+      "state" : {
+        "revision" : "e9be3c2743e462894bf56d41339b040f4060b567",
+        "version" : "0.5.0"
+      }
+    },
+    {
+      "identity" : "speziviews",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StanfordSpezi/SpeziViews",
+      "state" : {
+        "revision" : "eac443080926649d09a703483a6dd6f5a8bb7d51",
+        "version" : "0.6.2"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "revision" : "a902f1823a7ff3c9ab2fba0f992396b948eda307",
+        "version" : "1.0.5"
       }
     },
     {
