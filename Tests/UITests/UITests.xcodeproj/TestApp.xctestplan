@@ -15,6 +15,21 @@
           "containerPath" : "container:..\/..",
           "identifier" : "SpeziFHIR",
           "name" : "SpeziFHIR"
+        },
+        {
+          "containerPath" : "container:..\/..",
+          "identifier" : "SpeziFHIRHealthKit",
+          "name" : "SpeziFHIRHealthKit"
+        },
+        {
+          "containerPath" : "container:..\/..",
+          "identifier" : "SpeziFHIRInterpretation",
+          "name" : "SpeziFHIRInterpretation"
+        },
+        {
+          "containerPath" : "container:..\/..",
+          "identifier" : "SpeziFHIRMockPatients",
+          "name" : "SpeziFHIRMockPatients"
         }
       ]
     },

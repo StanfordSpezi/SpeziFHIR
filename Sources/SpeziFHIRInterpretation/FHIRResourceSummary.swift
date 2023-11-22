@@ -19,10 +19,13 @@ public class FHIRResourceSummary {
     private let resourceProcesser: FHIRResourceProcesser
     
     
-    init(localStorage: LocalStorage, openAIComponent: OpenAIModel) {
+    /// - Parameters:
+    ///   - localStorage: Local storage module that needs to be passed to the ``FHIRResourceSummary`` to allow it to cache summaries.
+    ///   - openAIModel: OpenAI module that needs to be passed to the ``FHIRResourceSummary`` to allow it to retrieve summaries.
+    public init(localStorage: LocalStorage, openAIModel: OpenAIModel) {
         self.resourceProcesser = FHIRResourceProcesser(
             localStorage: localStorage,
-            openAIComponent: openAIComponent,
+            openAIModel: openAIModel,
             storageKey: "FHIRResourceSummary.Summaries",
             prompt: FHIRPrompt.summary
         )

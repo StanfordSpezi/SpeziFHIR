@@ -28,7 +28,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.4")),
         .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.8.0")),
         .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", .upToNextMinor(from: "0.4.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziML.git", .upToNextMinor(from: "0.3.0"))
+        .package(url: "https://github.com/StanfordSpezi/SpeziML.git", branch: "publicModel")// .upToNextMinor(from: "0.3.0"))
     ],
     targets: [
         .target(

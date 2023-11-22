@@ -18,7 +18,7 @@ class FHIRResourceProcesser {
     
     
     private let localStorage: LocalStorage
-    private let openAIComponent: OpenAIModel
+    private let openAIModel: OpenAIModel
     private let storageKey: String
     private let prompt: FHIRPrompt
     
@@ -36,12 +36,12 @@ class FHIRResourceProcesser {
     
     init(
         localStorage: LocalStorage,
-        openAIComponent: OpenAIModel,
+        openAIModel: OpenAIModel,
         storageKey: String,
         prompt: FHIRPrompt
     ) {
         self.localStorage = localStorage
-        self.openAIComponent = openAIComponent
+        self.openAIModel = openAIModel
         self.storageKey = storageKey
         self.prompt = prompt
         self.results = (try? localStorage.read(storageKey: storageKey)) ?? [:]
@@ -54,7 +54,7 @@ class FHIRResourceProcesser {
             return result
         }
         
-        let chatStreamResults = try await openAIComponent.queryAPI(withChat: [systemPrompt(forResource: resource)])
+        let chatStreamResults = try await openAIModel.queryAPI(withChat: [systemPrompt(forResource: resource)])
         var result = ""
         
         for try await chatStreamResult in chatStreamResults {

@@ -19,10 +19,13 @@ public class FHIRResourceInterpreter {
     private let resourceProcesser: FHIRResourceProcesser
     
     
-    init(localStorage: LocalStorage, openAIComponent: OpenAIModel) {
+    /// - Parameters:
+    ///   - localStorage: Local storage module that needs to be passed to the ``FHIRResourceInterpreter`` to allow it to cache interpretations.
+    ///   - openAIModel: OpenAI module that needs to be passed to the ``FHIRResourceInterpreter`` to allow it to retrieve interpretations.
+    public init(localStorage: LocalStorage, openAIModel: OpenAIModel) {
         self.resourceProcesser = FHIRResourceProcesser(
             localStorage: localStorage,
-            openAIComponent: openAIComponent,
+            openAIModel: openAIModel,
             storageKey: "FHIRResourceInterpreter.Interpretations",
             prompt: FHIRPrompt.interpretation
         )
