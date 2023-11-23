@@ -26,7 +26,7 @@ struct PromptSettings: View {
                 }
             }
                 .navigationDestination(for: FHIRPrompt.self) { prompt in
-                    PromptSettingsView(promptType: prompt) {
+                    FHIRPromptSettingsView(promptType: prompt) {
                         print("Saved \(prompt.localizedDescription)")
                     }
                 }
