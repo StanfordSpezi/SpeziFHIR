@@ -14,39 +14,51 @@ import SwiftUI
 /// Displays a FHIR resource, a summary if loaded, and provides a mechanism to load a summary using a context menu.
 public struct FHIRResourceSummaryView: View {
     @Environment(FHIRResourceSummary.self) private var fhirResourceSummary
-    @State private var summary: String?
+    
     @State private var viewState: ViewState = .idle
     
     private let resource: FHIRResource
     
     
     public var body: some View {
-        if let summary, !summary.isEmpty {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(resource.displayName)
-                Text(summary)
-                    .font(.caption)
-            }
-                .multilineTextAlignment(.leading)
-        } else {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(resource.displayName)
-                if viewState == .processing {
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .padding(.vertical, 6)
+        Group {
+            if let summary = fhirResourceSummary.cachedSummary(forResource: resource) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(resource.displayName)
+                    Text(summary)
+                        .font(.caption)
                 }
-            }
-                .contextMenu {
-                    Button("Load Resource Summary") {
-                        Task {
-                            viewState = .processing
-                            summary = try? await fhirResourceSummary.summarize(resource: resource)
-                            viewState = .idle
-                        }
+                    .multilineTextAlignment(.leading)
+            } else {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(resource.displayName)
+                    if viewState == .processing {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .padding(.vertical, 6)
                     }
                 }
+                    .contextMenu {
+                        Button(String(localized: "Create Resource Summary", bundle: .module)) {
+                            Task {
+                                viewState = .processing
+                                do {
+                                    try await fhirResourceSummary.summarize(resource: resource)
+                                    viewState = .idle
+                                } catch {
+                                    viewState = .error(
+                                        AnyLocalizedError(
+                                            error: error,
+                                            defaultErrorDescription: String(localized: "Could not create FHIR Summary", bundle: .module)
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+            }
         }
+            .viewStateAlert(state: $viewState)
     }
     
     
