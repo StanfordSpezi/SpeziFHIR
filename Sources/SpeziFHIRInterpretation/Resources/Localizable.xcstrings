@@ -1,6 +1,26 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Could not create FHIR Summary" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not create FHIR Summary"
+          }
+        }
+      }
+    },
+    "Create Resource Summary" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Resource Summary"
+          }
+        }
+      }
+    },
     "Customize the %@." : {
       "localizations" : {
         "en" : {
@@ -29,16 +49,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your task is to interpret the following FHIR resource from the user's clinical record.\n\nInterpret the resource by explaining its data relevant to the user's health.\nExplain the relevant medical context in a language understandable by a user who is not a medical professional.\nYou should provide factual and precise information in a compact summary in short responses.\n\nThe following JSON representation defines the FHIR resource that you should interpret:\n{{FHIR_RESOURCE}}\n\nImmediately return an interpretation to the user, starting the conversation.\nDo not introduce yourself at the beginning, and start with your interpretation.\n\nChat with the user in the same language they chat in.\nChat with the user in {{LOCALE}}"
-          }
-        }
-      }
-    },
-    "Load Resource Summary" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Load Resource Summary"
           }
         }
       }

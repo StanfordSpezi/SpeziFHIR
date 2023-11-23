@@ -39,8 +39,16 @@ public class FHIRResourceInterpreter {
     ///   - forceReload: A boolean value that indicates whether to reload and reprocess the resource.
     /// - Returns: An asynchronous `String` representing the interpretation of the resource.
     @discardableResult
-    public func summarize(resource: FHIRResource, forceReload: Bool = false) async throws -> String {
+    public func interpret(resource: FHIRResource, forceReload: Bool = false) async throws -> String {
         try await resourceProcesser.process(resource: resource, forceReload: forceReload)
+    }
+    
+    /// Retrieve the cached interpretation of a given FHIR resource. Returns a human-readable interpretation or `nil` if it is not present.
+    ///
+    /// - Parameter resource: The resource where the cached interpretation should be loaded from.
+    /// - Returns: The cached interpretation. Returns `nil` if the resource is not present.
+    public func cachedInterpretation(forResource resource: FHIRResource) -> String? {
+        resourceProcesser.results[resource.id]
     }
 }
 

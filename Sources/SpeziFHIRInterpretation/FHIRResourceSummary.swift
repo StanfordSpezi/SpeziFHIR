@@ -42,6 +42,14 @@ public class FHIRResourceSummary {
     public func summarize(resource: FHIRResource, forceReload: Bool = false) async throws -> String {
         try await resourceProcesser.process(resource: resource, forceReload: forceReload)
     }
+    
+    /// Retrieve the cached summary of a given FHIR resource. Returns a human-readable summary or `nil` if it is not present.
+    ///
+    /// - Parameter resource: The resource where the cached summary should be loaded from.
+    /// - Returns: The cached summary. Returns `nil` if the resource is not present.
+    public func cachedSummary(forResource resource: FHIRResource) -> String? {
+        resourceProcesser.results[resource.id]
+    }
 }
 
 

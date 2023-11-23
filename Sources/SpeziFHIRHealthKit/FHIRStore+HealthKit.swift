@@ -14,7 +14,7 @@ import SpeziFHIR
 import SpeziHealthKit
 
 
-extension FHIR: HealthKitConstraint {
+extension FHIRStore {
     private static let hkHealthStore: HKHealthStore? = {
         guard HKHealthStore.isHealthDataAvailable() else {
             return nil
@@ -24,17 +24,21 @@ extension FHIR: HealthKitConstraint {
     }()
     
     
+    /// Add a HealthKit sample to the FHIR store.
+    /// - Parameter sample: The sample that should be added.
     public func add(sample: HKSample) async {
         do {
             let resource = try await transform(sample: sample)
-            store.insert(resource: resource)
+            insert(resource: resource)
         } catch {
             print("Could not transform HKSample: \(error)")
         }
     }
     
+    /// Remove a HealthKit sample delete object from the FHIR store.
+    /// - Parameter sample: The sample delete object that should be removed.
     public func remove(sample: HKDeletedObject) async {
-        store.remove(resource: sample.uuid.uuidString)
+        remove(resource: sample.uuid.uuidString)
     }
     
     
@@ -52,7 +56,7 @@ extension FHIR: HealthKitConstraint {
                 displayName: clinicalResource.displayName
             )
         case let electrocardiogram as HKElectrocardiogram:
-            guard let hkHealthStore = FHIR.hkHealthStore else {
+            guard let hkHealthStore = Self.hkHealthStore else {
                 fallthrough
             }
             

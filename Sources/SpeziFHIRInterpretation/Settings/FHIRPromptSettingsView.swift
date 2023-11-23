@@ -12,7 +12,7 @@ import SwiftUI
 /// Customize LLM ``FHIRPrompt``s.
 ///
 /// Allows users to edit and save a prompt associated with a specific ``FHIRPrompt`` type, including where to insert FHIR resources dynamically in the prompt.
-public struct PromptSettingsView: View {
+public struct FHIRPromptSettingsView: View {
     private let promptType: FHIRPrompt
     private let onSave: () -> Void
     @State private var prompt: String = ""
