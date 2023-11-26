@@ -24,14 +24,22 @@ public struct FHIRResourceSummaryView: View {
         Group {
             if let summary = fhirResourceSummary.cachedSummary(forResource: resource) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(resource.displayName)
-                    Text(summary)
+                    Text(summary.title)
+                    if let date = resource.date {
+                        Text(date, style: .date)
+                            .font(.caption2)
+                    }
+                    Text(summary.summary)
                         .font(.caption)
                 }
                     .multilineTextAlignment(.leading)
             } else {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(resource.displayName)
+                    if let date = resource.date {
+                        Text(date, style: .date)
+                            .font(.caption2)
+                    }
                     if viewState == .processing {
                         ProgressView()
                             .progressViewStyle(.circular)
@@ -39,26 +47,31 @@ public struct FHIRResourceSummaryView: View {
                     }
                 }
                     .contextMenu {
-                        Button(String(localized: "Create Resource Summary", bundle: .module)) {
-                            Task {
-                                viewState = .processing
-                                do {
-                                    try await fhirResourceSummary.summarize(resource: resource)
-                                    viewState = .idle
-                                } catch {
-                                    viewState = .error(
-                                        AnyLocalizedError(
-                                            error: error,
-                                            defaultErrorDescription: String(localized: "Could not create FHIR Summary", bundle: .module)
-                                        )
-                                    )
-                                }
-                            }
-                        }
+                        contextMenu
                     }
             }
         }
             .viewStateAlert(state: $viewState)
+    }
+    
+    
+    @ViewBuilder private var contextMenu: some View {
+        Button(String(localized: "Create Resource Summary", bundle: .module)) {
+            Task {
+                viewState = .processing
+                do {
+                    try await fhirResourceSummary.summarize(resource: resource)
+                    viewState = .idle
+                } catch {
+                    viewState = .error(
+                        AnyLocalizedError(
+                            error: error,
+                            defaultErrorDescription: String(localized: "Could not create FHIR Summary", bundle: .module)
+                        )
+                    )
+                }
+            }
+        }
     }
     
     

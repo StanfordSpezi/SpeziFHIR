@@ -57,6 +57,18 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
             switch resource {
             case let observation as ModelsR4.Observation:
                 return try? observation.issued?.value?.asNSDate()
+            case let medicationOrder as ModelsR4.MedicationRequest:
+                return try? medicationOrder.authoredOn?.value?.asNSDate()
+            case let condition as ModelsR4.Condition:
+                guard case let .dateTime(date) = condition.onset else {
+                    return nil
+                }
+                return try? date.value?.asNSDate()
+            case let procedure as ModelsR4.Procedure:
+                guard case let .dateTime(date) = procedure.performed else {
+                    return nil
+                }
+                return try? date.value?.asNSDate()
             default:
                 return nil
             }
@@ -66,8 +78,11 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
                 return try? observation.issued?.value?.asNSDate()
             case let medicationOrder as ModelsDSTU2.MedicationOrder:
                 return try? medicationOrder.dateWritten?.value?.asNSDate()
-            case let condition as ModelsDSTU2.MedicationOrder:
-                return try? condition.dateWritten?.value?.asNSDate()
+            case let condition as ModelsDSTU2.Condition:
+                guard case let .dateTime(date) = condition.onset else {
+                    return nil
+                }
+                return try? date.value?.asNSDate()
             case let procedure as ModelsDSTU2.Procedure:
                 guard case let .dateTime(date) = procedure.performed else {
                     return nil

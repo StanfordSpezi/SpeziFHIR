@@ -16,7 +16,7 @@ import SpeziOpenAI
 /// Responsible for interpreting FHIR resources.
 @Observable
 public class FHIRResourceInterpreter {
-    private let resourceProcesser: FHIRResourceProcesser
+    private let resourceProcesser: FHIRResourceProcesser<String>
     
     
     /// - Parameters:
