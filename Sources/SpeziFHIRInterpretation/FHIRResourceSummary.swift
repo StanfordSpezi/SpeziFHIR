@@ -16,9 +16,12 @@ import SpeziOpenAI
 /// Responsible for summarizing FHIR resources.
 @Observable
 public class FHIRResourceSummary {
+    /// Summary of a FHIR resource emited by the ``FHIRResourceSummary``.
     public struct Summary: Codable, LosslessStringConvertible {
-        let title: String
-        let summary: String
+        /// Title of the FHIR resource, should be shorter than 4 words.
+        public let title: String
+        /// Summary of the FHIR resource, should be a single line of text.
+        public let summary: String
         
         
         public var description: String {
