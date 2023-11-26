@@ -18,7 +18,9 @@ extension ResourceProxy {
         case let .diagnosticReport(diagnosticReport):
             return diagnosticReport.code.coding?.first?.display?.value?.string ?? resourceType
         case let .encounter(encounter):
-            return encounter.reasonCode?.first?.coding?.first?.display?.value?.string ?? resourceType
+            return encounter.reasonCode?.first?.coding?.first?.display?.value?.string
+                ?? encounter.type?.first?.coding?.first?.display?.value?.string
+                ?? resourceType
         case let .immunization(immunization):
             return immunization.vaccineCode.text?.value?.string ?? resourceType
         case let .medicationRequest(medicationRequest):

@@ -55,20 +55,34 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
         switch versionedResource {
         case let .r4(resource):
             switch resource {
-            case let observation as ModelsR4.Observation:
-                return try? observation.issued?.value?.asNSDate()
-            case let medicationOrder as ModelsR4.MedicationRequest:
-                return try? medicationOrder.authoredOn?.value?.asNSDate()
             case let condition as ModelsR4.Condition:
                 guard case let .dateTime(date) = condition.onset else {
                     return nil
                 }
                 return try? date.value?.asNSDate()
+            case let diagnosticReport as ModelsR4.DiagnosticReport:
+                guard case let .dateTime(date) = diagnosticReport.effective else {
+                    return nil
+                }
+                return try? date.value?.asNSDate()
+            case let encounter as ModelsR4.Encounter:
+                return try? encounter.period?.end?.value?.asNSDate()
+            case let immunization as ModelsR4.Immunization:
+                guard case let .dateTime(date) = immunization.occurrence else {
+                    return nil
+                }
+                return try? date.value?.asNSDate()
+            case let medicationRequest as ModelsR4.MedicationRequest:
+                return try? medicationRequest.authoredOn?.value?.asNSDate()
+            case let observation as ModelsR4.Observation:
+                return try? observation.issued?.value?.asNSDate()
             case let procedure as ModelsR4.Procedure:
                 guard case let .dateTime(date) = procedure.performed else {
                     return nil
                 }
                 return try? date.value?.asNSDate()
+            case is ModelsR4.Patient:
+                return .now
             default:
                 return nil
             }
