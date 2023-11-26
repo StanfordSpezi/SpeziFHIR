@@ -23,27 +23,33 @@ public struct FHIRResourceSummaryView: View {
     public var body: some View {
         Group {
             if let summary = fhirResourceSummary.cachedSummary(forResource: resource) {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 0) {
                     Text(summary.title)
                     if let date = resource.date {
                         Text(date, style: .date)
                             .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .padding(.top, 2)
                     }
                     Text(summary.summary)
                         .font(.caption)
+                        .padding(.top, 4)
                 }
                     .multilineTextAlignment(.leading)
             } else {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 0) {
                     Text(resource.displayName)
                     if let date = resource.date {
                         Text(date, style: .date)
                             .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .padding(.top, 2)
                     }
                     if viewState == .processing {
                         ProgressView()
                             .progressViewStyle(.circular)
                             .padding(.vertical, 6)
+                            .padding(.top, 4)
                     }
                 }
                     .contextMenu {
