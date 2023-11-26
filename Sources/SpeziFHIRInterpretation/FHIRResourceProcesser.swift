@@ -13,8 +13,8 @@ import SpeziOpenAI
 
 
 @Observable
-class FHIRResourceProcesser {
-    typealias Results = [FHIRResource.ID: String]
+class FHIRResourceProcesser<Content: Codable & LosslessStringConvertible> {
+    typealias Results = [FHIRResource.ID: Content]
     
     
     private let localStorage: LocalStorage
@@ -49,8 +49,8 @@ class FHIRResourceProcesser {
     
     
     @discardableResult
-    func process(resource: FHIRResource, forceReload: Bool = false) async throws -> String {
-        if let result = results[resource.id], !result.isEmpty, !forceReload {
+    func process(resource: FHIRResource, forceReload: Bool = false) async throws -> Content {
+        if let result = results[resource.id], !result.description.isEmpty, !forceReload {
             return result
         }
         
@@ -63,8 +63,12 @@ class FHIRResourceProcesser {
             }
         }
         
-        results[resource.id] = result
-        return result
+        guard let content = Content(result) else {
+            throw FHIRResourceProcesserError.notParsableAsAString
+        }
+        
+        results[resource.id] = content
+        return content
     }
     
     private func systemPrompt(forResource resource: FHIRResource) -> Chat {

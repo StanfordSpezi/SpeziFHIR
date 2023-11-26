@@ -16,7 +16,32 @@ import SpeziOpenAI
 /// Responsible for summarizing FHIR resources.
 @Observable
 public class FHIRResourceSummary {
-    private let resourceProcesser: FHIRResourceProcesser
+    /// Summary of a FHIR resource emited by the ``FHIRResourceSummary``.
+    public struct Summary: Codable, LosslessStringConvertible {
+        /// Title of the FHIR resource, should be shorter than 4 words.
+        public let title: String
+        /// Summary of the FHIR resource, should be a single line of text.
+        public let summary: String
+        
+        
+        public var description: String {
+            title + "\n" + summary
+        }
+        
+        
+        public init?(_ description: String) {
+            let components = description.split(separator: "\n")
+            guard components.count == 2, let title = components.first, let summary = components.last else {
+                return nil
+            }
+            
+            self.title = String(title)
+            self.summary = String(summary)
+        }
+    }
+    
+    
+    private let resourceProcesser: FHIRResourceProcesser<Summary>
     
     
     /// - Parameters:
@@ -39,7 +64,7 @@ public class FHIRResourceSummary {
     ///   - forceReload: A boolean value that indicates whether to reload and reprocess the resource.
     /// - Returns: An asynchronous `String` representing the summarization of the resource.
     @discardableResult
-    public func summarize(resource: FHIRResource, forceReload: Bool = false) async throws -> String {
+    public func summarize(resource: FHIRResource, forceReload: Bool = false) async throws -> Summary {
         try await resourceProcesser.process(resource: resource, forceReload: forceReload)
     }
     
@@ -47,7 +72,7 @@ public class FHIRResourceSummary {
     ///
     /// - Parameter resource: The resource where the cached summary should be loaded from.
     /// - Returns: The cached summary. Returns `nil` if the resource is not present.
-    public func cachedSummary(forResource resource: FHIRResource) -> String? {
+    public func cachedSummary(forResource resource: FHIRResource) -> Summary? {
         resourceProcesser.results[resource.id]
     }
 }

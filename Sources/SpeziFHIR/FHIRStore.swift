@@ -110,7 +110,7 @@ public class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable {
         let resourceProxies = bundle.entry?.compactMap { $0.resource } ?? []
         
         for resourceProxy in resourceProxies {
-            insert(resource: FHIRResource(resource: resourceProxy.get(), displayName: resourceProxy.resourceType))
+            insert(resource: FHIRResource(resource: resourceProxy.get(), displayName: resourceProxy.displayName))
         }
     }
     
