@@ -77,10 +77,10 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
             case let observation as ModelsR4.Observation:
                 return try? observation.issued?.value?.asNSDate()
             case let procedure as ModelsR4.Procedure:
-                guard case let .dateTime(date) = procedure.performed else {
-                    return nil
+                if case let .period(period) = procedure.performed {
+                    return try? period.end?.value?.asNSDate()
                 }
-                return try? date.value?.asNSDate()
+                return nil
             case is ModelsR4.Patient:
                 return .now
             default:
@@ -98,10 +98,10 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
                 }
                 return try? date.value?.asNSDate()
             case let procedure as ModelsDSTU2.Procedure:
-                guard case let .dateTime(date) = procedure.performed else {
-                    return nil
+                if case let .period(period) = procedure.performed {
+                    return try? period.end?.value?.asNSDate()
                 }
-                return try? date.value?.asNSDate()
+                return nil
             default:
                 return nil
             }
