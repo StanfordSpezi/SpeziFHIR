@@ -77,9 +77,19 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
             case let observation as ModelsR4.Observation:
                 return try? observation.issued?.value?.asNSDate()
             case let procedure as ModelsR4.Procedure:
-                if case let .period(period) = procedure.performed {
-                    return try? period.end?.value?.asNSDate()
+                switch procedure.performed {
+                case let .dateTime(date):
+                    if let date = try? date.value?.asNSDate() {
+                        return date
+                    }
+                case let .period(period):
+                    if let date = try? period.end?.value?.asNSDate() {
+                        return date
+                    }
+                default:
+                    break
                 }
+                
                 return nil
             case is ModelsR4.Patient:
                 return .now
@@ -92,15 +102,30 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
                 return try? observation.issued?.value?.asNSDate()
             case let medicationOrder as ModelsDSTU2.MedicationOrder:
                 return try? medicationOrder.dateWritten?.value?.asNSDate()
+            case let medicationStatement as ModelsDSTU2.MedicationStatement:
+                guard case let .dateTime(date) = medicationStatement.effective else {
+                    return nil
+                }
+                return try? date.value?.asNSDate()
             case let condition as ModelsDSTU2.Condition:
                 guard case let .dateTime(date) = condition.onset else {
                     return nil
                 }
                 return try? date.value?.asNSDate()
             case let procedure as ModelsDSTU2.Procedure:
-                if case let .period(period) = procedure.performed {
-                    return try? period.end?.value?.asNSDate()
+                switch procedure.performed {
+                case let .dateTime(date):
+                    if let date = try? date.value?.asNSDate() {
+                        return date
+                    }
+                case let .period(period):
+                    if let date = try? period.end?.value?.asNSDate() {
+                        return date
+                    }
+                default:
+                    break
                 }
+                
                 return nil
             default:
                 return nil
