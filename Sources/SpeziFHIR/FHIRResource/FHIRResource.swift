@@ -85,6 +85,8 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
                 return procedure.performed?.date
             case let patient as ModelsR4.Patient:
                 return try? patient.birthDate?.value?.asNSDate()
+            case let provenance as ModelsR4.Provenance:
+                return try? provenance.recorded.value?.asNSDate()
             case let supplyDelivery as ModelsR4.SupplyDelivery:
                 return supplyDelivery.occurrence?.date
             default:
