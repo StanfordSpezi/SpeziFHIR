@@ -55,6 +55,8 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
         switch versionedResource {
         case let .r4(resource):
             switch resource {
+            case let claim as ModelsR4.Claim:
+                return try? claim.billablePeriod?.end?.value?.asNSDate()
             case let condition as ModelsR4.Condition:
                 guard case let .dateTime(date) = condition.onset else {
                     return nil
@@ -65,8 +67,12 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
                     return nil
                 }
                 return try? date.value?.asNSDate()
+            case let documentReference as ModelsR4.DocumentReference:
+                return try? documentReference.date?.value?.asNSDate()
             case let encounter as ModelsR4.Encounter:
                 return try? encounter.period?.end?.value?.asNSDate()
+            case let explanationOfBenefit as ModelsR4.ExplanationOfBenefit:
+                return try? explanationOfBenefit.billablePeriod?.end?.value?.asNSDate()
             case let immunization as ModelsR4.Immunization:
                 guard case let .dateTime(date) = immunization.occurrence else {
                     return nil
@@ -74,6 +80,19 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
                 return try? date.value?.asNSDate()
             case let medicationRequest as ModelsR4.MedicationRequest:
                 return try? medicationRequest.authoredOn?.value?.asNSDate()
+            case let medicationAdministration as ModelsR4.MedicationAdministration:
+                switch medicationAdministration.effective {
+                case let .dateTime(date):
+                    if let date = try? date.value?.asNSDate() {
+                        return date
+                    }
+                case let .period(period):
+                    if let date = try? period.end?.value?.asNSDate() {
+                        return date
+                    }
+                }
+                
+                return nil
             case let observation as ModelsR4.Observation:
                 return try? observation.issued?.value?.asNSDate()
             case let procedure as ModelsR4.Procedure:
@@ -91,8 +110,10 @@ public struct FHIRResource: Sendable, Identifiable, Hashable {
                 }
                 
                 return nil
-            case is ModelsR4.Patient:
-                return .now
+            case let explanationOfBenefit as ModelsR4.ExplanationOfBenefit:
+                return try? explanationOfBenefit.billablePeriod?.end?.value?.asNSDate()
+            case let patient as ModelsR4.Patient:
+                return try? patient.birthDate?.value?.asNSDate()
             default:
                 return nil
             }
