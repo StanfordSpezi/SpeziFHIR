@@ -8,21 +8,23 @@
 
 import Spezi
 import SpeziFHIRInterpretation
+import SpeziLLM
 import SpeziLocalStorage
-import class SpeziOpenAI.OpenAIModule
-import class SpeziOpenAI.OpenAIModel
 
 
 class ExampleModule: Module {
+    private let llm = LLMMock()
+    
+    
     @Dependency private var localStorage: LocalStorage
-    @Dependency private var openAI: OpenAIModule
+    @Dependency private var llmRunner: LLMRunner
     
     @Model private var resourceSummary: FHIRResourceSummary
     @Model private var resourceInterpreter: FHIRResourceInterpreter
     
     
     func configure() {
-        resourceSummary = FHIRResourceSummary(localStorage: localStorage, openAIModel: openAI.model)
-        resourceInterpreter = FHIRResourceInterpreter(localStorage: localStorage, openAIModel: openAI.model)
+        resourceSummary = FHIRResourceSummary(localStorage: localStorage, llmRunner: llmRunner, llm: llm)
+        resourceInterpreter = FHIRResourceInterpreter(localStorage: localStorage, llmRunner: llmRunner, llm: llm)
     }
 }

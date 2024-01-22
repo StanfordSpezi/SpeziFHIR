@@ -9,9 +9,9 @@
 import Foundation
 import Observation
 import SpeziFHIR
-import SpeziLocalStorage
 import SpeziLLM
 import SpeziLLMOpenAI
+import SpeziLocalStorage
 
 
 /// Responsible for interpreting FHIR resources.
@@ -23,10 +23,10 @@ public class FHIRResourceInterpreter {
     /// - Parameters:
     ///   - localStorage: Local storage module that needs to be passed to the ``FHIRResourceInterpreter`` to allow it to cache interpretations.
     ///   - openAIModel: OpenAI module that needs to be passed to the ``FHIRResourceInterpreter`` to allow it to retrieve interpretations.
-    public init(localStorage: LocalStorage, llmRuner: LLMRunner, llm: any LLM) {
+    public init(localStorage: LocalStorage, llmRunner: LLMRunner, llm: any LLM) {
         self.resourceProcesser = FHIRResourceProcesser(
             localStorage: localStorage,
-            llmRunner: llmRuner,
+            llmRunner: llmRunner,
             llm: llm,
             storageKey: "FHIRResourceInterpreter.Interpretations",
             prompt: FHIRPrompt.interpretation

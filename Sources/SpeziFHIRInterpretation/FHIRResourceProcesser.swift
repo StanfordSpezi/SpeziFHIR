@@ -9,9 +9,9 @@
 import Observation
 import SpeziChat
 import SpeziFHIR
-import SpeziLocalStorage
 import SpeziLLM
 import SpeziLLMOpenAI
+import SpeziLocalStorage
 
 
 @Observable

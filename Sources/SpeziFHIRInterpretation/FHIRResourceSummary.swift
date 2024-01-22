@@ -9,9 +9,9 @@
 import Foundation
 import Observation
 import SpeziFHIR
-import SpeziLocalStorage
 import SpeziLLM
 import SpeziLLMOpenAI
+import SpeziLocalStorage
 
 
 /// Responsible for summarizing FHIR resources.
@@ -48,10 +48,10 @@ public class FHIRResourceSummary {
     /// - Parameters:
     ///   - localStorage: Local storage module that needs to be passed to the ``FHIRResourceSummary`` to allow it to cache summaries.
     ///   - openAIModel: OpenAI module that needs to be passed to the ``FHIRResourceSummary`` to allow it to retrieve summaries.
-    public init(localStorage: LocalStorage, llmRuner: LLMRunner, llm: any LLM) {
+    public init(localStorage: LocalStorage, llmRunner: LLMRunner, llm: any LLM) {
         self.resourceProcesser = FHIRResourceProcesser(
             localStorage: localStorage,
-            llmRunner: llmRuner,
+            llmRunner: llmRunner,
             llm: llm,
             storageKey: "FHIRResourceSummary.Summaries",
             prompt: FHIRPrompt.summary
