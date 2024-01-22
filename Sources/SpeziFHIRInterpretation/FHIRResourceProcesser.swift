@@ -7,9 +7,11 @@
 //
 
 import Observation
+import SpeziChat
 import SpeziFHIR
 import SpeziLocalStorage
-import SpeziOpenAI
+import SpeziLLM
+import SpeziLLMOpenAI
 
 
 @Observable
@@ -18,7 +20,8 @@ class FHIRResourceProcesser<Content: Codable & LosslessStringConvertible> {
     
     
     private let localStorage: LocalStorage
-    private let openAIModel: OpenAIModel
+    private let llmRunner: LLMRunner
+    private let llm: any LLM
     private let storageKey: String
     private let prompt: FHIRPrompt
     
@@ -36,12 +39,14 @@ class FHIRResourceProcesser<Content: Codable & LosslessStringConvertible> {
     
     init(
         localStorage: LocalStorage,
-        openAIModel: OpenAIModel,
+        llmRunner: LLMRunner,
+        llm: any LLM,
         storageKey: String,
         prompt: FHIRPrompt
     ) {
         self.localStorage = localStorage
-        self.openAIModel = openAIModel
+        self.llmRunner = llmRunner
+        self.llm = llm
         self.storageKey = storageKey
         self.prompt = prompt
         self.results = (try? localStorage.read(storageKey: storageKey)) ?? [:]
@@ -54,13 +59,15 @@ class FHIRResourceProcesser<Content: Codable & LosslessStringConvertible> {
             return result
         }
         
-        let chatStreamResults = try await openAIModel.queryAPI(withChat: [systemPrompt(forResource: resource)])
+        await MainActor.run {
+            llm.context.append(.init(role: .system, content: prompt.prompt(withFHIRResource: resource.jsonDescription)))
+        }
+        
+        let chatStreamResults = try await llmRunner(with: llm).generate()
         var result = ""
         
         for try await chatStreamResult in chatStreamResults {
-            for choice in chatStreamResult.choices {
-                result.append(choice.delta.content ?? "")
-            }
+            result.append(chatStreamResult)
         }
         
         guard let content = Content(result) else {
@@ -69,12 +76,5 @@ class FHIRResourceProcesser<Content: Codable & LosslessStringConvertible> {
         
         results[resource.id] = content
         return content
-    }
-    
-    private func systemPrompt(forResource resource: FHIRResource) -> Chat {
-        Chat(
-            role: .system,
-            content: prompt.prompt(withFHIRResource: resource.jsonDescription)
-        )
     }
 }
