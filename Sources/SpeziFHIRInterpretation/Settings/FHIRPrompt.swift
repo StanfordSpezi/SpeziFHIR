@@ -44,7 +44,7 @@ public struct FHIRPrompt: Hashable {
     }
     
     
-    /// Saves a new version of the propmpt.
+    /// Saves a new version of the prompt.
     /// - Parameter prompt: The new prompt.
     public func save(prompt: String) {
         UserDefaults.standard.set(prompt, forKey: storageKey)

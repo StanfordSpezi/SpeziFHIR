@@ -15,7 +15,9 @@ import SwiftUI
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
         Configuration(standard: FHIR()) {
-            LLMRunner()
+            LLMRunner {
+                LLMMockPlatform()
+            }
             ExampleModule()
         }
     }

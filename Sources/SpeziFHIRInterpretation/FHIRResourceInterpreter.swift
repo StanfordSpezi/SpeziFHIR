@@ -7,27 +7,25 @@
 //
 
 import Foundation
-import Observation
 import SpeziFHIR
 import SpeziLLM
-import SpeziLLMOpenAI
 import SpeziLocalStorage
 
 
 /// Responsible for interpreting FHIR resources.
 @Observable
 public class FHIRResourceInterpreter {
-    private let resourceProcesser: FHIRResourceProcesser<String>
+    private let resourceProcessor: FHIRResourceProcessor<String>
     
     
     /// - Parameters:
     ///   - localStorage: Local storage module that needs to be passed to the ``FHIRResourceInterpreter`` to allow it to cache interpretations.
     ///   - openAIModel: OpenAI module that needs to be passed to the ``FHIRResourceInterpreter`` to allow it to retrieve interpretations.
-    public init(localStorage: LocalStorage, llmRunner: LLMRunner, llm: any LLM) {
-        self.resourceProcesser = FHIRResourceProcesser(
+    public init(localStorage: LocalStorage, llmRunner: LLMRunner, llmSchema: any LLMSchema) {
+        self.resourceProcessor = FHIRResourceProcessor(
             localStorage: localStorage,
             llmRunner: llmRunner,
-            llm: llm,
+            llmSchema: llmSchema,
             storageKey: "FHIRResourceInterpreter.Interpretations",
             prompt: FHIRPrompt.interpretation
         )
@@ -42,15 +40,15 @@ public class FHIRResourceInterpreter {
     /// - Returns: An asynchronous `String` representing the interpretation of the resource.
     @discardableResult
     public func interpret(resource: FHIRResource, forceReload: Bool = false) async throws -> String {
-        try await resourceProcesser.process(resource: resource, forceReload: forceReload)
+        try await resourceProcessor.process(resource: resource, forceReload: forceReload)
     }
     
     /// Retrieve the cached interpretation of a given FHIR resource. Returns a human-readable interpretation or `nil` if it is not present.
     ///
     /// - Parameter resource: The resource where the cached interpretation should be loaded from.
     /// - Returns: The cached interpretation. Returns `nil` if the resource is not present.
-    public func cachedInterpretation(forResource resource: FHIRResource) -> String? {
-        resourceProcesser.results[resource.id]
+    public func cachedInterpretation(forResource resource: FHIRResource) async -> String? {
+        await resourceProcessor.results[resource.id]
     }
 }
 

@@ -9,7 +9,7 @@
 import Foundation
 
 
-enum FHIRResourceProcesserError: LocalizedError {
+enum FHIRResourceProcessorError: LocalizedError {
     case notParsableAsAString
     
     

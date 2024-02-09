@@ -12,19 +12,25 @@ import SpeziLLM
 import SpeziLocalStorage
 
 
-class ExampleModule: Module {
-    private let llm = LLMMock()
-    
-    
+class ExampleModule: Module, @unchecked Sendable {
     @Dependency private var localStorage: LocalStorage
     @Dependency private var llmRunner: LLMRunner
     
     @Model private var resourceSummary: FHIRResourceSummary
     @Model private var resourceInterpreter: FHIRResourceInterpreter
     
+    let llmSchema = LLMMockSchema()
     
     func configure() {
-        resourceSummary = FHIRResourceSummary(localStorage: localStorage, llmRunner: llmRunner, llm: llm)
-        resourceInterpreter = FHIRResourceInterpreter(localStorage: localStorage, llmRunner: llmRunner, llm: llm)
+        resourceSummary = FHIRResourceSummary(
+            localStorage: localStorage,
+            llmRunner: llmRunner,
+            llmSchema: llmSchema
+        )
+        resourceInterpreter = FHIRResourceInterpreter(
+            localStorage: localStorage,
+            llmRunner: llmRunner,
+            llmSchema: llmSchema
+        )
     }
 }

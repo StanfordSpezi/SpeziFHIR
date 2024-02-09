@@ -6,7 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Observation
 import SpeziChat
 import SpeziFHIR
 import SpeziLLM
@@ -14,14 +13,13 @@ import SpeziLLMOpenAI
 import SpeziLocalStorage
 
 
-@Observable
-class FHIRResourceProcesser<Content: Codable & LosslessStringConvertible> {
+actor FHIRResourceProcessor<Content: Codable & LosslessStringConvertible> {
     typealias Results = [FHIRResource.ID: Content]
     
     
     private let localStorage: LocalStorage
     private let llmRunner: LLMRunner
-    private let llm: any LLM
+    private let llmSchema: any LLMSchema
     private let storageKey: String
     private let prompt: FHIRPrompt
     
@@ -40,13 +38,13 @@ class FHIRResourceProcesser<Content: Codable & LosslessStringConvertible> {
     init(
         localStorage: LocalStorage,
         llmRunner: LLMRunner,
-        llm: any LLM,
+        llmSchema: any LLMSchema,
         storageKey: String,
         prompt: FHIRPrompt
     ) {
         self.localStorage = localStorage
         self.llmRunner = llmRunner
-        self.llm = llm
+        self.llmSchema = llmSchema
         self.storageKey = storageKey
         self.prompt = prompt
         self.results = (try? localStorage.read(storageKey: storageKey)) ?? [:]
@@ -59,11 +57,13 @@ class FHIRResourceProcesser<Content: Codable & LosslessStringConvertible> {
             return result
         }
         
+        let llm = await llmRunner(with: llmSchema)
+        
         await MainActor.run {
-            llm.context.append(.init(role: .system, content: prompt.prompt(withFHIRResource: resource.jsonDescription)))
+            llm.context.append(systemMessage: prompt.prompt(withFHIRResource: resource.jsonDescription))
         }
         
-        let chatStreamResults = try await llmRunner(with: llm).generate()
+        let chatStreamResults = try await llm.generate()
         var result = ""
         
         for try await chatStreamResult in chatStreamResults {
@@ -71,7 +71,7 @@ class FHIRResourceProcesser<Content: Codable & LosslessStringConvertible> {
         }
         
         guard let content = Content(result) else {
-            throw FHIRResourceProcesserError.notParsableAsAString
+            throw FHIRResourceProcessorError.notParsableAsAString
         }
         
         results[resource.id] = content

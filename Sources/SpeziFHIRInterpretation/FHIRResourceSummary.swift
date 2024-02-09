@@ -7,17 +7,15 @@
 //
 
 import Foundation
-import Observation
 import SpeziFHIR
 import SpeziLLM
-import SpeziLLMOpenAI
 import SpeziLocalStorage
 
 
 /// Responsible for summarizing FHIR resources.
 @Observable
 public class FHIRResourceSummary {
-    /// Summary of a FHIR resource emited by the ``FHIRResourceSummary``.
+    /// Summary of a FHIR resource emitted by the ``FHIRResourceSummary``.
     public struct Summary: Codable, LosslessStringConvertible {
         /// Title of the FHIR resource, should be shorter than 4 words.
         public let title: String
@@ -42,17 +40,17 @@ public class FHIRResourceSummary {
     }
     
     
-    private let resourceProcesser: FHIRResourceProcesser<Summary>
+    private let resourceProcesser: FHIRResourceProcessor<Summary>
     
     
     /// - Parameters:
     ///   - localStorage: Local storage module that needs to be passed to the ``FHIRResourceSummary`` to allow it to cache summaries.
     ///   - openAIModel: OpenAI module that needs to be passed to the ``FHIRResourceSummary`` to allow it to retrieve summaries.
-    public init(localStorage: LocalStorage, llmRunner: LLMRunner, llm: any LLM) {
-        self.resourceProcesser = FHIRResourceProcesser(
+    public init(localStorage: LocalStorage, llmRunner: LLMRunner, llmSchema: any LLMSchema) {
+        self.resourceProcesser = FHIRResourceProcessor(
             localStorage: localStorage,
             llmRunner: llmRunner,
-            llm: llm,
+            llmSchema: llmSchema,
             storageKey: "FHIRResourceSummary.Summaries",
             prompt: FHIRPrompt.summary
         )
@@ -74,8 +72,8 @@ public class FHIRResourceSummary {
     ///
     /// - Parameter resource: The resource where the cached summary should be loaded from.
     /// - Returns: The cached summary. Returns `nil` if the resource is not present.
-    public func cachedSummary(forResource resource: FHIRResource) -> Summary? {
-        resourceProcesser.results[resource.id]
+    public func cachedSummary(forResource resource: FHIRResource) async -> Summary? {
+        await resourceProcesser.results[resource.id]
     }
 }
 
