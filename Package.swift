@@ -28,7 +28,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.4")),
         .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.1.0"),
         .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziLLM.git", branch: "feat/structural-improvements"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziLLM.git", branch: "feat/structural-improvments"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "1.0.0"),
         .package(url: "https://github.com/StanfordSpezi/SpeziChat.git", .upToNextMinor(from: "0.1.4"))
     ],
