@@ -57,13 +57,10 @@ actor FHIRResourceProcessor<Content: Codable & LosslessStringConvertible> {
             return result
         }
         
-        let llm = await llmRunner(with: llmSchema)
-        
-        await MainActor.run {
-            llm.context.append(systemMessage: prompt.prompt(withFHIRResource: resource.jsonDescription))
-        }
-        
-        let chatStreamResults = try await llm.generate()
+        let chatStreamResults = try await llmRunner.oneShot(
+            with: llmSchema,
+            chat: .init(systemMessages: prompt.prompt(withFHIRResource: resource.jsonDescription))
+        )
         var result = ""
         
         for try await chatStreamResult in chatStreamResults {
