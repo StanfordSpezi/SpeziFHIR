@@ -72,8 +72,8 @@ public class FHIRResourceSummary {
     ///
     /// - Parameter resource: The resource where the cached summary should be loaded from.
     /// - Returns: The cached summary. Returns `nil` if the resource is not present.
-    public func cachedSummary(forResource resource: FHIRResource) async -> Summary? {
-        await resourceProcesser.results[resource.id]
+    public func cachedSummary(forResource resource: FHIRResource) -> Summary? {
+        resourceProcesser.results[resource.id]
     }
 }
 

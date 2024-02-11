@@ -47,8 +47,8 @@ public class FHIRResourceInterpreter {
     ///
     /// - Parameter resource: The resource where the cached interpretation should be loaded from.
     /// - Returns: The cached interpretation. Returns `nil` if the resource is not present.
-    public func cachedInterpretation(forResource resource: FHIRResource) async -> String? {
-        await resourceProcessor.results[resource.id]
+    public func cachedInterpretation(forResource resource: FHIRResource) -> String? {
+        resourceProcessor.results[resource.id]
     }
 }
 

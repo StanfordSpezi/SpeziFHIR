@@ -13,7 +13,7 @@ import SpeziLLMOpenAI
 import SpeziLocalStorage
 
 
-actor FHIRResourceProcessor<Content: Codable & LosslessStringConvertible> {
+class FHIRResourceProcessor<Content: Codable & LosslessStringConvertible> {
     typealias Results = [FHIRResource.ID: Content]
     
     
