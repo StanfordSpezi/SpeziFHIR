@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Close" : {
+
+    },
+    "Conditions" : {
+
+    },
     "Could not create FHIR Summary" : {
       "localizations" : {
         "en" : {
@@ -31,8 +37,41 @@
         }
       }
     },
+    "Diagnostics" : {
+
+    },
+    "Encounters" : {
+
+    },
+    "FHIR_RESOURCES_EMPTY_SEARCH_MESSAGE" : {
+
+    },
+    "FHIR_RESOURCES_INTERPRETATION_BUTTON" : {
+
+    },
+    "FHIR_RESOURCES_INTERPRETATION_LOADING" : {
+
+    },
+    "FHIR_RESOURCES_INTERPRETATION_RESOURCE" : {
+
+    },
+    "FHIR_RESOURCES_INTERPRETATION_SECTION" : {
+
+    },
+    "FHIR_RESOURCES_SUMMARY_BUTTON" : {
+
+    },
+    "FHIR_RESOURCES_SUMMARY_SECTION" : {
+
+    },
+    "FUNCTION_DESCRIPTION" : {
+
+    },
+    "Immunizations" : {
+
+    },
     "Interpretation Prompt" : {
-      "comment" : "Title of the interpretation prompt.",
+      "comment" : "Title of the interpretation prompt.\nTitle of the multiple resources interpretation prompt.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43,7 +82,7 @@
       }
     },
     "Interpretation Prompt Content" : {
-      "comment" : "Content of the interpretation prompt.",
+      "comment" : "Content of the interpretation prompt.\nContent of the multiple resources interpretation prompt.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -52,6 +91,18 @@
           }
         }
       }
+    },
+    "Medications" : {
+
+    },
+    "Observations" : {
+
+    },
+    "Other Resources" : {
+
+    },
+    "PARAMETER_DESCRIPTION" : {
+
     },
     "Place %@ at the position in the prompt where the FHIR resource should be inserted. Optionally place %@ where you would like to insert the current locale." : {
       "localizations" : {
@@ -62,6 +113,12 @@
           }
         }
       }
+    },
+    "Procedures" : {
+
+    },
+    "Reset Chat" : {
+
     },
     "Save Prompt" : {
       "localizations" : {
@@ -94,6 +151,28 @@
           }
         }
       }
+    },
+    "Text to speech is disabled, press to enable text to speech." : {
+
+    },
+    "Text to speech is enabled, press to disable text to speech." : {
+
+    },
+    "The medical record does not include any FHIR resources for the search term %@." : {
+
+    },
+    "This is the summary of the requested %@:\n\n%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This is the summary of the requested %1$@:\n\n%2$@"
+          }
+        }
+      }
+    },
+    "Total Number of Resources: %lld" : {
+
     },
     "Unable to parse result of the LLM prompt." : {
       "comment" : "Error thrown if the result can not be parsed in the underlying type.",

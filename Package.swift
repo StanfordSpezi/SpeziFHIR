@@ -28,9 +28,11 @@ let package = Package(
         .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.4")),
         .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.1.0"),
         .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziLLM.git", branch: "feat/structural-improvments"),
+        //.package(url: "https://github.com/StanfordSpezi/SpeziLLM.git", branch: "feat/structural-improvments"),
+        .package(path: "../SpeziLLM"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "1.0.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziChat.git", .upToNextMinor(from: "0.1.4"))
+        .package(url: "https://github.com/StanfordSpezi/SpeziChat.git", .upToNextMinor(from: "0.1.4")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech.git", from: "1.0.0")
     ],
     targets: [
         .target(
@@ -59,7 +61,8 @@ let package = Package(
                 .product(name: "SpeziLLM", package: "SpeziLLM"),
                 .product(name: "SpeziLLMOpenAI", package: "SpeziLLM"),
                 .product(name: "SpeziLocalStorage", package: "SpeziStorage"),
-                .product(name: "SpeziChat", package: "SpeziChat")
+                .product(name: "SpeziChat", package: "SpeziChat"),
+                .product(name: "SpeziSpeechSynthesizer", package: "SpeziSpeech")
             ],
             resources: [
                 .process("Resources")
@@ -68,7 +71,8 @@ let package = Package(
         .target(
             name: "SpeziFHIRMockPatients",
             dependencies: [
-                .target(name: "SpeziFHIR")
+                .target(name: "SpeziFHIR"),
+                .product(name: "ModelsR4", package: "FHIRModels")
             ],
             resources: [
                 .process("Resources")

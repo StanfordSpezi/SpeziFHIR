@@ -15,7 +15,7 @@ extension Foundation.Bundle {
     /// - Parameter name: Name of the JSON file in the Foundation `Bundle`
     /// - Returns: The FHIR `Bundle`
     public func loadFHIRBundle(withName name: String) async -> Bundle {
-        guard let resourceURL = self.url(forResource: name, withExtension: "json") else {
+        guard let resourceURL = Self.module.url(forResource: name, withExtension: "json") else {
             fatalError("Could not find the resource \"\(name)\".json in the SpeziFHIRMockPatients Resources folder.")
         }
         
