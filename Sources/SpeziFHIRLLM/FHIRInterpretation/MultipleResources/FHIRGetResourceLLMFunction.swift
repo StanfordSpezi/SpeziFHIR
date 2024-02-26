@@ -12,7 +12,7 @@ import SpeziLLMOpenAI
 
 
 struct FHIRGetResourceLLMFunction: LLMFunction {
-    static let logger = Logger(subsystem: "edu.stanford.spezi.fhir", category: "SpeziFHIRInterpretation")
+    static let logger = Logger(subsystem: "edu.stanford.spezi.fhir", category: "SpeziFHIRLLM")
     
     static let name = "get_resources"
     static let description = String(localized: "FUNCTION_DESCRIPTION")

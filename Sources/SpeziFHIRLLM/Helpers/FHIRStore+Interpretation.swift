@@ -111,21 +111,14 @@ extension FHIRStore {
     ///
     /// - Tip: We use an array as the order indicates the sorting, oldest resources come first, newest one last
     public var allResourcesFunctionCallIdentifier: [String] {
-        let relevantResources: [FHIRResource]
-        
-        if llmRelevantResources.count > 100 /*resourceLimit*/ {
-            relevantResources = llmRelevantResources
-                .lazy
-                .filter {
-                    $0.date != nil
-                }
-                .sorted {
-                    $0.date ?? .distantPast < $1.date ?? .distantPast
-                }
-                .suffix(100 /*resourceLimit*/)
-        } else {
-            relevantResources = llmRelevantResources
-        }
+        let relevantResources: [FHIRResource] = llmRelevantResources
+            .lazy
+            .filter {
+                $0.date != nil
+            }
+            .sorted {
+                $0.date ?? .distantPast < $1.date ?? .distantPast
+            }
         
         return Array(Set(relevantResources.removingDuplicates().map { $0.functionCallIdentifier }))
     }

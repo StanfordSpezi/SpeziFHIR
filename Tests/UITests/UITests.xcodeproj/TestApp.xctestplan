@@ -23,8 +23,8 @@
         },
         {
           "containerPath" : "container:..\/..",
-          "identifier" : "SpeziFHIRInterpretation",
-          "name" : "SpeziFHIRInterpretation"
+          "identifier" : "SpeziFHIRLLM",
+          "name" : "SpeziFHIRLLM"
         },
         {
           "containerPath" : "container:..\/..",

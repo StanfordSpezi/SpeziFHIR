@@ -7,7 +7,7 @@
 //
 
 import Spezi
-import SpeziFHIRInterpretation
+import SpeziFHIRLLM
 import SpeziLLM
 import SpeziLocalStorage
 

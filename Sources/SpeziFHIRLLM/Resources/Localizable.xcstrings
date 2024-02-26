@@ -420,7 +420,7 @@
       }
     },
     "Interpretation Prompt" : {
-      "comment" : "Title of the interpretation prompt.\nTitle of the multiple resources interpretation prompt.",
+      "comment" : "Title of the multiple resources interpretation prompt.\nTitle of the interpretation prompt.",
       "localizations" : {
         "de" : {
           "stringUnit" : {

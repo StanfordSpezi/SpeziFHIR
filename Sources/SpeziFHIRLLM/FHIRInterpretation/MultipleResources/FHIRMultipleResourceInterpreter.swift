@@ -25,7 +25,7 @@ private enum FHIRMultipleResourceInterpreterConstants {
 /// Used to interpret multiple FHIR resources via a chat-based interface with an LLM.
 @Observable
 public class FHIRMultipleResourceInterpreter {
-    static let logger = Logger(subsystem: "edu.stanford.spezi.fhir", category: "SpeziFHIRInterpretation")
+    static let logger = Logger(subsystem: "edu.stanford.spezi.fhir", category: "SpeziFHIRLLM")
     
     private let localStorage: LocalStorage
     private let llmRunner: LLMRunner
