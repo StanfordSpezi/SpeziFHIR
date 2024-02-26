@@ -42,9 +42,7 @@ public struct MultipleResourcesChatView: View {
                             }
                         }
                 } else {
-                    ChatView(
-                        .constant([])
-                    )
+                    ProgressView()
                 }
             }
                 .navigationTitle(navigationTitle)
