@@ -50,13 +50,11 @@ public class FHIRMultipleResourceInterpreter {
     
     @MainActor
     func resetChat() {
-        var context = Chat()
-        context.append(systemMessage: FHIRPrompt.interpretMultipleResources.prompt)
+        llm = llmRunner(with: llmSchema)
+        llm?.context.append(systemMessage: FHIRPrompt.interpretMultipleResources.prompt)
         if let patient = fhirStore.patient {
-            context.append(systemMessage: patient.jsonDescription)
+            llm?.context.append(systemMessage: patient.jsonDescription)
         }
-        
-        llm?.context = context
     }
     
     @MainActor
