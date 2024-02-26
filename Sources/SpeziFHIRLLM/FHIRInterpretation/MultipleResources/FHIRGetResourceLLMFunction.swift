@@ -1,5 +1,5 @@
 //
-// This source file is part of the Stanford LLM on FHIR project
+// This source file is part of the Stanford Spezi project
 //
 // SPDX-FileCopyrightText: 2023 Stanford University
 //
@@ -19,18 +19,32 @@ struct FHIRGetResourceLLMFunction: LLMFunction {
     
     private let fhirStore: FHIRStore
     private let resourceSummary: FHIRResourceSummary
-    private let allResourcesFunctionCallIdentifier: [String]
     
     
     @Parameter var resources: [String]
     
     
-    init(fhirStore: FHIRStore, resourceSummary: FHIRResourceSummary, allResourcesFunctionCallIdentifier: [String]) {
+    init(
+        fhirStore: FHIRStore,
+        resourceSummary: FHIRResourceSummary,
+        resourceCountLimit: Int,
+        allowedResourcesFunctionCallIdentifiers: Set<String>? = nil // swiftlint:disable:this discouraged_optional_collection
+    ) {
         self.fhirStore = fhirStore
         self.resourceSummary = resourceSummary
-        self.allResourcesFunctionCallIdentifier = allResourcesFunctionCallIdentifier
         
-        _resources = Parameter(description: String(localized: "PARAMETER_DESCRIPTION"), enumValues: allResourcesFunctionCallIdentifier)
+        // Only take newest values of the health records
+        var allResourcesFunctionCallIdentifiers = Set(fhirStore.allResourcesFunctionCallIdentifier.suffix(resourceCountLimit))
+        
+        // If identifiers are restricted, filter for only allowed function call identifiers of health records.
+        if let allowedResourcesFunctionCallIdentifiers {
+            allResourcesFunctionCallIdentifiers.formIntersection(allowedResourcesFunctionCallIdentifiers)
+        }
+        
+        _resources = Parameter(
+            description: String(localized: "PARAMETER_DESCRIPTION"),
+            enumValues: Array(allResourcesFunctionCallIdentifiers)
+        )
     }
     
     

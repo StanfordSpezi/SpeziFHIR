@@ -1,5 +1,5 @@
 //
-// This source file is part of the Stanford LLM on FHIR project
+// This source file is part of the Stanford Spezi project
 //
 // SPDX-FileCopyrightText: 2023 Stanford University
 //
@@ -12,6 +12,7 @@ import SwiftUI
 
 
 extension FHIRStore {
+    /// All relevant `FHIRResource`s for the LLM interpretation.
     public var llmRelevantResources: [FHIRResource] {
         allergyIntolerances
             + llmConditions
@@ -22,6 +23,7 @@ extension FHIRStore {
             + procedures.uniqueDisplayNames
     }
     
+    /// All `FHIRResource`s.
     public var allResources: [FHIRResource] {
         allergyIntolerances
             + conditions
@@ -34,6 +36,7 @@ extension FHIRStore {
             + procedures
     }
     
+    /// The patient `FHIRResource`
     public var patient: FHIRResource? {
         otherResources
             .first { resource in
@@ -104,11 +107,10 @@ extension FHIRStore {
         return outpatientMedications + activeMedications
     }
     
-    // TODO: No Storage Keys in here, where to get the config from?
-    // Move the filtering to the caller
+    /// Get the function call identifiers of all available health resources in the `FHIRStore`.
+    ///
+    /// - Tip: We use an array as the order indicates the sorting, oldest resources come first, newest one last
     public var allResourcesFunctionCallIdentifier: [String] {
-        //@AppStorage(StorageKeys.resourceLimit) var resourceLimit = StorageKeys.Defaults.resourceLimit
-        
         let relevantResources: [FHIRResource]
         
         if llmRelevantResources.count > 100 /*resourceLimit*/ {
@@ -125,7 +127,7 @@ extension FHIRStore {
             relevantResources = llmRelevantResources
         }
         
-        return Array(Set(relevantResources.map { $0.functionCallIdentifier }))
+        return Array(Set(relevantResources.removingDuplicates().map { $0.functionCallIdentifier }))
     }
 }
 
@@ -146,6 +148,10 @@ extension Array where Element == FHIRResource {
         return Array(reducedEncounters.values)
     }
     
+    fileprivate func removingDuplicates() -> [FHIRResource] {
+        var seen = Set<Element>()
+        return filter { seen.insert($0).inserted }
+    }
     
     fileprivate func dateSuffix(maxLength: Int) -> [FHIRResource] {
         self.lazy.sorted(by: { $0.date ?? .distantPast < $1.date ?? .distantPast }).suffix(maxLength)

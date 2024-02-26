@@ -16,14 +16,12 @@ public struct FHIRResourceSummaryView: View {
     @Environment(FHIRResourceSummary.self) private var fhirResourceSummary
     
     @State private var viewState: ViewState = .idle
-    @State private var cachedSummary: FHIRResourceSummary.Summary?
-    
     private let resource: FHIRResource
     
     
     public var body: some View {
         Group {
-            if let summary = cachedSummary {
+            if let summary = fhirResourceSummary.cachedSummary(forResource: resource) {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(summary.title)
                     if let date = resource.date {
@@ -59,9 +57,6 @@ public struct FHIRResourceSummaryView: View {
             }
         }
             .viewStateAlert(state: $viewState)
-            .task {
-                cachedSummary = fhirResourceSummary.cachedSummary(forResource: resource)
-            }
     }
     
     

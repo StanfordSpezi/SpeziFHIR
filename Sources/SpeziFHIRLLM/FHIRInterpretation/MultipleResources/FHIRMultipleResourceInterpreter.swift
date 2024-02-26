@@ -1,5 +1,5 @@
 //
-// This source file is part of the Stanford LLM on FHIR project
+// This source file is part of the Stanford Spezi project
 //
 // SPDX-FileCopyrightText: 2023 Stanford University
 //
@@ -22,13 +22,14 @@ private enum FHIRMultipleResourceInterpreterConstants {
 }
 
 
+/// Used to interpret multiple FHIR resources via a chat-based interface with an LLM.
 @Observable
-class FHIRMultipleResourceInterpreter {
+public class FHIRMultipleResourceInterpreter {
     static let logger = Logger(subsystem: "edu.stanford.spezi.fhir", category: "SpeziFHIRInterpretation")
     
     private let localStorage: LocalStorage
     private let llmRunner: LLMRunner
-    private let llmSchema: any LLMSchema
+    private var llmSchema: any LLMSchema
     private let fhirStore: FHIRStore
     
     var llm: (any LLMSession)?
@@ -64,7 +65,7 @@ class FHIRMultipleResourceInterpreter {
             return
         }
         
-        var llm = await llmRunner(with: llmSchema)
+        let llm = llmRunner(with: llmSchema)
         // Read initial conversation from storage
         if let storedContext: Chat = try? localStorage.read(storageKey: FHIRMultipleResourceInterpreterConstants.chat) {
             llm.context = storedContext
@@ -81,7 +82,7 @@ class FHIRMultipleResourceInterpreter {
     @MainActor
     func queryLLM() {
         guard let llm,
-              llm.context.last?.role == .user || !(llm.context.contains(where: { $0.role == .assistant }) ?? false) else {
+              llm.context.last?.role == .user || !(llm.context.contains(where: { $0.role == .assistant }) ) else {
             return
         }
         
@@ -100,6 +101,34 @@ class FHIRMultipleResourceInterpreter {
             try localStorage.store(llm.context, storageKey: FHIRMultipleResourceInterpreterConstants.chat)
         }
     }
+    
+    /// Change the `LLMSchema` used by the ``FHIRMultipleResourceInterpreter``.
+    public func changeLLMSchema(
+        openAIModel model: LLMOpenAIModelType,
+        resourceCountLimit: Int,
+        resourceSummary: FHIRResourceSummary,
+        allowedResourcesFunctionCallIdentifiers: Set<String>? = nil // swiftlint:disable:this discouraged_optional_collection
+    ) {
+        self.llmSchema = LLMOpenAISchema(
+            parameters: .init(
+                modelType: model,
+                systemPrompts: []   // No system prompt as this will be determined later by the resource interpreter
+            )
+        ) {
+            // FHIR interpretation function
+            FHIRGetResourceLLMFunction(
+                fhirStore: self.fhirStore,
+                resourceSummary: resourceSummary,
+                resourceCountLimit: resourceCountLimit,
+                allowedResourcesFunctionCallIdentifiers: allowedResourcesFunctionCallIdentifiers
+            )
+        }
+        self.llm = nil
+        
+        Task { @MainActor in
+            await prepareLLM()
+        }
+    }
 }
 
 
@@ -112,10 +141,12 @@ extension FHIRPrompt {
             storageKey: "prompt.interpretMultipleResources",
             localizedDescription: String(
                 localized: "Interpretation Prompt",
+                bundle: .module,
                 comment: "Title of the multiple resources interpretation prompt."
             ),
             defaultPrompt: String(
-                localized: "Interpretation Prompt Content",
+                localized: "Multiple Resource Interpretation Prompt Content",
+                bundle: .module,
                 comment: "Content of the multiple resources interpretation prompt."
             )
         )

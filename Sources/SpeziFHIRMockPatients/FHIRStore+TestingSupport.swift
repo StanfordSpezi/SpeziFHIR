@@ -11,9 +11,8 @@ import SpeziFHIR
 
 
 extension FHIRStore {
+    /// Loads a mock resource into the `FHIRStore` for testing purposes.
     public func loadTestingResources() {
-        // TODO: Removed if FeatureFlags.testMode { ... }
-        
         let mockObservation = Observation(
             code: CodeableConcept(coding: [Coding(code: "1234".asFHIRStringPrimitive())]),
             id: FHIRPrimitive<FHIRString>("1234"),

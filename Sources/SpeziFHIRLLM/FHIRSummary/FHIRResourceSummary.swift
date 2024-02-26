@@ -75,6 +75,14 @@ public class FHIRResourceSummary {
     public func cachedSummary(forResource resource: FHIRResource) -> Summary? {
         resourceProcessor.results[resource.id]
     }
+    
+    /// Adjust the LLM schema used by the ``FHIRResourceSummary``.
+    ///
+    /// - Parameters:
+    ///    - schema: The to-be-used `LLMSchema`.
+    public func changeLLMSchema<Schema: LLMSchema>(to schema: Schema) {
+        self.resourceProcessor.llmSchema = schema
+    }
 }
 
 

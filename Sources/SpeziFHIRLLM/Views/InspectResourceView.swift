@@ -1,5 +1,5 @@
 //
-// This source file is part of the Stanford LLM on FHIR project
+// This source file is part of the Stanford Spezi project
 //
 // SPDX-FileCopyrightText: 2023 Stanford University
 //
@@ -31,15 +31,14 @@ struct InspectResourceView: View {
             .viewStateAlert(state: $interpreting)
             .viewStateAlert(state: $loadingSummary)
             .task {
-                // TODO: No feature flag accessible in here
-                //if !FeatureFlags.testMode {
+                #if !TEST
                 interpret()
-                //}
+                #endif
             }
     }
     
     @ViewBuilder private var summarySection: some View {
-        Section("FHIR_RESOURCES_SUMMARY_SECTION") {
+        Section("FHIR_RESOURCES_SUMMARY_SECTION".localized(.module).localizedString()) {
             if loadingSummary == .processing {
                 HStack {
                     Spacer()
@@ -59,7 +58,7 @@ struct InspectResourceView: View {
                         Text(summary.summary)
                             .multilineTextAlignment(.leading)
                             .contextMenu {
-                                Button("FHIR_RESOURCES_SUMMARY_BUTTON") {
+                                Button("FHIR_RESOURCES_SUMMARY_BUTTON".localized(.module).localizedString()) {
                                     loadSummary(forceReload: true)
                                 }
                             }
@@ -67,7 +66,7 @@ struct InspectResourceView: View {
                     }
                 }
             } else {
-                Button("FHIR_RESOURCES_SUMMARY_BUTTON") {
+                Button("FHIR_RESOURCES_SUMMARY_BUTTON".localized(.module).localizedString()) {
                     loadSummary()
                 }
             }
@@ -75,25 +74,25 @@ struct InspectResourceView: View {
     }
     
     @ViewBuilder private var interpretationSection: some View {
-        Section("FHIR_RESOURCES_INTERPRETATION_SECTION") {
+        Section("FHIR_RESOURCES_INTERPRETATION_SECTION".localized(.module).localizedString()) {
             if let interpretation = fhirResourceInterpreter.cachedInterpretation(forResource: resource), !interpretation.isEmpty {
                 Text(interpretation)
                     .multilineTextAlignment(.leading)
                     .contextMenu {
-                        Button("FHIR_RESOURCES_INTERPRETATION_BUTTON") {
+                        Button("FHIR_RESOURCES_INTERPRETATION_BUTTON".localized(.module).localizedString()) {
                             interpret(forceReload: true)
                         }
                     }
             } else if interpreting == .processing {
                 VStack(alignment: .center) {
-                    Text("FHIR_RESOURCES_INTERPRETATION_LOADING")
+                    Text("FHIR_RESOURCES_INTERPRETATION_LOADING", bundle: .module)
                         .frame(maxWidth: .infinity)
                     ProgressView()
                         .progressViewStyle(.circular)
                 }
             } else {
                 VStack(alignment: .center) {
-                    Button("FHIR_RESOURCES_INTERPRETATION_BUTTON") {
+                    Button("FHIR_RESOURCES_INTERPRETATION_BUTTON".localized(.module).localizedString()) {
                         interpret()
                     }
                 }
@@ -102,7 +101,7 @@ struct InspectResourceView: View {
     }
     
     @ViewBuilder private var resourceSection: some View {
-        Section("FHIR_RESOURCES_INTERPRETATION_RESOURCE") {
+        Section("FHIR_RESOURCES_INTERPRETATION_RESOURCE".localized(.module).localizedString()) {
             LazyText(verbatim: resource.jsonDescription)
                 .fontDesign(.monospaced)
                 .lineLimit(1)

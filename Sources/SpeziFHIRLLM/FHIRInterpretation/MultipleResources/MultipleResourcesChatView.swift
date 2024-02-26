@@ -1,5 +1,5 @@
 //
-// This source file is part of the Stanford LLM on FHIR project
+// This source file is part of the Stanford Spezi project
 //
 // SPDX-FileCopyrightText: 2023 Stanford University
 //
@@ -33,8 +33,10 @@ public struct MultipleResourcesChatView: View {
                         contextBinding,
                         disableInput: llm.state.representation == .processing
                     )
+                        .speak(llm.context, muted: !textToSpeech)
+                        .speechToolbarButton(muted: !$textToSpeech)
                         .viewStateAlert(state: llm.state)
-                        .onChange(of: llm.context, initial: true) { old, new in
+                        .onChange(of: llm.context, initial: true) { _, _ in
                             if llm.state != .generating {
                                 multipleResourceInterpreter.queryLLM()
                             }
@@ -66,22 +68,6 @@ public struct MultipleResourcesChatView: View {
                     dismiss()
                 }
             }
-        }
-        ToolbarItem(placement: .primaryAction) {
-            Button(
-                action: {
-                    textToSpeech.toggle()
-                },
-                label: {
-                    if textToSpeech {
-                        Image(systemName: "speaker")
-                            .accessibilityLabel(Text("Text to speech is enabled, press to disable text to speech."))
-                    } else {
-                        Image(systemName: "speaker.slash")
-                            .accessibilityLabel(Text("Text to speech is disabled, press to enable text to speech."))
-                    }
-                }
-            )
         }
         ToolbarItem(placement: .primaryAction) {
             Button(

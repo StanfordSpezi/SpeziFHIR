@@ -50,6 +50,14 @@ public class FHIRResourceInterpreter {
     public func cachedInterpretation(forResource resource: FHIRResource) -> String? {
         resourceProcessor.results[resource.id]
     }
+    
+    /// Adjust the LLM schema used by the ``FHIRResourceInterpreter``.
+    ///
+    /// - Parameters:
+    ///    - schema: The to-be-used `LLMSchema`.
+    public func changeLLMSchema<Schema: LLMSchema>(to schema: Schema) {
+        self.resourceProcessor.llmSchema = schema
+    }
 }
 
 

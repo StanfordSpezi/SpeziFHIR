@@ -1,5 +1,5 @@
 //
-// This source file is part of the Stanford LLM on FHIR project
+// This source file is part of the Stanford Spezi project
 //
 // SPDX-FileCopyrightText: 2023 Stanford University
 //
@@ -20,7 +20,7 @@ public class FHIRInterpretationModule: Module, DefaultInitializable {
             .init(
                 parameters: .init(
                     modelType: .gpt4_turbo_preview,
-                    systemPrompt: nil   // No system prompt as this will be determined later by the resource interpreter
+                    systemPrompts: []   // No system prompt as this will be determined later by the resource interpreter
                 )
             )
         }
@@ -35,11 +35,36 @@ public class FHIRInterpretationModule: Module, DefaultInitializable {
     @Model private var resourceInterpreter: FHIRResourceInterpreter
     @Model private var multipleResourceInterpreter: FHIRMultipleResourceInterpreter
     
-    // TODO: Adjust this to make it configurable after the fact
-    // UserDefaults.standard.string(forKey: StorageKeys.openAIModel) ?? StorageKeys.Defaults.openAIModel
     let summaryLLMSchema: any LLMSchema
     let interpretationLLMSchema: any LLMSchema
     let openAIModelType: LLMOpenAIModelType
+    let resourceCountLimit: Int
+    let allowedResourcesFunctionCallIdentifiers: Set<String>?   // swiftlint:disable:this discouraged_optional_collection
+    
+    
+    /// - Warning: Ensure that passed LLM schema's don't contain a system prompt! This will be configured by the ``FHIRInterpretationModule``.
+    public init<SummaryLLM: LLMSchema, InterpretationLLM: LLMSchema>(   // swiftlint:disable:this function_default_parameter_at_end
+        summaryLLMSchema: SummaryLLM = Defaults.llmSchema,
+        interpretationLLMSchema: InterpretationLLM = Defaults.llmSchema,
+        multipleResourceInterpretationOpenAIModel: LLMOpenAIModelType,  // swiftlint:disable:this identifier_name
+        resourceCountLimit: Int = 250,
+        allowedResourcesFunctionCallIdentifiers: Set<String>? = nil // swiftlint:disable:this discouraged_optional_collection
+    ) {
+        self.summaryLLMSchema = summaryLLMSchema
+        self.interpretationLLMSchema = interpretationLLMSchema
+        self.openAIModelType = multipleResourceInterpretationOpenAIModel
+        self.resourceCountLimit = resourceCountLimit
+        self.allowedResourcesFunctionCallIdentifiers = allowedResourcesFunctionCallIdentifiers
+    }
+    
+    
+    public required convenience init() {
+        self.init(
+            summaryLLMSchema: Defaults.llmSchema,
+            interpretationLLMSchema: Defaults.llmSchema,
+            multipleResourceInterpretationOpenAIModel: .gpt4_turbo_preview
+        )
+    }
     
     
     public func configure() {
@@ -61,39 +86,18 @@ public class FHIRInterpretationModule: Module, DefaultInitializable {
             llmSchema: LLMOpenAISchema(
                 parameters: .init(
                     modelType: openAIModelType,
-                    systemPrompt: nil   // No system prompt as this will be determined later by the resource interpreter
+                    systemPrompts: []   // No system prompt as this will be determined later by the resource interpreter
                 )
             ) {
                 // FHIR interpretation function
                 FHIRGetResourceLLMFunction(
                     fhirStore: self.fhirStore,
                     resourceSummary: self.resourceSummary,
-                    allResourcesFunctionCallIdentifier: self.fhirStore.allResourcesFunctionCallIdentifier
+                    resourceCountLimit: self.resourceCountLimit,
+                    allowedResourcesFunctionCallIdentifiers: self.allowedResourcesFunctionCallIdentifiers
                 )
             },
             fhirStore: fhirStore
-        )
-    }
-    
-    
-    // TODO: The multipleResource LLM is always fixed to OpenAI itself because of the function calls
-    // Ensure that passed schema's don't contain a system prompt!
-    public init<SummaryLLM: LLMSchema, InterpretationLLM: LLMSchema>(
-        summaryLLMSchema: SummaryLLM = Defaults.llmSchema,
-        interpretationLLMSchema: InterpretationLLM = Defaults.llmSchema,
-        multipleResourceInterpretationOpenAIModel: LLMOpenAIModelType
-    ) {
-        self.summaryLLMSchema = summaryLLMSchema
-        self.interpretationLLMSchema = interpretationLLMSchema
-        self.openAIModelType = multipleResourceInterpretationOpenAIModel
-    }
-    
-    
-    public required convenience init() {
-        self.init(
-            summaryLLMSchema: Defaults.llmSchema,
-            interpretationLLMSchema: Defaults.llmSchema,
-            multipleResourceInterpretationOpenAIModel: .gpt4_turbo_preview
         )
     }
 }

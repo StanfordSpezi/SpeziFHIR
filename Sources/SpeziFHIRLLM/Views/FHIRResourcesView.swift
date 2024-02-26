@@ -1,5 +1,5 @@
 //
-// This source file is part of the Stanford LLM on FHIR project
+// This source file is part of the Stanford Spezi project
 //
 // SPDX-FileCopyrightText: 2023 Stanford University
 //
@@ -59,14 +59,13 @@ public struct FHIRResourcesView<ContentView: View, ActionView: View>: View {
             }
             
             if fhirStore.allResources.filterByDisplayName(with: searchText).isEmpty {
-                Text("FHIR_RESOURCES_EMPTY_SEARCH_MESSAGE")
-                    .padding(.top, 8)
+                Text("FHIR_RESOURCES_EMPTY_SEARCH_MESSAGE", bundle: .module)
             } else {
                 resourcesSection
             }
             
             Section { } footer: {
-                Text("Total Number of Resources: \(fhirStore.allResources.count)")
+                Text("Total Number of Resources: \(fhirStore.allResources.count)", bundle: .module)
             }
         }
             .searchable(text: $searchText)
@@ -74,6 +73,17 @@ public struct FHIRResourcesView<ContentView: View, ActionView: View>: View {
                 InspectResourceView(resource: resource)
             }
             .navigationTitle(navigationTitle)
+    }
+    
+    @ViewBuilder private var resourcesSection: some View {
+        section(for: \.conditions, sectionName: String(localized: "Conditions"))
+        section(for: \.diagnostics, sectionName: String(localized: "Diagnostics"))
+        section(for: \.encounters, sectionName: String(localized: "Encounters"))
+        section(for: \.immunizations, sectionName: String(localized: "Immunizations"))
+        section(for: \.medications, sectionName: String(localized: "Medications"))
+        section(for: \.observations, sectionName: String(localized: "Observations"))
+        section(for: \.procedures, sectionName: String(localized: "Procedures"))
+        section(for: \.otherResources, sectionName: String(localized: "Other Resources"))
     }
     
     
@@ -108,18 +118,6 @@ public struct FHIRResourcesView<ContentView: View, ActionView: View>: View {
         self.navigationTitle = Text(verbatim: String(navigationTitle))
         self.contentView = contentView()
         self.actionView = actionView()
-    }
-
-    
-    @ViewBuilder private var resourcesSection: some View {
-        section(for: \.conditions, sectionName: String(localized: "Conditions"))
-        section(for: \.diagnostics, sectionName: String(localized: "Diagnostics"))
-        section(for: \.encounters, sectionName: String(localized: "Encounters"))
-        section(for: \.immunizations, sectionName: String(localized: "Immunizations"))
-        section(for: \.medications, sectionName: String(localized: "Medications"))
-        section(for: \.observations, sectionName: String(localized: "Observations"))
-        section(for: \.procedures, sectionName: String(localized: "Procedures"))
-        section(for: \.otherResources, sectionName: String(localized: "Other Resources"))
     }
     
     

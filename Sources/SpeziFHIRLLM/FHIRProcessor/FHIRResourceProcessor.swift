@@ -19,9 +19,9 @@ class FHIRResourceProcessor<Content: Codable & LosslessStringConvertible> {
     
     private let localStorage: LocalStorage
     private let llmRunner: LLMRunner
-    private let llmSchema: any LLMSchema
     private let storageKey: String
     private let prompt: FHIRPrompt
+    var llmSchema: any LLMSchema
     
     
     var results: Results = [:] {
@@ -57,17 +57,12 @@ class FHIRResourceProcessor<Content: Codable & LosslessStringConvertible> {
             return result
         }
         
-        let chatStreamResults = try await llmRunner.oneShot(
+        let chatStreamResult: String = try await llmRunner.oneShot(
             with: llmSchema,
-            chat: .init(systemMessages: prompt.prompt(withFHIRResource: resource.jsonDescription))
+            chat: .init(systemMessages: [prompt.prompt(withFHIRResource: resource.jsonDescription)])
         )
-        var result = ""
         
-        for try await chatStreamResult in chatStreamResults {
-            result.append(chatStreamResult)
-        }
-        
-        guard let content = Content(result) else {
+        guard let content = Content(chatStreamResult) else {
             throw FHIRResourceProcessorError.notParsableAsAString
         }
         
