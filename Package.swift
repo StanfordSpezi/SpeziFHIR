@@ -20,15 +20,18 @@ let package = Package(
     products: [
         .library(name: "SpeziFHIR", targets: ["SpeziFHIR"]),
         .library(name: "SpeziFHIRHealthKit", targets: ["SpeziFHIRHealthKit"]),
-        .library(name: "SpeziFHIRInterpretation", targets: ["SpeziFHIRInterpretation"]),
+        .library(name: "SpeziFHIRLLM", targets: ["SpeziFHIRLLM"]),
         .library(name: "SpeziFHIRMockPatients", targets: ["SpeziFHIRMockPatients"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.5.0")),
         .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.4")),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.8.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", .upToNextMinor(from: "0.4.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziML.git", .upToNextMinor(from: "0.3.1"))
+        .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.2.1"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", .upToNextMinor(from: "0.5.1")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziLLM.git", .upToNextMinor(from: "0.7.0")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "1.0.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziChat.git", .upToNextMinor(from: "0.1.8")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech.git", from: "1.0.0")
     ],
     targets: [
         .target(
@@ -49,12 +52,16 @@ let package = Package(
             ]
         ),
         .target(
-            name: "SpeziFHIRInterpretation",
+            name: "SpeziFHIRLLM",
             dependencies: [
                 .target(name: "SpeziFHIR"),
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "ModelsR4", package: "FHIRModels"),
-                .product(name: "SpeziOpenAI", package: "SpeziML")
+                .product(name: "SpeziLLM", package: "SpeziLLM"),
+                .product(name: "SpeziLLMOpenAI", package: "SpeziLLM"),
+                .product(name: "SpeziLocalStorage", package: "SpeziStorage"),
+                .product(name: "SpeziChat", package: "SpeziChat"),
+                .product(name: "SpeziSpeechSynthesizer", package: "SpeziSpeech")
             ],
             resources: [
                 .process("Resources")
@@ -63,7 +70,8 @@ let package = Package(
         .target(
             name: "SpeziFHIRMockPatients",
             dependencies: [
-                .target(name: "SpeziFHIR")
+                .target(name: "SpeziFHIR"),
+                .product(name: "ModelsR4", package: "FHIRModels")
             ],
             resources: [
                 .process("Resources")
