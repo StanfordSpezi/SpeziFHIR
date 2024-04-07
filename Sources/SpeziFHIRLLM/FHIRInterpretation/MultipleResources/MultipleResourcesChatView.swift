@@ -28,12 +28,13 @@ public struct MultipleResourcesChatView: View {
         NavigationStack {
             Group {
                 if let llm = multipleResourceInterpreter.llm {
-                    let contextBinding = Binding { llm.context } set: { llm.context = $0 }
+                    let contextBinding = Binding { llm.context.chat } set: { llm.context.chat = $0 }
+                    
                     ChatView(
                         contextBinding,
                         disableInput: llm.state.representation == .processing
                     )
-                        .speak(llm.context, muted: !textToSpeech)
+                        .speak(llm.context.chat, muted: !textToSpeech)
                         .speechToolbarButton(muted: !$textToSpeech)
                         .viewStateAlert(state: llm.state)
                         .onChange(of: llm.context, initial: true) { _, _ in

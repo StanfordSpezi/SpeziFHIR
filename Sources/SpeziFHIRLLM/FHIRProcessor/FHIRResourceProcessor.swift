@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import SpeziChat
 import SpeziFHIR
 import SpeziLLM
@@ -21,6 +22,7 @@ class FHIRResourceProcessor<Content: Codable & LosslessStringConvertible> {
     private let llmRunner: LLMRunner
     private let storageKey: String
     private let prompt: FHIRPrompt
+    private let lock = NSLock()
     var llmSchema: any LLMSchema
     
     
@@ -59,14 +61,17 @@ class FHIRResourceProcessor<Content: Codable & LosslessStringConvertible> {
         
         let chatStreamResult: String = try await llmRunner.oneShot(
             with: llmSchema,
-            chat: .init(systemMessages: [prompt.prompt(withFHIRResource: resource.jsonDescription)])
+            context: .init(systemMessages: [prompt.prompt(withFHIRResource: resource.jsonDescription)])
         )
         
         guard let content = Content(chatStreamResult) else {
             throw FHIRResourceProcessorError.notParsableAsAString
         }
         
-        results[resource.id] = content
+        lock.withLock {
+            results[resource.id] = content
+        }
+        
         return content
     }
 }
