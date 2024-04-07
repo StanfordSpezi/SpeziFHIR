@@ -43,7 +43,7 @@ struct FHIRGetResourceLLMFunction: LLMFunction {
         
         _resources = Parameter(
             description: String(localized: "PARAMETER_DESCRIPTION"),
-            enumValues: Array(allResourcesFunctionCallIdentifiers)
+            enum: Array(allResourcesFunctionCallIdentifiers)
         )
     }
     

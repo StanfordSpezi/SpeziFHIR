@@ -18,7 +18,7 @@ import SwiftUI
 
 
 private enum FHIRMultipleResourceInterpreterConstants {
-    static let chat = "FHIRMultipleResourceInterpreter.chat"
+    static let context = "FHIRMultipleResourceInterpreter.context"
 }
 
 
@@ -65,7 +65,7 @@ public class FHIRMultipleResourceInterpreter {
         
         let llm = llmRunner(with: llmSchema)
         // Read initial conversation from storage
-        if let storedContext: Chat = try? localStorage.read(storageKey: FHIRMultipleResourceInterpreterConstants.chat) {
+        if let storedContext: LLMContext = try? localStorage.read(storageKey: FHIRMultipleResourceInterpreterConstants.context) {
             llm.context = storedContext
         } else {
             llm.context.append(systemMessage: FHIRPrompt.interpretMultipleResources.prompt)
@@ -80,7 +80,7 @@ public class FHIRMultipleResourceInterpreter {
     @MainActor
     func queryLLM() {
         guard let llm,
-              llm.context.last?.role == .user || !(llm.context.contains(where: { $0.role == .assistant }) ) else {
+              llm.context.last?.role == .user || !(llm.context.contains(where: { $0.role == .assistant() }) ) else {
             return
         }
         
@@ -96,7 +96,7 @@ public class FHIRMultipleResourceInterpreter {
             }
             
             // Store conversation to storage
-            try localStorage.store(llm.context, storageKey: FHIRMultipleResourceInterpreterConstants.chat)
+            try localStorage.store(llm.context, storageKey: FHIRMultipleResourceInterpreterConstants.context)
         }
     }
     

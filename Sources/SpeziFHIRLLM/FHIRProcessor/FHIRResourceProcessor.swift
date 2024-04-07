@@ -61,7 +61,7 @@ class FHIRResourceProcessor<Content: Codable & LosslessStringConvertible> {
         
         let chatStreamResult: String = try await llmRunner.oneShot(
             with: llmSchema,
-            chat: .init(systemMessages: [prompt.prompt(withFHIRResource: resource.jsonDescription)])
+            context: .init(systemMessages: [prompt.prompt(withFHIRResource: resource.jsonDescription)])
         )
         
         guard let content = Content(chatStreamResult) else {
