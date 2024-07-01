@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Foundation
 import Observation
 import class ModelsR4.Bundle
 import enum ModelsDSTU2.ResourceProxy
@@ -18,25 +19,32 @@ import Spezi
 /// The ``FHIRStore`` is automatically injected in the environment if you use the ``FHIR`` standard or can be used as a standalone module.
 @Observable
 public class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable {
+    private let lock = NSLock()
     @ObservationIgnored private var _resources: [FHIRResource]
     
     
     /// Allergy intolerances.
     public var allergyIntolerances: [FHIRResource] {
         access(keyPath: \.allergyIntolerances)
-        return _resources.filter { $0.category == .allergyIntolerance }
+        return lock.withLock {
+            _resources.filter { $0.category == .allergyIntolerance }
+        }
     }
     
     /// Conditions.
     public var conditions: [FHIRResource] {
         access(keyPath: \.conditions)
-        return _resources.filter { $0.category == .condition }
+        return lock.withLock {
+            _resources.filter { $0.category == .condition }
+        }
     }
     
     /// Diagnostics.
     public var diagnostics: [FHIRResource] {
         access(keyPath: \.diagnostics)
-        return _resources.filter { $0.category == .diagnostic }
+        return lock.withLock {
+            _resources.filter { $0.category == .diagnostic }
+        }
     }
     
     /// Encounters.
@@ -48,31 +56,41 @@ public class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable {
     /// Immunizations.
     public var immunizations: [FHIRResource] {
         access(keyPath: \.immunizations)
-        return _resources.filter { $0.category == .immunization }
+        return lock.withLock {
+            _resources.filter { $0.category == .immunization }
+        }
     }
     
     /// Medications.
     public var medications: [FHIRResource] {
         access(keyPath: \.medications)
-        return _resources.filter { $0.category == .medication }
+        return lock.withLock {
+            _resources.filter { $0.category == .medication }
+        }
     }
     
     /// Observations.
     public var observations: [FHIRResource] {
         access(keyPath: \.observations)
-        return _resources.filter { $0.category == .observation }
+        return lock.withLock {
+            _resources.filter { $0.category == .observation }
+        }
     }
     
     /// Other resources that could not be classified on the other categories.
     public var otherResources: [FHIRResource] {
         access(keyPath: \.otherResources)
-        return _resources.filter { $0.category == .other }
+        return lock.withLock {
+            _resources.filter { $0.category == .other }
+        }
     }
     
     /// Procedures.
     public var procedures: [FHIRResource] {
         access(keyPath: \.procedures)
-        return _resources.filter { $0.category == .procedure }
+        return lock.withLock {
+            _resources.filter { $0.category == .procedure }
+        }
     }
     
     
@@ -86,7 +104,9 @@ public class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable {
     /// - Parameter resource: The `FHIRResource` to be inserted.
     public func insert(resource: FHIRResource) {
         withMutation(keyPath: resource.storeKeyPath) {
-            _resources.append(resource)
+            lock.withLock {
+                _resources.append(resource)
+            }
         }
     }
     
@@ -94,12 +114,14 @@ public class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable {
     ///
     /// - Parameter resource: The `FHIRResource` identifier to be inserted.
     public func remove(resource resourceId: FHIRResource.ID) {
-        guard let resource = _resources.first(where: { $0.id == resourceId }) else {
-            return
-        }
-        
-        withMutation(keyPath: resource.storeKeyPath) {
-            _resources.removeAll(where: { $0.id == resourceId })
+        lock.withLock {
+            guard let resource = _resources.first(where: { $0.id == resourceId }) else {
+                return
+            }
+            
+            withMutation(keyPath: resource.storeKeyPath) {
+                _resources.removeAll(where: { $0.id == resourceId })
+            }
         }
     }
     
@@ -116,25 +138,27 @@ public class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable {
     
     /// Removes all resources from the store.
     public func removeAllResources() {
-        // Not really ideal but seems to be a path to ensure that all observables are called.
-        _$observationRegistrar.willSet(self, keyPath: \.allergyIntolerances)
-        _$observationRegistrar.willSet(self, keyPath: \.conditions)
-        _$observationRegistrar.willSet(self, keyPath: \.diagnostics)
-        _$observationRegistrar.willSet(self, keyPath: \.encounters)
-        _$observationRegistrar.willSet(self, keyPath: \.immunizations)
-        _$observationRegistrar.willSet(self, keyPath: \.medications)
-        _$observationRegistrar.willSet(self, keyPath: \.observations)
-        _$observationRegistrar.willSet(self, keyPath: \.otherResources)
-        _$observationRegistrar.willSet(self, keyPath: \.procedures)
-        _resources = []
-        _$observationRegistrar.didSet(self, keyPath: \.allergyIntolerances)
-        _$observationRegistrar.didSet(self, keyPath: \.conditions)
-        _$observationRegistrar.didSet(self, keyPath: \.diagnostics)
-        _$observationRegistrar.didSet(self, keyPath: \.encounters)
-        _$observationRegistrar.didSet(self, keyPath: \.immunizations)
-        _$observationRegistrar.didSet(self, keyPath: \.medications)
-        _$observationRegistrar.didSet(self, keyPath: \.observations)
-        _$observationRegistrar.didSet(self, keyPath: \.otherResources)
-        _$observationRegistrar.didSet(self, keyPath: \.procedures)
+        lock.withLock {
+            // Not really ideal but seems to be a path to ensure that all observables are called.
+            _$observationRegistrar.willSet(self, keyPath: \.allergyIntolerances)
+            _$observationRegistrar.willSet(self, keyPath: \.conditions)
+            _$observationRegistrar.willSet(self, keyPath: \.diagnostics)
+            _$observationRegistrar.willSet(self, keyPath: \.encounters)
+            _$observationRegistrar.willSet(self, keyPath: \.immunizations)
+            _$observationRegistrar.willSet(self, keyPath: \.medications)
+            _$observationRegistrar.willSet(self, keyPath: \.observations)
+            _$observationRegistrar.willSet(self, keyPath: \.otherResources)
+            _$observationRegistrar.willSet(self, keyPath: \.procedures)
+            _resources = []
+            _$observationRegistrar.didSet(self, keyPath: \.allergyIntolerances)
+            _$observationRegistrar.didSet(self, keyPath: \.conditions)
+            _$observationRegistrar.didSet(self, keyPath: \.diagnostics)
+            _$observationRegistrar.didSet(self, keyPath: \.encounters)
+            _$observationRegistrar.didSet(self, keyPath: \.immunizations)
+            _$observationRegistrar.didSet(self, keyPath: \.medications)
+            _$observationRegistrar.didSet(self, keyPath: \.observations)
+            _$observationRegistrar.didSet(self, keyPath: \.otherResources)
+            _$observationRegistrar.didSet(self, keyPath: \.procedures)
+        }
     }
 }
