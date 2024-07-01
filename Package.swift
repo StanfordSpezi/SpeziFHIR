@@ -8,8 +8,15 @@
 // SPDX-License-Identifier: MIT
 //
 
+import class Foundation.ProcessInfo
 import PackageDescription
 
+
+#if swift(<6)
+let strictConcurrency: SwiftSetting = .enableExperimentalFeature("StrictConcurrency")
+#else
+let strictConcurrency: SwiftSetting = .enableUpcomingFeature("StrictConcurrency")
+#endif
 
 let package = Package(
     name: "SpeziFHIR",
@@ -32,7 +39,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "1.0.0"),
         .package(url: "https://github.com/StanfordSpezi/SpeziChat.git", .upToNextMinor(from: "0.2.0")),
         .package(url: "https://github.com/StanfordSpezi/SpeziSpeech.git", from: "1.0.0")
-    ],
+    ] + swiftLintPackage(),
     targets: [
         .target(
             name: "SpeziFHIR",
@@ -41,7 +48,11 @@ let package = Package(
                 .product(name: "ModelsR4", package: "FHIRModels"),
                 .product(name: "ModelsDSTU2", package: "FHIRModels"),
                 .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR")
-            ]
+            ],
+            swiftSettings: [
+                strictConcurrency
+            ],
+            plugins: [] + swiftLintPlugin()
         ),
         .target(
             name: "SpeziFHIRHealthKit",
@@ -49,7 +60,11 @@ let package = Package(
                 .target(name: "SpeziFHIR"),
                 .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
                 .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
-            ]
+            ],
+            swiftSettings: [
+                strictConcurrency
+            ],
+            plugins: [] + swiftLintPlugin()
         ),
         .target(
             name: "SpeziFHIRLLM",
@@ -65,7 +80,11 @@ let package = Package(
             ],
             resources: [
                 .process("Resources")
-            ]
+            ],
+            swiftSettings: [
+                strictConcurrency
+            ],
+            plugins: [] + swiftLintPlugin()
         ),
         .target(
             name: "SpeziFHIRMockPatients",
@@ -75,13 +94,39 @@ let package = Package(
             ],
             resources: [
                 .process("Resources")
-            ]
+            ],
+            swiftSettings: [
+                strictConcurrency
+            ],
+            plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
             name: "SpeziFHIRTests",
             dependencies: [
                 .target(name: "SpeziFHIR")
-            ]
+            ],
+            swiftSettings: [
+                strictConcurrency
+            ],
+            plugins: [] + swiftLintPlugin()
         )
     ]
 )
+
+
+func swiftLintPlugin() -> [Target.PluginUsage] {
+    // Fully quit Xcode and open again with `open --env SPEZI_DEVELOPMENT_SWIFTLINT /Applications/Xcode.app`
+    if ProcessInfo.processInfo.environment["SPEZI_DEVELOPMENT_SWIFTLINT"] != nil {
+        [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
+    } else {
+        []
+    }
+}
+
+func swiftLintPackage() -> [PackageDescription.Package.Dependency] {
+    if ProcessInfo.processInfo.environment["SPEZI_DEVELOPMENT_SWIFTLINT"] != nil {
+        [.package(url: "https://github.com/realm/SwiftLint.git", .upToNextMinor(from: "0.55.1"))]
+    } else {
+        []
+    }
+}
