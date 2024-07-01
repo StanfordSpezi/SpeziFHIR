@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import HealthKit
+@preconcurrency import HealthKit
 import HealthKitOnFHIR
 import ModelsDSTU2
 import ModelsR4

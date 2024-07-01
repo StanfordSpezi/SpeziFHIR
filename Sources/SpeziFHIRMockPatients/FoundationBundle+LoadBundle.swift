@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import class ModelsR4.Bundle
+@preconcurrency import class ModelsR4.Bundle
 
 
 extension Foundation.Bundle {
