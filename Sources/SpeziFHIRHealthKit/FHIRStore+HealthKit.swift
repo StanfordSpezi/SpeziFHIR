@@ -51,6 +51,9 @@ extension FHIRStore {
             
             let decoder = JSONDecoder()
             let resourceProxy = try decoder.decode(ModelsDSTU2.ResourceProxy.self, from: fhirResource.data)
+            
+            let claim = resourceProxy.get(if: ClinicalImpression.self)
+            
             return FHIRResource(
                 versionedResource: .dstu2(resourceProxy.get()),
                 displayName: clinicalResource.displayName
