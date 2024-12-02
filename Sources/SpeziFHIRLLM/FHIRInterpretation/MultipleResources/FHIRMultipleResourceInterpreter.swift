@@ -101,6 +101,7 @@ public class FHIRMultipleResourceInterpreter {
     }
     
     /// Change the `LLMSchema` used by the ``FHIRMultipleResourceInterpreter``.
+    @MainActor
     public func changeLLMSchema(
         openAIModel model: LLMOpenAIModelType,
         resourceCountLimit: Int,
@@ -123,7 +124,7 @@ public class FHIRMultipleResourceInterpreter {
         }
         self.llm = nil
         
-        Task { @MainActor in
+        Task {
             await prepareLLM()
         }
     }
