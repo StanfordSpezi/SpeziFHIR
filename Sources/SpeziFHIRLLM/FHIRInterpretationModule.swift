@@ -43,9 +43,9 @@ public class FHIRInterpretationModule: Module, DefaultInitializable {
     
     
     /// - Warning: Ensure that passed LLM schema's don't contain a system prompt! This will be configured by the ``FHIRInterpretationModule``.
-    public init<SummaryLLM: LLMSchema, InterpretationLLM: LLMSchema>(   // swiftlint:disable:this function_default_parameter_at_end
+    public init<SummaryLLM: LLMSchema, InterpretationLLM: LLMSchema>(
         summaryLLMSchema: SummaryLLM = Defaults.llmSchema,
-        interpretationLLMSchema: InterpretationLLM = Defaults.llmSchema,
+        interpretationLLMSchema: InterpretationLLM = Defaults.llmSchema,    // swiftlint:disable:this function_default_parameter_at_end
         multipleResourceInterpretationOpenAIModel: LLMOpenAIModelType,  // swiftlint:disable:this identifier_name
         resourceCountLimit: Int = 250,
         allowedResourcesFunctionCallIdentifiers: Set<String>? = nil // swiftlint:disable:this discouraged_optional_collection
