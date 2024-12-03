@@ -14,9 +14,9 @@ import SpeziLocalStorage
 
 /// Responsible for summarizing FHIR resources.
 @Observable
-public class FHIRResourceSummary {
+public final class FHIRResourceSummary: Sendable {
     /// Summary of a FHIR resource emitted by the ``FHIRResourceSummary``.
-    public struct Summary: Codable, LosslessStringConvertible {
+    public struct Summary: Codable, LosslessStringConvertible, Sendable {
         /// Title of the FHIR resource, should be shorter than 4 words.
         public let title: String
         /// Summary of the FHIR resource, should be a single line of text.

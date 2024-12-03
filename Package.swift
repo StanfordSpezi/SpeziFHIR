@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 
 //
 // This source file is part of the Stanford Spezi open-source project
@@ -11,12 +11,6 @@
 import class Foundation.ProcessInfo
 import PackageDescription
 
-
-#if swift(<6)
-let strictConcurrency: SwiftSetting = .enableExperimentalFeature("StrictConcurrency")
-#else
-let strictConcurrency: SwiftSetting = .enableUpcomingFeature("StrictConcurrency")
-#endif
 
 let package = Package(
     name: "SpeziFHIR",
@@ -49,9 +43,6 @@ let package = Package(
                 .product(name: "ModelsDSTU2", package: "FHIRModels"),
                 .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR")
             ],
-            swiftSettings: [
-                strictConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .target(
@@ -60,9 +51,6 @@ let package = Package(
                 .target(name: "SpeziFHIR"),
                 .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
                 .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
-            ],
-            swiftSettings: [
-                strictConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         ),
@@ -81,9 +69,6 @@ let package = Package(
             resources: [
                 .process("Resources")
             ],
-            swiftSettings: [
-                strictConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .target(
@@ -95,18 +80,12 @@ let package = Package(
             resources: [
                 .process("Resources")
             ],
-            swiftSettings: [
-                strictConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
             name: "SpeziFHIRTests",
             dependencies: [
                 .target(name: "SpeziFHIR")
-            ],
-            swiftSettings: [
-                strictConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         )
