@@ -19,7 +19,7 @@ public class FHIRInterpretationModule: Module, DefaultInitializable {
         public static var llmSchema: LLMOpenAISchema {
             .init(
                 parameters: .init(
-                    modelType: .gpt4_turbo_preview,
+                    modelType: .gpt4_turbo,
                     systemPrompts: []   // No system prompt as this will be determined later by the resource interpreter
                 )
             )
@@ -27,9 +27,9 @@ public class FHIRInterpretationModule: Module, DefaultInitializable {
     }
     
     
-    @Dependency private var localStorage: LocalStorage
-    @Dependency private var llmRunner: LLMRunner
-    @Dependency private var fhirStore: FHIRStore
+    @Dependency(LocalStorage.self) private var localStorage
+    @Dependency(LLMRunner.self) private var llmRunner
+    @Dependency(FHIRStore.self) private var fhirStore
     
     @Model private var resourceSummary: FHIRResourceSummary
     @Model private var resourceInterpreter: FHIRResourceInterpreter
@@ -43,9 +43,9 @@ public class FHIRInterpretationModule: Module, DefaultInitializable {
     
     
     /// - Warning: Ensure that passed LLM schema's don't contain a system prompt! This will be configured by the ``FHIRInterpretationModule``.
-    public init<SummaryLLM: LLMSchema, InterpretationLLM: LLMSchema>(   // swiftlint:disable:this function_default_parameter_at_end
+    public init<SummaryLLM: LLMSchema, InterpretationLLM: LLMSchema>(
         summaryLLMSchema: SummaryLLM = Defaults.llmSchema,
-        interpretationLLMSchema: InterpretationLLM = Defaults.llmSchema,
+        interpretationLLMSchema: InterpretationLLM = Defaults.llmSchema,    // swiftlint:disable:this function_default_parameter_at_end
         multipleResourceInterpretationOpenAIModel: LLMOpenAIModelType,  // swiftlint:disable:this identifier_name
         resourceCountLimit: Int = 250,
         allowedResourcesFunctionCallIdentifiers: Set<String>? = nil // swiftlint:disable:this discouraged_optional_collection
@@ -62,7 +62,7 @@ public class FHIRInterpretationModule: Module, DefaultInitializable {
         self.init(
             summaryLLMSchema: Defaults.llmSchema,
             interpretationLLMSchema: Defaults.llmSchema,
-            multipleResourceInterpretationOpenAIModel: .gpt4_turbo_preview
+            multipleResourceInterpretationOpenAIModel: .gpt4_turbo
         )
     }
     

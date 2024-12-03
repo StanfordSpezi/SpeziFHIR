@@ -14,11 +14,14 @@ import enum ModelsDSTU2.ResourceProxy
 import Spezi
 
 
-/// Module to manage FHIR resources grouped into automatically computed and updated categories.
+/// `Module` to manage FHIR resources grouped into automatically computed and updated categories.
 ///
 /// The ``FHIRStore`` is automatically injected in the environment if you use the ``FHIR`` standard or can be used as a standalone module.
 @Observable
-public class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable {
+public final class FHIRStore: Module,
+                              EnvironmentAccessible,
+                              DefaultInitializable,
+                              @unchecked Sendable /* `unchecked` `Sendable` conformance fine as access to `_resources` protected by `NSLock` */ {
     private let lock = NSLock()
     @ObservationIgnored private var _resources: [FHIRResource]
     

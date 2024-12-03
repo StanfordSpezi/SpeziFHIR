@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/FHIRModels",
       "state" : {
-        "revision" : "861afd5816a98d38f86220eab2f812d76cad84a0",
-        "version" : "0.5.0"
+        "revision" : "8a1cb1bdc4a01a814825aca47ada4186dc8a6ee1",
+        "version" : "0.6.0"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordBDHG/HealthKitOnFHIR",
       "state" : {
-        "revision" : "418929f315f37e6d9c8f30f40030bc65b9cc47c9",
-        "version" : "0.2.8"
+        "revision" : "87a9257e6fa37407f3437e4a0bf21dd09a4ea7c5",
+        "version" : "0.2.11"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/Spezi",
       "state" : {
-        "revision" : "5ada3f3a18c86a658d140c6f4c45ca2e9d5e61ce",
-        "version" : "1.4.0"
+        "revision" : "4513a697572e8e1faea1e0ee52e6fad4b8d3dd8d",
+        "version" : "1.8.0"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziChat.git",
       "state" : {
-        "revision" : "aaa10d71431b78ece8bf29f95c0050632714984d",
-        "version" : "0.2.0"
+        "revision" : "940ffbec504849968305d9f956344a4f35b6cd48",
+        "version" : "0.2.1"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziFoundation",
       "state" : {
-        "revision" : "3326feab3dac120c16af63243615592990d33516",
-        "version" : "1.1.2"
+        "revision" : "5b4ad1b343154b52a68c33a6bfe02d9cb07cb9dc",
+        "version" : "2.0.0"
       }
     },
     {
@@ -68,8 +68,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziHealthKit.git",
       "state" : {
-        "revision" : "1e9cb5a6036ac7f4ff37ea1c3ed4898103339ad1",
-        "version" : "0.5.3"
+        "revision" : "fbdec78fcb2f90d6338f1968e21dd11fbee65070",
+        "version" : "0.6.0"
       }
     },
     {
@@ -77,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziLLM.git",
       "state" : {
-        "revision" : "3663884f23e55c67c875a97c5da08ed172ea02ac",
-        "version" : "0.8.3"
+        "revision" : "6633d8a78eece57d18a9876197e5806c01516343",
+        "version" : "0.8.4"
       }
     },
     {
@@ -95,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziSpeech",
       "state" : {
-        "revision" : "60b8cdbf6f3d58b0d75eadf30db50f88848069aa",
-        "version" : "1.0.1"
+        "revision" : "0b79f72fc8b0606e09787926446dfafb541669d3",
+        "version" : "1.2.0"
       }
     },
     {
@@ -104,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziStorage",
       "state" : {
-        "revision" : "b958df9b31f24800388a7bfc28f457ce7b82556c",
-        "version" : "1.0.2"
+        "revision" : "0f4a54430e51f82d29da63a7ce5f61bad7dfb9cd",
+        "version" : "1.2.1"
       }
     },
     {
@@ -115,6 +115,15 @@
       "state" : {
         "revision" : "ff61e6594677572df051b96905cc2a7a12cffd10",
         "version" : "1.5.0"
+      }
+    },
+    {
+      "identity" : "swift-atomics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-atomics.git",
+      "state" : {
+        "revision" : "cd142fd2f64be2100422d658e7411e39489da985",
+        "version" : "1.2.0"
       }
     },
     {
@@ -131,8 +140,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordBDHG/XCTRuntimeAssertions",
       "state" : {
-        "revision" : "51da3403f128b120705571ce61e0fe190f8889e6",
-        "version" : "1.0.1"
+        "revision" : "f560ec8410af032dd485ca9386e8c2b5d3e1a1f8",
+        "version" : "1.1.3"
       }
     }
   ],
