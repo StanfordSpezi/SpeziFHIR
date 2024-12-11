@@ -27,10 +27,7 @@ let package = Package(
         .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.6.0")),
         .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.11")),
         .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.8.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit", .upToNextMinor(from: "0.6.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziStorage", from: "1.2.1"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziChat", .upToNextMinor(from: "0.2.1")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", from: "1.1.0")
+        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit", .upToNextMinor(from: "0.6.0"))
     ] + swiftLintPackage(),
     targets: [
         .target(
@@ -66,7 +63,9 @@ let package = Package(
         .testTarget(
             name: "SpeziFHIRTests",
             dependencies: [
-                .target(name: "SpeziFHIR")
+                .target(name: "SpeziFHIR"),
+                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
+                .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
             ],
             plugins: [] + swiftLintPlugin()
         )
