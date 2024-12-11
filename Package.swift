@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 
 //
 // This source file is part of the Stanford Spezi open-source project
@@ -12,12 +12,6 @@ import class Foundation.ProcessInfo
 import PackageDescription
 
 
-#if swift(<6)
-let strictConcurrency: SwiftSetting = .enableExperimentalFeature("StrictConcurrency")
-#else
-let strictConcurrency: SwiftSetting = .enableUpcomingFeature("StrictConcurrency")
-#endif
-
 let package = Package(
     name: "SpeziFHIR",
     defaultLocalization: "en",
@@ -30,10 +24,13 @@ let package = Package(
         .library(name: "SpeziFHIRMockPatients", targets: ["SpeziFHIRMockPatients"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.4")),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.2.1"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", .upToNextMinor(from: "0.6.0"))
+        .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.6.0")),
+        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.11")),
+        .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.8.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit", .upToNextMinor(from: "0.6.0")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziStorage", from: "1.2.1"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziChat", .upToNextMinor(from: "0.2.1")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", from: "1.1.0")
     ] + swiftLintPackage(),
     targets: [
         .target(
@@ -44,9 +41,6 @@ let package = Package(
                 .product(name: "ModelsDSTU2", package: "FHIRModels"),
                 .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR")
             ],
-            swiftSettings: [
-                strictConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .target(
@@ -55,9 +49,6 @@ let package = Package(
                 .target(name: "SpeziFHIR"),
                 .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
                 .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
-            ],
-            swiftSettings: [
-                strictConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         ),
@@ -70,18 +61,12 @@ let package = Package(
             resources: [
                 .process("Resources")
             ],
-            swiftSettings: [
-                strictConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
             name: "SpeziFHIRTests",
             dependencies: [
                 .target(name: "SpeziFHIR")
-            ],
-            swiftSettings: [
-                strictConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         )
