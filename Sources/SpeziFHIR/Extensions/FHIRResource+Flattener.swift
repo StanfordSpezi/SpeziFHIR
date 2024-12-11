@@ -1,8 +1,9 @@
 //
-//  FHIRResource+Flattener.swift
-//  SpeziFHIR
+// This source file is part of the Stanford Spezi open source project
 //
-//  Created by Leon Nissen on 11/9/24.
+// SPDX-FileCopyrightText: 2024 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
 //
 
 import Foundation
