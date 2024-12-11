@@ -29,8 +29,6 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.buttons["Jamison785 Denesik803"].waitForExistence(timeout: 20))
         app.buttons["Jamison785 Denesik803"].tap()
         
-        sleep(3)
-        
         app.navigationBars["Select Mock Patient"].buttons["Dismiss"].tap()
         
         XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
@@ -48,8 +46,6 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.buttons["Maye976 Dickinson688"].waitForExistence(timeout: 20))
         app.buttons["Maye976 Dickinson688"].tap()
         
-        sleep(3)
-        
         app.navigationBars["Select Mock Patient"].buttons["Dismiss"].tap()
         
         XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
@@ -61,26 +57,5 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.staticTexts["Observations: 169"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Other Resources: 322"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Procedures: 225"].waitForExistence(timeout: 2))
-    }
-    
-    
-    func testPromptSettings() throws {
-        let app = XCUIApplication()
-        app.launch()
-        
-        XCTAssert(app.buttons["Settings"].waitForExistence(timeout: 2))
-        app.buttons["Settings"].tap()
-        
-        XCTAssert(app.buttons["Summary Prompt"].waitForExistence(timeout: 2))
-        app.buttons["Summary Prompt"].tap()
-        
-        XCTAssert(app.buttons["Save Prompt"].waitForExistence(timeout: 2))
-        app.buttons["Save Prompt"].tap()
-        app.navigationBars["Summary Prompt"].buttons["Prompt Settings"].tap()
-        
-        XCTAssert(app.buttons["Interpretation Prompt"].waitForExistence(timeout: 2))
-        app.buttons["Interpretation Prompt"].tap()
-        app.navigationBars["Interpretation Prompt"].buttons["Prompt Settings"].tap()
-        app.navigationBars["Prompt Settings"].buttons["Dismiss"].tap()
     }
 }

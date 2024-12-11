@@ -13,7 +13,6 @@ import SwiftUI
 struct ContentView: View {
     @Environment(FHIRStore.self) var fhirStore
     @State var presentPatientSelection = false
-    @State var presentPromptSettings = false
     
     
     var body: some View {
@@ -37,28 +36,7 @@ struct ContentView: View {
                 .sheet(isPresented: $presentPatientSelection) {
                     MockPatientSelection(presentPatientSelection: $presentPatientSelection)
                 }
-                .sheet(isPresented: $presentPromptSettings) {
-                    PromptSettings(presentPromptSettings: $presentPromptSettings)
-                }
-                .toolbar {
-                    ToolbarItem {
-                        presentPromptSettingsButton
-                    }
-                }
         }
-    }
-    
-    
-    @ViewBuilder private var presentPromptSettingsButton: some View {
-        Button(
-            action: {
-                presentPromptSettings.toggle()
-            },
-            label: {
-                Image(systemName: "gear")
-                    .accessibilityLabel(Text("Settings"))
-            }
-        )
     }
     
     @ViewBuilder private var presentPatientSelectionButton: some View {
