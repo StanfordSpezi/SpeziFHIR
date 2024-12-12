@@ -8,17 +8,11 @@
 
 import Spezi
 import SpeziFHIR
-import SpeziLLM
 import SwiftUI
 
 
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
-        Configuration(standard: FHIR()) {
-            LLMRunner {
-                LLMMockPlatform()
-            }
-            ExampleModule()
-        }
+        Configuration(standard: FHIR()) { }
     }
 }
