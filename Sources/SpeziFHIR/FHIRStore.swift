@@ -24,7 +24,12 @@ public final class FHIRStore: Module,
     private actor Storage {
         // Non-isolation required so that resource access via the `FHIRStore` stays sync (required for seamless SwiftUI access).
         // Isolation is still guaranteed as the only modifying functions `insert()` and `remove()` are isolated on the `FHIRStore.Storage` actor.
-        nonisolated(unsafe) fileprivate var _resources: [FHIRResource] = []
+        nonisolated(unsafe) private var _resources: [FHIRResource] = []
+
+
+        var resourceIds: [FHIRResource.ID] {
+            _resources.map(\.id)
+        }
 
 
         func insert(resource: FHIRResource) {
@@ -33,6 +38,15 @@ public final class FHIRStore: Module,
 
         func remove(resource resourceId: FHIRResource.ID) {
             _resources.removeAll { $0.id == resourceId }
+        }
+
+        nonisolated func fetch(for category: FHIRResource.FHIRResourceCategory) -> [FHIRResource] {
+            _resources.filter { $0.category == category }
+        }
+
+
+        subscript(id: FHIRResource.ID) -> FHIRResource? {
+            _resources.first { $0.id == id }
         }
     }
 
@@ -43,55 +57,55 @@ public final class FHIRStore: Module,
     /// `FHIRResource`s with category `allergyIntolerance`.
     public var allergyIntolerances: [FHIRResource] {
         access(keyPath: \.allergyIntolerances)
-        return storage._resources.filter { $0.category == .allergyIntolerance }
+        return storage.fetch(for: .allergyIntolerance)
     }
 
     /// `FHIRResource`s with category `condition`.
     public var conditions: [FHIRResource] {
         access(keyPath: \.conditions)
-        return storage._resources.filter { $0.category == .condition }
+        return storage.fetch(for: .condition)
     }
 
     /// `FHIRResource`s with category `diagnostic`.
     public var diagnostics: [FHIRResource] {
         access(keyPath: \.diagnostics)
-        return storage._resources.filter { $0.category == .diagnostic }
+        return storage.fetch(for: .diagnostic)
     }
 
     /// `FHIRResource`s with category `encounter`.
     public var encounters: [FHIRResource] {
         access(keyPath: \.encounters)
-        return storage._resources.filter { $0.category == .encounter }
+        return storage.fetch(for: .encounter)
     }
 
     /// `FHIRResource`s with category `immunization`.
     public var immunizations: [FHIRResource] {
         access(keyPath: \.immunizations)
-        return storage._resources.filter { $0.category == .immunization }
+        return storage.fetch(for: .immunization)
     }
 
     /// `FHIRResource`s with category `medication`.
     public var medications: [FHIRResource] {
         access(keyPath: \.medications)
-        return storage._resources.filter { $0.category == .medication }
+        return storage.fetch(for: .medication)
     }
 
     /// `FHIRResource`s with category `observation`.
     public var observations: [FHIRResource] {
         access(keyPath: \.observations)
-        return storage._resources.filter { $0.category == .observation }
+        return storage.fetch(for: .observation)
     }
 
     /// `FHIRResource`s with category `procedure`.
     public var procedures: [FHIRResource] {
         access(keyPath: \.procedures)
-        return storage._resources.filter { $0.category == .procedure }
+        return storage.fetch(for: .procedure)
     }
 
     /// `FHIRResource`s with category `other`.
     public var otherResources: [FHIRResource] {
         access(keyPath: \.otherResources)
-        return storage._resources.filter { $0.category == .other }
+        return storage.fetch(for: .other)
     }
 
 
@@ -114,7 +128,7 @@ public final class FHIRStore: Module,
     ///
     /// - Parameter resource: The `FHIRResource` identifier to be inserted.
     public func remove(resource resourceId: FHIRResource.ID) async {
-        guard let resource = storage._resources.first(where: { $0.id == resourceId }) else {
+        guard let resource = await storage[resourceId] else {
             return
         }
 
@@ -141,7 +155,7 @@ public final class FHIRStore: Module,
 
     /// Removes all resources from the ``FHIRStore``.
     public func removeAllResources() async {
-        for resourceId in storage._resources.map(\.id) {
+        for resourceId in await storage.resourceIds {
             await self.remove(resource: resourceId)
         }
     }
