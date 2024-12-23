@@ -27,17 +27,16 @@ public final class FHIRStore: Module,
         nonisolated(unsafe) private var _resources: [FHIRResource] = []
 
 
-        var resourceIds: [FHIRResource.ID] {
-            _resources.map(\.id)
-        }
-
-
         func insert(resource: FHIRResource) {
             _resources.append(resource)
         }
 
         func remove(resource resourceId: FHIRResource.ID) {
             _resources.removeAll { $0.id == resourceId }
+        }
+
+        func removeAll() {
+            _resources = []
         }
 
         nonisolated func fetch(for category: FHIRResource.FHIRResourceCategory) -> [FHIRResource] {
@@ -155,8 +154,14 @@ public final class FHIRStore: Module,
 
     /// Removes all resources from the ``FHIRStore``.
     public func removeAllResources() async {
-        for resourceId in await storage.resourceIds {
-            await self.remove(resource: resourceId)
+        for category in FHIRResource.FHIRResourceCategory.allCases {
+            _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
+        }
+
+        await storage.removeAll()
+
+        for category in FHIRResource.FHIRResourceCategory.allCases {
+            _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
         }
     }
 }

@@ -15,7 +15,7 @@ import enum ModelsDSTU2.ResourceProxy
 extension FHIRResource {
     /// Enum representing different categories of FHIR resources.
     /// This categorization helps in classifying FHIR resources into common healthcare scenarios and types.
-    enum FHIRResourceCategory {
+    enum FHIRResourceCategory: CaseIterable {
         /// Represents an observation-type resource (e.g., patient measurements, lab results).
         case observation
         /// Represents an encounter-type resource (e.g., patient visits, admissions).
@@ -34,22 +34,27 @@ extension FHIRResource {
         case medication
         /// Represents other types of resources not covered by the above categories.
         case other
+
+
+        var storeKeyPath: KeyPath<FHIRStore, [FHIRResource]> {
+            switch self {
+            case .observation: \.observations
+            case .encounter: \.encounters
+            case .condition: \.conditions
+            case .diagnostic: \.diagnostics
+            case .procedure: \.procedures
+            case .immunization: \.immunizations
+            case .allergyIntolerance: \.allergyIntolerances
+            case .medication: \.medications
+            case .other: \.otherResources
+            }
+        }
     }
 
 
     /// The ``FHIRStore`` property key path of the resource.
     var storeKeyPath: KeyPath<FHIRStore, [FHIRResource]> {
-        switch self.category {
-        case .observation: \.observations
-        case .encounter: \.encounters
-        case .condition: \.conditions
-        case .diagnostic: \.diagnostics
-        case .procedure: \.procedures
-        case .immunization: \.immunizations
-        case .allergyIntolerance: \.allergyIntolerances
-        case .medication: \.medications
-        case .other: \.otherResources
-        }
+        self.category.storeKeyPath
     }
     
     /// Category of the FHIR resource.
