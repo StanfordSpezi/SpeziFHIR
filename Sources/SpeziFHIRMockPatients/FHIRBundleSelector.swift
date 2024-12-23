@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import class ModelsR4.Bundle
+@preconcurrency import class ModelsR4.Bundle
 import class ModelsR4.Patient
 import SpeziFHIR
 import SwiftUI
@@ -16,57 +16,60 @@ import SwiftUI
 ///
 /// The View assumes that the bundle contains a `ModelsR4.Patient` resource to identify the bundle and provide a human-readable name.
 public struct FHIRBundleSelector: View {
-    private struct PatientIdentifiedBundle: Identifiable {
+    private struct PatientIdentifiedBundle: Identifiable, Sendable {
         let id: String
         let bundle: ModelsR4.Bundle
     }
-    
-    
-    private let bundles: [PatientIdentifiedBundle]
-    
-    @Environment(FHIRStore.self) private var store
 
-    private var selectedBundle: Binding<PatientIdentifiedBundle.ID?> {
-        Binding(
-            get: {
-                guard let patient = store.otherResources.compactMap({ resource -> ModelsR4.Patient? in
-                    guard case let .r4(resource) = resource.versionedResource, let loadedPatient = resource as? Patient else {
-                        return nil
-                    }
-                    return loadedPatient
-                }).first else {
-                    return nil
-                }
-                
-                
-                guard let bundle = bundles.first(where: { patient.identifier == $0.bundle.patient?.identifier }) else {
-                    return nil
-                }
-                
-                return bundle.id
-            },
-            set: { newValue in
-                guard let newValue, let bundle = bundles.first(where: { $0.id == newValue })?.bundle else {
-                    return
-                }
-                
-                store.removeAllResources()
-                store.load(bundle: bundle)
-            }
-        )
-    }
-    
-    
+
+    @Environment(FHIRStore.self) private var store
+    @State private var selectedBundleId: PatientIdentifiedBundle.ID?
+
+    private let bundles: [PatientIdentifiedBundle]
+
+
     public var body: some View {
         Picker(
             String(localized: "Select Mock Patient", bundle: .module),
-            selection: selectedBundle
+            selection: $selectedBundleId
         ) {
             ForEach(bundles) { bundle in
                 Text(bundle.bundle.patientName)
                     .tag(bundle.id as String?)
             }
         }
+            // Load the currently stored patient data to update `selectedBundleID`
+            .task {
+                let existingResources = store.otherResources
+                guard
+                    let patient = existingResources.compactMap({ resource -> Patient? in
+                        guard case let .r4(r4Resource) = resource.versionedResource,
+                              let loadedPatient = r4Resource as? Patient else {
+                            return nil
+                        }
+
+                        return loadedPatient
+                    }).first,
+                    let matchedBundle = bundles.first(where: {
+                        patient.identifier == $0.bundle.patient?.identifier
+                    })
+                else {
+                    return
+                }
+                selectedBundleId = matchedBundle.id
+            }
+            // Remove existing resources and load the newly selected bundle
+            .onChange(of: selectedBundleId) { _, newValue in
+                Task {
+                    guard let newValue,
+                          let selected = bundles.first(where: { $0.id == newValue }) else {
+                        return
+                    }
+
+                    await store.removeAllResources()
+                    await store.load(bundle: selected.bundle)
+                }
+            }
     }
     
     

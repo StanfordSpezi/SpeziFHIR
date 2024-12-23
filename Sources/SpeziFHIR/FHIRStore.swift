@@ -6,8 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Combine
-import Foundation
 import Observation
 import class ModelsR4.Bundle
 import enum ModelsDSTU2.ResourceProxy
@@ -19,149 +17,132 @@ import Spezi
 /// The ``FHIRStore`` is automatically injected in the environment if you use the ``FHIR`` standard or can be used as a standalone module.
 @Observable
 public final class FHIRStore: Module,
-                              EnvironmentAccessible,
-                              DefaultInitializable,
-                              @unchecked Sendable /* `unchecked` `Sendable` conformance fine as access to `_resources` protected by `NSLock` */ {
-    private let lock = NSLock()
-    @ObservationIgnored private var _resources: [FHIRResource]
-    
-    
-    /// Allergy intolerances.
+                             EnvironmentAccessible,
+                             DefaultInitializable,
+                             Sendable {
+    /// Actor-isolated storage for `FHIRResource`s backing the ``FHIRStore``.
+    private actor Storage {
+        // Non-isolation required so that resource access via the `FHIRStore` stays sync (required for seamless SwiftUI access).
+        // Isolation is still guaranteed as the only modifying functions `insert()` and `remove()` are isolated on the `FHIRStore.Storage` actor.
+        nonisolated(unsafe) fileprivate var _resources: [FHIRResource] = []
+
+
+        func insert(resource: FHIRResource) {
+            _resources.append(resource)
+        }
+
+        func remove(resource resourceId: FHIRResource.ID) {
+            _resources.removeAll { $0.id == resourceId }
+        }
+    }
+
+
+    private let storage: Storage
+
+
+    /// `FHIRResource`s with category `allergyIntolerance`.
     public var allergyIntolerances: [FHIRResource] {
         access(keyPath: \.allergyIntolerances)
-        return lock.withLock {
-            _resources.filter { $0.category == .allergyIntolerance }
-        }
+        return storage._resources.filter { $0.category == .allergyIntolerance }
     }
-    
-    /// Conditions.
+
+    /// `FHIRResource`s with category `condition`.
     public var conditions: [FHIRResource] {
         access(keyPath: \.conditions)
-        return lock.withLock {
-            _resources.filter { $0.category == .condition }
-        }
+        return storage._resources.filter { $0.category == .condition }
     }
-    
-    /// Diagnostics.
+
+    /// `FHIRResource`s with category `diagnostic`.
     public var diagnostics: [FHIRResource] {
         access(keyPath: \.diagnostics)
-        return lock.withLock {
-            _resources.filter { $0.category == .diagnostic }
-        }
+        return storage._resources.filter { $0.category == .diagnostic }
     }
-    
-    /// Encounters.
+
+    /// `FHIRResource`s with category `encounter`.
     public var encounters: [FHIRResource] {
         access(keyPath: \.encounters)
-        return _resources.filter { $0.category == .encounter }
+        return storage._resources.filter { $0.category == .encounter }
     }
-    
-    /// Immunizations.
+
+    /// `FHIRResource`s with category `immunization`.
     public var immunizations: [FHIRResource] {
         access(keyPath: \.immunizations)
-        return lock.withLock {
-            _resources.filter { $0.category == .immunization }
-        }
+        return storage._resources.filter { $0.category == .immunization }
     }
-    
-    /// Medications.
+
+    /// `FHIRResource`s with category `medication`.
     public var medications: [FHIRResource] {
         access(keyPath: \.medications)
-        return lock.withLock {
-            _resources.filter { $0.category == .medication }
-        }
+        return storage._resources.filter { $0.category == .medication }
     }
-    
-    /// Observations.
+
+    /// `FHIRResource`s with category `observation`.
     public var observations: [FHIRResource] {
         access(keyPath: \.observations)
-        return lock.withLock {
-            _resources.filter { $0.category == .observation }
-        }
+        return storage._resources.filter { $0.category == .observation }
     }
-    
-    /// Other resources that could not be classified on the other categories.
-    public var otherResources: [FHIRResource] {
-        access(keyPath: \.otherResources)
-        return lock.withLock {
-            _resources.filter { $0.category == .other }
-        }
-    }
-    
-    /// Procedures.
+
+    /// `FHIRResource`s with category `procedure`.
     public var procedures: [FHIRResource] {
         access(keyPath: \.procedures)
-        return lock.withLock {
-            _resources.filter { $0.category == .procedure }
-        }
+        return storage._resources.filter { $0.category == .procedure }
     }
-    
-    
+
+    /// `FHIRResource`s with category `other`.
+    public var otherResources: [FHIRResource] {
+        access(keyPath: \.otherResources)
+        return storage._resources.filter { $0.category == .other }
+    }
+
+
+    /// Create an empty ``FHIRStore``.
     public required init() {
-        self._resources = []
+        storage = Storage()
     }
-    
-    
-    /// Inserts a FHIR resource into the store.
+
+
+    /// Inserts a FHIR resource into the ``FHIRStore``.
     ///
     /// - Parameter resource: The `FHIRResource` to be inserted.
-    public func insert(resource: FHIRResource) {
-        withMutation(keyPath: resource.storeKeyPath) {
-            lock.withLock {
-                _resources.append(resource)
-            }
-        }
+    public func insert(resource: FHIRResource) async {
+        _$observationRegistrar.willSet(self, keyPath: resource.storeKeyPath)
+        await storage.insert(resource: resource)
+        _$observationRegistrar.didSet(self, keyPath: resource.storeKeyPath)
     }
-    
-    /// Removes a FHIR resource from the store.
+
+    /// Removes a FHIR resource from the ``FHIRStore``.
     ///
     /// - Parameter resource: The `FHIRResource` identifier to be inserted.
-    public func remove(resource resourceId: FHIRResource.ID) {
-        lock.withLock {
-            guard let resource = _resources.first(where: { $0.id == resourceId }) else {
-                return
-            }
-            
-            withMutation(keyPath: resource.storeKeyPath) {
-                _resources.removeAll(where: { $0.id == resourceId })
-            }
+    public func remove(resource resourceId: FHIRResource.ID) async {
+        guard let resource = storage._resources.first(where: { $0.id == resourceId }) else {
+            return
         }
+
+        _$observationRegistrar.willSet(self, keyPath: resource.storeKeyPath)
+        await storage.remove(resource: resourceId)
+        _$observationRegistrar.didSet(self, keyPath: resource.storeKeyPath)
     }
-    
-    /// Loads resources from a given FHIR `Bundle`.
+
+    /// Loads resources from a given FHIR `Bundle` into the ``FHIRStore``.
     ///
     /// - Parameter bundle: The FHIR `Bundle` containing resources to be loaded.
-    public func load(bundle: Bundle) {
+    public func load(bundle: Bundle) async {
         let resourceProxies = bundle.entry?.compactMap { $0.resource } ?? []
-        
+
         for resourceProxy in resourceProxies {
-            insert(resource: FHIRResource(resource: resourceProxy.get(), displayName: resourceProxy.displayName))
+            await self.insert(
+                resource: FHIRResource(
+                    resource: resourceProxy.get(),
+                    displayName: resourceProxy.displayName
+                )
+            )
         }
     }
-    
-    /// Removes all resources from the store.
-    public func removeAllResources() {
-        lock.withLock {
-            // Not really ideal but seems to be a path to ensure that all observables are called.
-            _$observationRegistrar.willSet(self, keyPath: \.allergyIntolerances)
-            _$observationRegistrar.willSet(self, keyPath: \.conditions)
-            _$observationRegistrar.willSet(self, keyPath: \.diagnostics)
-            _$observationRegistrar.willSet(self, keyPath: \.encounters)
-            _$observationRegistrar.willSet(self, keyPath: \.immunizations)
-            _$observationRegistrar.willSet(self, keyPath: \.medications)
-            _$observationRegistrar.willSet(self, keyPath: \.observations)
-            _$observationRegistrar.willSet(self, keyPath: \.otherResources)
-            _$observationRegistrar.willSet(self, keyPath: \.procedures)
-            _resources = []
-            _$observationRegistrar.didSet(self, keyPath: \.allergyIntolerances)
-            _$observationRegistrar.didSet(self, keyPath: \.conditions)
-            _$observationRegistrar.didSet(self, keyPath: \.diagnostics)
-            _$observationRegistrar.didSet(self, keyPath: \.encounters)
-            _$observationRegistrar.didSet(self, keyPath: \.immunizations)
-            _$observationRegistrar.didSet(self, keyPath: \.medications)
-            _$observationRegistrar.didSet(self, keyPath: \.observations)
-            _$observationRegistrar.didSet(self, keyPath: \.otherResources)
-            _$observationRegistrar.didSet(self, keyPath: \.procedures)
+
+    /// Removes all resources from the ``FHIRStore``.
+    public func removeAllResources() async {
+        for resourceId in storage._resources.map(\.id) {
+            await self.remove(resource: resourceId)
         }
     }
 }

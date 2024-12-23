@@ -11,8 +11,8 @@ import SwiftUI
 
 
 struct ContentView: View {
-    @Environment(FHIRStore.self) var fhirStore
-    @State var presentPatientSelection = false
+    @Environment(FHIRStore.self) private var fhirStore
+    @State private var presentPatientSelection = false
     
     
     var body: some View {
@@ -26,8 +26,8 @@ struct ContentView: View {
                     Text("Immunizations: \(fhirStore.immunizations.count)")
                     Text("Medications: \(fhirStore.medications.count)")
                     Text("Observations: \(fhirStore.observations.count)")
-                    Text("Other Resources: \(fhirStore.otherResources.count)")
                     Text("Procedures: \(fhirStore.procedures.count)")
+                    Text("Other Resources: \(fhirStore.otherResources.count)")
                 }
                 Section {
                     presentPatientSelectionButton

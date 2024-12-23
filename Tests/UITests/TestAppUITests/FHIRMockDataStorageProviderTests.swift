@@ -21,9 +21,9 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.staticTexts["Immunizations: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Medications: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Observations: 0"].waitForExistence(timeout: 2))
-        XCTAssert(app.staticTexts["Other Resources: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Procedures: 0"].waitForExistence(timeout: 2))
-        
+        XCTAssert(app.staticTexts["Other Resources: 0"].waitForExistence(timeout: 2))
+
         app.buttons["Select Mock Patient"].tap()
         
         XCTAssert(app.buttons["Jamison785 Denesik803"].waitForExistence(timeout: 20))
@@ -38,9 +38,9 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.staticTexts["Immunizations: 12"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Medications: 31"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Observations: 769"].waitForExistence(timeout: 2))
-        XCTAssert(app.staticTexts["Other Resources: 302"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Procedures: 106"].waitForExistence(timeout: 2))
-        
+        XCTAssert(app.staticTexts["Other Resources: 302"].waitForExistence(timeout: 2))
+
         app.buttons["Select Mock Patient"].tap()
         
         XCTAssert(app.buttons["Maye976 Dickinson688"].waitForExistence(timeout: 20))
@@ -55,7 +55,7 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.staticTexts["Immunizations: 11"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Medications: 55"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Observations: 169"].waitForExistence(timeout: 2))
-        XCTAssert(app.staticTexts["Other Resources: 322"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Procedures: 225"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Other Resources: 322"].waitForExistence(timeout: 2))
     }
 }
