@@ -8,7 +8,7 @@
 
 import ModelsR4
 import ModelsDSTU2
-import SpeziFHIR
+@testable import SpeziFHIR
 import XCTest
 
 final class FHIRResourceTests: XCTestCase {
@@ -17,7 +17,7 @@ final class FHIRResourceTests: XCTestCase {
     let calendar = Calendar.current
 
     func testModelsR4ResourceInitialization() throws {
-        let mockObservation = try ModelsR4Mocks.createObservation(date: .now)
+        let mockObservation = try ModelsR4Mocks.createObservation(date: testDate)
 
         let resource = FHIRResource(
             resource: mockObservation,
@@ -150,6 +150,50 @@ final class FHIRResourceTests: XCTestCase {
         XCTAssertEqual(decodedObservation.id, observation.id)
         XCTAssertEqual(decodedObservation.code, observation.code)
         XCTAssertEqual(decodedObservation.status, observation.status)
+    }
+    
+    func testMatchesDisplayName() throws {
+        let observation = try ModelsR4Mocks.createObservation(date: testDate)
+           
+        let resource = FHIRResource(
+            versionedResource: .r4(observation),
+            displayName: "Test Resource"
+        )
+           
+        XCTAssertTrue(resource.matchesDisplayName(with: "test"))
+        XCTAssertTrue(resource.matchesDisplayName(with: "resource"))
+        XCTAssertTrue(resource.matchesDisplayName(with: "  test  "))
+        XCTAssertTrue(resource.matchesDisplayName(with: "TEST"))
+        XCTAssertFalse(resource.matchesDisplayName(with: "xyz"))
+        XCTAssertFalse(resource.matchesDisplayName(with: ""))
+    }
+    
+    func testFilterByDisplayName() throws {
+        let observation = try ModelsR4Mocks.createObservation(date: testDate)
+        let patient = try ModelsR4Mocks.createPatient(date: testDate)
+        let medicationRequest = try ModelsR4Mocks.createMedicationRequest(date: testDate)
+           
+        let resource1 = FHIRResource(
+            versionedResource: .r4(observation),
+            displayName: "Test Resource1"
+        )
+        
+        let resource2 = FHIRResource(
+            versionedResource: .r4(patient),
+            displayName: "Test Resource2"
+        )
+        
+        let resource3 = FHIRResource(
+            versionedResource: .r4(medicationRequest),
+            displayName: "Test Resource3"
+        )
+        
+        let resources = [resource1, resource2, resource3]
+           
+        XCTAssertEqual(resources.filterByDisplayName(with: "test").count, 3)
+        XCTAssertEqual(resources.filterByDisplayName(with: "resource1").count, 1)
+        XCTAssertEqual(resources.filterByDisplayName(with: "xyz").count, 0)
+        XCTAssertEqual(resources.filterByDisplayName(with: "").count, 3)
     }
 }
 
