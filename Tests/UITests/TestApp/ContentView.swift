@@ -54,11 +54,11 @@ struct ContentView: View {
                         }
                     }
 
-                    ToolbarItem(placement: .automatic) {
+                    ToolbarItem {
                         Button {
                             fhirStore.remove(resource: additionalFHIRResourceId)
                         } label: {
-                            Label("Remove", systemImage: "minus.circle.fill")
+                            Label("Remove", systemImage: "folder.badge.minus")
                                 .accessibilityLabel("Remove FHIR Resource")
                         }
                     }
