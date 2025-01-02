@@ -144,7 +144,7 @@ public final class FHIRStore: Module,
     ///
     /// - Parameter resource: The `FHIRResource` identifier to be inserted.
     @MainActor
-    public func remove(resource resourceId: FHIRResource.ID) async {
+    public func remove(resource resourceId: FHIRResource.ID) {
         guard let resource = _resources.first(where: { $0.id == resourceId }) else {
             return
         }

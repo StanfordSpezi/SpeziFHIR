@@ -14,10 +14,12 @@ import SwiftUI
 struct ContentView: View {
     @Environment(FHIRStore.self) private var fhirStore
     @State private var presentPatientSelection = false
-    
+
+    private let additionalFHIRResourceId = "SuperUniqueFHIRResourceIdentifier"
+
     
     var body: some View {
-        NavigationStack {
+        NavigationStack {   // swiftlint:disable:this closure_body_length
             List {
                 Section {
                     Text("Allergy Intolerances: \(fhirStore.allergyIntolerances.count)")
@@ -42,13 +44,22 @@ struct ContentView: View {
                         Button {
                             fhirStore.insert(
                                 resource: .init(
-                                    resource: ModelsR4.Account(id: "SuperUniqueFHIRResourceIdentifier", status: .init()),
+                                    resource: ModelsR4.Account(id: .init(stringLiteral: additionalFHIRResourceId), status: .init()),
                                     displayName: "Random Account FHIR Resource"
                                 )
                             )
                         } label: {
                             Label("Add", systemImage: "doc.badge.plus")
                                 .accessibilityLabel("Add FHIR Resource")
+                        }
+                    }
+
+                    ToolbarItem(placement: .automatic) {
+                        Button {
+                            fhirStore.remove(resource: additionalFHIRResourceId)
+                        } label: {
+                            Label("Remove", systemImage: "minus.circle.fill")
+                                .accessibilityLabel("Remove FHIR Resource")
                         }
                     }
                 }
