@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import ModelsR4
 import SpeziFHIR
 import SwiftUI
 
@@ -35,6 +36,21 @@ struct ContentView: View {
             }
                 .sheet(isPresented: $presentPatientSelection) {
                     MockPatientSelection(presentPatientSelection: $presentPatientSelection)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            fhirStore.insert(
+                                resource: .init(
+                                    resource: ModelsR4.Account(id: "SuperUniqueFHIRResourceIdentifier", status: .init()),
+                                    displayName: "Random Account FHIR Resource"
+                                )
+                            )
+                        } label: {
+                            Label("Add", systemImage: "doc.badge.plus")
+                                .accessibilityLabel("Add FHIR Resource")
+                        }
+                    }
                 }
         }
     }

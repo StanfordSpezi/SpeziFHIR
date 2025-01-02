@@ -20,120 +20,97 @@ public final class FHIRStore: Module,
                              EnvironmentAccessible,
                              DefaultInitializable,
                              Sendable {
-    /// Actor-isolated storage for `FHIRResource`s backing the ``FHIRStore``.
-    private actor Storage {
-        // Non-isolation required so that resource access via the `FHIRStore` stays sync (required for seamless SwiftUI access).
-        // Isolation is still guaranteed as the only modifying functions `insert()` and `remove()` are isolated on the `FHIRStore.Storage` actor.
-        nonisolated(unsafe) private var _resources: [FHIRResource] = []
-
-
-        func insert(resource: FHIRResource) {
-            _resources.append(resource)
-        }
-
-        func remove(resource resourceId: FHIRResource.ID) {
-            _resources.removeAll { $0.id == resourceId }
-        }
-
-        func removeAll() {
-            _resources = []
-        }
-
-        nonisolated func fetch(for category: FHIRResource.FHIRResourceCategory) -> [FHIRResource] {
-            _resources.filter { $0.category == category }
-        }
-
-
-        subscript(id: FHIRResource.ID) -> FHIRResource? {
-            _resources.first { $0.id == id }
-        }
-    }
-
-
-    private let storage: Storage
+    @MainActor private var _resources: [FHIRResource] = []
 
 
     /// `FHIRResource`s with category `allergyIntolerance`.
-    public var allergyIntolerances: [FHIRResource] {
+    @MainActor public var allergyIntolerances: [FHIRResource] {
         access(keyPath: \.allergyIntolerances)
-        return storage.fetch(for: .allergyIntolerance)
+        return _resources.filter { $0.category == .allergyIntolerance }
     }
 
     /// `FHIRResource`s with category `condition`.
-    public var conditions: [FHIRResource] {
+    @MainActor public var conditions: [FHIRResource] {
         access(keyPath: \.conditions)
-        return storage.fetch(for: .condition)
+        return _resources.filter { $0.category == .condition }
     }
 
     /// `FHIRResource`s with category `diagnostic`.
-    public var diagnostics: [FHIRResource] {
+    @MainActor public var diagnostics: [FHIRResource] {
         access(keyPath: \.diagnostics)
-        return storage.fetch(for: .diagnostic)
+        return _resources.filter { $0.category == .diagnostic }
     }
 
     /// `FHIRResource`s with category `encounter`.
-    public var encounters: [FHIRResource] {
+    @MainActor public var encounters: [FHIRResource] {
         access(keyPath: \.encounters)
-        return storage.fetch(for: .encounter)
+        return _resources.filter { $0.category == .encounter }
     }
 
-    /// `FHIRResource`s with category `immunization`.
-    public var immunizations: [FHIRResource] {
+    /// `FHIRResource`s with category `immunization`
+    @MainActor public var immunizations: [FHIRResource] {
         access(keyPath: \.immunizations)
-        return storage.fetch(for: .immunization)
+        return _resources.filter { $0.category == .immunization }
     }
 
     /// `FHIRResource`s with category `medication`.
-    public var medications: [FHIRResource] {
+    @MainActor public var medications: [FHIRResource] {
         access(keyPath: \.medications)
-        return storage.fetch(for: .medication)
+        return _resources.filter { $0.category == .medication }
     }
 
     /// `FHIRResource`s with category `observation`.
-    public var observations: [FHIRResource] {
+    @MainActor public var observations: [FHIRResource] {
         access(keyPath: \.observations)
-        return storage.fetch(for: .observation)
+        return _resources.filter { $0.category == .observation }
     }
 
     /// `FHIRResource`s with category `procedure`.
-    public var procedures: [FHIRResource] {
+    @MainActor public var procedures: [FHIRResource] {
         access(keyPath: \.procedures)
-        return storage.fetch(for: .procedure)
+        return _resources.filter { $0.category == .procedure }
     }
 
     /// `FHIRResource`s with category `other`.
-    public var otherResources: [FHIRResource] {
+    @MainActor public var otherResources: [FHIRResource] {
         access(keyPath: \.otherResources)
-        return storage.fetch(for: .other)
+        return _resources.filter { $0.category == .other }
     }
 
 
     /// Create an empty ``FHIRStore``.
-    public required init() {
-        storage = Storage()
-    }
+    public required init() {}
 
 
     /// Inserts a FHIR resource into the ``FHIRStore``.
     ///
     /// - Parameter resource: The `FHIRResource` to be inserted.
-    public func insert(resource: FHIRResource) async {
-        _$observationRegistrar.willSet(self, keyPath: resource.storeKeyPath)
-        await storage.insert(resource: resource)
-        _$observationRegistrar.didSet(self, keyPath: resource.storeKeyPath)
+    @MainActor
+    public func insert(resource: FHIRResource) {
+        _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
+
+        _resources.append(resource)
+
+        _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
     }
 
-    /// Removes a FHIR resource from the ``FHIRStore``.
+    /// Inserts a ``Collection`` of FHIR resources into the ``FHIRStore``.
     ///
-    /// - Parameter resource: The `FHIRResource` identifier to be inserted.
-    public func remove(resource resourceId: FHIRResource.ID) async {
-        guard let resource = await storage[resourceId] else {
-            return
-        }
+    /// - Parameter resources: The `FHIRResource`s to be inserted.
+    public func insert<T: Collection>(resources: sending T) async where T.Element == FHIRResource {
+        let resourceCategories = Set(resources.map { $0.category })
 
-        _$observationRegistrar.willSet(self, keyPath: resource.storeKeyPath)
-        await storage.remove(resource: resourceId)
-        _$observationRegistrar.didSet(self, keyPath: resource.storeKeyPath)
+        await MainActor.run {
+            for category in resourceCategories {
+                _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
+            }
+
+            self._resources.append(contentsOf: resources)
+
+            for category in resourceCategories {
+                _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
+            }
+        }
     }
 
     /// Loads resources from a given FHIR `Bundle` into the ``FHIRStore``.
@@ -141,24 +118,52 @@ public final class FHIRStore: Module,
     /// - Parameter bundle: The FHIR `Bundle` containing resources to be loaded.
     public func load(bundle: Bundle) async {
         let resourceProxies = bundle.entry?.compactMap { $0.resource } ?? []
+        var resources: [FHIRResource] = []
 
         for resourceProxy in resourceProxies {
-            await self.insert(
-                resource: FHIRResource(
+            if Task.isCancelled {
+                return
+            }
+
+            resources.append(
+                FHIRResource(
                     resource: resourceProxy.get(),
                     displayName: resourceProxy.displayName
                 )
             )
         }
+
+        if Task.isCancelled {
+            return
+        }
+
+        await insert(resources: resources)
+    }
+
+    /// Removes a FHIR resource from the ``FHIRStore``.
+    ///
+    /// - Parameter resource: The `FHIRResource` identifier to be inserted.
+    @MainActor
+    public func remove(resource resourceId: FHIRResource.ID) async {
+        guard let resource = _resources.first(where: { $0.id == resourceId }) else {
+            return
+        }
+
+        _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
+
+        _resources.removeAll { $0.id == resourceId }
+
+        _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
     }
 
     /// Removes all resources from the ``FHIRStore``.
-    public func removeAllResources() async {
+    @MainActor
+    public func removeAllResources() {
         for category in FHIRResource.FHIRResourceCategory.allCases {
             _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
         }
 
-        await storage.removeAll()
+        _resources = []
 
         for category in FHIRResource.FHIRResourceCategory.allCases {
             _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)

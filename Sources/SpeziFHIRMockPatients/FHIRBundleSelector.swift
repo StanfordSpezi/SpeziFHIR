@@ -24,6 +24,7 @@ public struct FHIRBundleSelector: View {
 
     @Environment(FHIRStore.self) private var store
     @State private var selectedBundleId: PatientIdentifiedBundle.ID?
+    @State private var fhirResourceLoadingTask: Task<Void, Never>?
 
     private let bundles: [PatientIdentifiedBundle]
 
@@ -41,6 +42,7 @@ public struct FHIRBundleSelector: View {
             // Load the currently stored patient data to update `selectedBundleID`
             .task {
                 let existingResources = store.otherResources
+
                 guard
                     let patient = existingResources.compactMap({ resource -> Patient? in
                         guard case let .r4(r4Resource) = resource.versionedResource,
@@ -56,17 +58,22 @@ public struct FHIRBundleSelector: View {
                 else {
                     return
                 }
+
                 selectedBundleId = matchedBundle.id
             }
             // Remove existing resources and load the newly selected bundle
             .onChange(of: selectedBundleId) { _, newValue in
-                Task {
-                    guard let newValue,
-                          let selected = bundles.first(where: { $0.id == newValue }) else {
-                        return
-                    }
+                fhirResourceLoadingTask?.cancel()
+                fhirResourceLoadingTask = nil
 
-                    await store.removeAllResources()
+                guard let newValue,
+                      let selected = bundles.first(where: { $0.id == newValue }) else {
+                    return
+                }
+
+                store.removeAllResources()
+
+                fhirResourceLoadingTask = Task.detached {
                     await store.load(bundle: selected.bundle)
                 }
             }

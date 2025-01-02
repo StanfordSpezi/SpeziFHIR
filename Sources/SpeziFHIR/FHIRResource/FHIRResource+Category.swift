@@ -36,7 +36,10 @@ extension FHIRResource {
         case other
 
 
-        var storeKeyPath: KeyPath<FHIRStore, [FHIRResource]> {
+        /// The ``FHIRStore`` property key path of the resource.
+        ///
+        /// - Note: Needs to be isolated on `MainActor` as the respective ``FHIRStore`` properties referred to by the `KeyPath` are isolated on the `MainActor`.
+        @MainActor var storeKeyPath: KeyPath<FHIRStore, [FHIRResource]> {
             switch self {
             case .observation: \.observations
             case .encounter: \.encounters
@@ -50,13 +53,8 @@ extension FHIRResource {
             }
         }
     }
-
-
-    /// The ``FHIRStore`` property key path of the resource.
-    var storeKeyPath: KeyPath<FHIRStore, [FHIRResource]> {
-        self.category.storeKeyPath
-    }
     
+
     /// Category of the FHIR resource.
     ///
     /// Analyzes the type of the underlying resource and assigns it to an appropriate category.
