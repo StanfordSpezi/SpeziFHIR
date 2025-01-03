@@ -11,8 +11,8 @@ import ModelsR4
 @testable import SpeziFHIR
 import XCTest
 
+// swiftlint:disable file_length
 final class FHIRResourceTests: XCTestCase {
-    
     let testDate = Date(timeIntervalSince1970: 1735123266)
     let calendar = Calendar.current
     
@@ -116,7 +116,7 @@ final class FHIRResourceTests: XCTestCase {
         
         let jsonString = resource.json(withConfiguration: [])
         
-        let jsonData = jsonString.data(using: .utf8)!
+        let jsonData = jsonString.data(using: .utf8) ?? Data()
         let decoder = JSONDecoder()
         let decodedObservation = try decoder.decode(ModelsR4.Observation.self, from: jsonData)
         
@@ -143,7 +143,7 @@ final class FHIRResourceTests: XCTestCase {
         
         let jsonString = resource.json(withConfiguration: [])
         
-        let jsonData = jsonString.data(using: .utf8)!
+        let jsonData = jsonString.data(using: .utf8) ?? Data()
         let decoder = JSONDecoder()
         let decodedObservation = try decoder.decode(ModelsDSTU2.Observation.self, from: jsonData)
         
@@ -312,10 +312,8 @@ final class FHIRResourceTests: XCTestCase {
         mockPatient.name = nil
         XCTAssertEqual(proxy.displayName, "Patient")
     }
-}
-
-private extension FHIRResourceTests {
-    func assertEqualDates(_ resourceDate: Date?, _ expectedDate: Date, _ resourceName: String) {
+    
+    private func assertEqualDates(_ resourceDate: Date?, _ expectedDate: Date, _ resourceName: String) {
         guard let resourceDate = resourceDate else {
             XCTFail("Date should not be nil for \(resourceName)")
             return
@@ -352,7 +350,7 @@ private extension FHIRResourceTests {
     }
 }
 
-private struct ModelsR4Mocks {
+private enum ModelsR4Mocks {
     static func createCarePlan(date: Date) throws -> ModelsR4.CarePlan {
         let period = ModelsR4.Period()
         period.start = try FHIRPrimitive(DateTime(date: date))
@@ -410,7 +408,7 @@ private struct ModelsR4Mocks {
     }
     
     static func createCondition(date: Date) throws -> ModelsR4.Condition {
-        return ModelsR4.Condition(
+        ModelsR4.Condition(
             id: "condition-id".asFHIRStringPrimitive(),
             onset: .dateTime(FHIRPrimitive(try DateTime(date: date))),
             subject: Reference(id: "patient-id".asFHIRStringPrimitive())
@@ -418,14 +416,14 @@ private struct ModelsR4Mocks {
     }
     
     static func createDevice(date: Date) throws -> ModelsR4.Device {
-        return ModelsR4.Device(
+        ModelsR4.Device(
             id: "device-id".asFHIRStringPrimitive(),
             manufactureDate: FHIRPrimitive(try DateTime(date: date))
         )
     }
     
     static func createDiagnosticReport(date: Date) throws -> ModelsR4.DiagnosticReport {
-        return ModelsR4.DiagnosticReport(
+        ModelsR4.DiagnosticReport(
             code: CodeableConcept(coding: [Coding(code: "code".asFHIRStringPrimitive())]),
             effective: .dateTime(FHIRPrimitive(try DateTime(date: date))),
             id: "diagnostic-report-id".asFHIRStringPrimitive(),
@@ -492,7 +490,7 @@ private struct ModelsR4Mocks {
     }
     
     static func createImmunization(date: Date) throws -> ModelsR4.Immunization {
-        return ModelsR4.Immunization(
+        ModelsR4.Immunization(
             id: "immunization-id".asFHIRStringPrimitive(),
             occurrence: .dateTime(FHIRPrimitive(try DateTime(date: date))),
             patient: Reference(id: "patient-id".asFHIRStringPrimitive()),
@@ -506,7 +504,7 @@ private struct ModelsR4Mocks {
     }
     
     static func createMedicationRequest(date: Date) throws -> ModelsR4.MedicationRequest {
-        return ModelsR4.MedicationRequest(
+        ModelsR4.MedicationRequest(
             authoredOn: FHIRPrimitive(try DateTime(date: date)),
             id: "medication-request-id".asFHIRStringPrimitive(),
             intent: FHIRPrimitive(.order),
@@ -521,7 +519,7 @@ private struct ModelsR4Mocks {
     }
     
     static func createMedicationAdministration(date: Date) throws -> ModelsR4.MedicationAdministration {
-        return ModelsR4.MedicationAdministration(
+        ModelsR4.MedicationAdministration(
             effective: .dateTime(FHIRPrimitive(try DateTime(date: date))),
             id: "medication-administration-id".asFHIRStringPrimitive(),
             medication: .codeableConcept(
@@ -535,7 +533,7 @@ private struct ModelsR4Mocks {
     }
     
     static func createObservation(date: Date) throws -> ModelsR4.Observation {
-        return ModelsR4.Observation(
+        ModelsR4.Observation(
             code: CodeableConcept(coding: [Coding(code: "code".asFHIRStringPrimitive())]),
             id: "observation-id".asFHIRStringPrimitive(),
             issued: FHIRPrimitive(try Instant(date: date)),
@@ -544,7 +542,7 @@ private struct ModelsR4Mocks {
     }
     
     static func createProcedure(date: Date) throws -> ModelsR4.Procedure {
-        return ModelsR4.Procedure(
+        ModelsR4.Procedure(
             id: "procedure-id".asFHIRStringPrimitive(),
             performed: .dateTime(FHIRPrimitive(try DateTime(date: date))),
             status: FHIRPrimitive(.completed),
@@ -553,14 +551,14 @@ private struct ModelsR4Mocks {
     }
 
     static func createPatient(date: Date) throws -> ModelsR4.Patient {
-        return ModelsR4.Patient(
+        ModelsR4.Patient(
             birthDate: FHIRPrimitive(try FHIRDate(date: date)),
             id: "patient-id".asFHIRStringPrimitive()
         )
     }
     
     static func createProvenance(date: Date) throws -> ModelsR4.Provenance {
-        return ModelsR4.Provenance(
+        ModelsR4.Provenance(
             agent: [
                 ProvenanceAgent(
                     type: CodeableConcept(
@@ -578,7 +576,7 @@ private struct ModelsR4Mocks {
     }
     
     static func createSupplyDelivery(date: Date) throws -> ModelsR4.SupplyDelivery {
-        return ModelsR4.SupplyDelivery(
+        ModelsR4.SupplyDelivery(
             id: "supply-delivery-id".asFHIRStringPrimitive(),
             occurrence: .dateTime(FHIRPrimitive(try DateTime(date: date))),
             status: FHIRPrimitive(.completed)
@@ -587,9 +585,9 @@ private struct ModelsR4Mocks {
 }
 
 
-private struct ModelsDSTU2Mocks {
+private enum ModelsDSTU2Mocks {
     static func createObservation(date: Date) throws -> ModelsDSTU2.Observation {
-        return ModelsDSTU2.Observation(
+        ModelsDSTU2.Observation(
             code: CodeableConcept(
                 coding: [
                     Coding(code: "code".asFHIRStringPrimitive())
@@ -602,7 +600,7 @@ private struct ModelsDSTU2Mocks {
     }
     
     static func createMedicationOrder(date: Date) throws -> ModelsDSTU2.MedicationOrder {
-        return ModelsDSTU2.MedicationOrder(
+        ModelsDSTU2.MedicationOrder(
             dateWritten: FHIRPrimitive(try DateTime(date: date)),
             id: "medication-order-id".asFHIRStringPrimitive(),
             medication: .codeableConcept(
@@ -615,7 +613,7 @@ private struct ModelsDSTU2Mocks {
     }
     
     static func createMedicationStatement(date: Date) throws -> ModelsDSTU2.MedicationStatement {
-        return ModelsDSTU2.MedicationStatement(
+        ModelsDSTU2.MedicationStatement(
             effective: .dateTime(FHIRPrimitive(try DateTime(date: date))),
             id: "medication-statement-id".asFHIRStringPrimitive(),
             medication: .codeableConcept(
@@ -629,7 +627,7 @@ private struct ModelsDSTU2Mocks {
     }
     
     static func createCondition(date: Date) throws -> ModelsDSTU2.Condition {
-        return ModelsDSTU2.Condition(
+        ModelsDSTU2.Condition(
             code: CodeableConcept(
                 coding: [
                     Coding(code: "condition-code".asFHIRStringPrimitive())
@@ -663,4 +661,3 @@ private struct ModelsDSTU2Mocks {
         )
     }
 }
-
