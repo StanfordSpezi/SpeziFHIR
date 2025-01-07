@@ -116,7 +116,7 @@ public final class FHIRStore: Module,
     /// Loads resources from a given FHIR `Bundle` into the ``FHIRStore``.
     ///
     /// - Parameter bundle: The FHIR `Bundle` containing resources to be loaded.
-    public func load(bundle: Bundle) async {
+    public func load(bundle: sending Bundle) async {
         let resourceProxies = bundle.entry?.compactMap { $0.resource } ?? []
         var resources: [FHIRResource] = []
 
