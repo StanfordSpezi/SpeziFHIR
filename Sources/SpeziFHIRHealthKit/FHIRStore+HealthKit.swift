@@ -29,7 +29,7 @@ extension FHIRStore {
     public func add(sample: HKSample) async {
         do {
             let resource = try await transform(sample: sample)
-            insert(resource: resource)
+            await insert(resource: resource)
         } catch {
             print("Could not transform HKSample: \(error)")
         }
@@ -38,7 +38,7 @@ extension FHIRStore {
     /// Remove a HealthKit sample delete object from the FHIR store.
     /// - Parameter sample: The sample delete object that should be removed.
     public func remove(sample: HKDeletedObject) async {
-        remove(resource: sample.uuid.uuidString)
+        await remove(resource: sample.uuid.uuidString)
     }
     
     

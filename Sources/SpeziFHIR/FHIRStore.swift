@@ -6,8 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Combine
-import Foundation
 import Observation
 import class ModelsR4.Bundle
 import enum ModelsDSTU2.ResourceProxy
@@ -19,149 +17,155 @@ import Spezi
 /// The ``FHIRStore`` is automatically injected in the environment if you use the ``FHIR`` standard or can be used as a standalone module.
 @Observable
 public final class FHIRStore: Module,
-                              EnvironmentAccessible,
-                              DefaultInitializable,
-                              @unchecked Sendable /* `unchecked` `Sendable` conformance fine as access to `_resources` protected by `NSLock` */ {
-    private let lock = NSLock()
-    @ObservationIgnored private var _resources: [FHIRResource]
-    
-    
-    /// Allergy intolerances.
-    public var allergyIntolerances: [FHIRResource] {
+                             EnvironmentAccessible,
+                             DefaultInitializable,
+                             Sendable {
+    @MainActor private var _resources: [FHIRResource] = []
+
+
+    /// `FHIRResource`s with category `allergyIntolerance`.
+    @MainActor public var allergyIntolerances: [FHIRResource] {
         access(keyPath: \.allergyIntolerances)
-        return lock.withLock {
-            _resources.filter { $0.category == .allergyIntolerance }
-        }
+        return _resources.filter { $0.category == .allergyIntolerance }
     }
-    
-    /// Conditions.
-    public var conditions: [FHIRResource] {
+
+    /// `FHIRResource`s with category `condition`.
+    @MainActor public var conditions: [FHIRResource] {
         access(keyPath: \.conditions)
-        return lock.withLock {
-            _resources.filter { $0.category == .condition }
-        }
+        return _resources.filter { $0.category == .condition }
     }
-    
-    /// Diagnostics.
-    public var diagnostics: [FHIRResource] {
+
+    /// `FHIRResource`s with category `diagnostic`.
+    @MainActor public var diagnostics: [FHIRResource] {
         access(keyPath: \.diagnostics)
-        return lock.withLock {
-            _resources.filter { $0.category == .diagnostic }
-        }
+        return _resources.filter { $0.category == .diagnostic }
     }
-    
-    /// Encounters.
-    public var encounters: [FHIRResource] {
+
+    /// `FHIRResource`s with category `encounter`.
+    @MainActor public var encounters: [FHIRResource] {
         access(keyPath: \.encounters)
         return _resources.filter { $0.category == .encounter }
     }
-    
-    /// Immunizations.
-    public var immunizations: [FHIRResource] {
+
+    /// `FHIRResource`s with category `immunization`
+    @MainActor public var immunizations: [FHIRResource] {
         access(keyPath: \.immunizations)
-        return lock.withLock {
-            _resources.filter { $0.category == .immunization }
-        }
+        return _resources.filter { $0.category == .immunization }
     }
-    
-    /// Medications.
-    public var medications: [FHIRResource] {
+
+    /// `FHIRResource`s with category `medication`.
+    @MainActor public var medications: [FHIRResource] {
         access(keyPath: \.medications)
-        return lock.withLock {
-            _resources.filter { $0.category == .medication }
-        }
+        return _resources.filter { $0.category == .medication }
     }
-    
-    /// Observations.
-    public var observations: [FHIRResource] {
+
+    /// `FHIRResource`s with category `observation`.
+    @MainActor public var observations: [FHIRResource] {
         access(keyPath: \.observations)
-        return lock.withLock {
-            _resources.filter { $0.category == .observation }
-        }
+        return _resources.filter { $0.category == .observation }
     }
-    
-    /// Other resources that could not be classified on the other categories.
-    public var otherResources: [FHIRResource] {
-        access(keyPath: \.otherResources)
-        return lock.withLock {
-            _resources.filter { $0.category == .other }
-        }
-    }
-    
-    /// Procedures.
-    public var procedures: [FHIRResource] {
+
+    /// `FHIRResource`s with category `procedure`.
+    @MainActor public var procedures: [FHIRResource] {
         access(keyPath: \.procedures)
-        return lock.withLock {
-            _resources.filter { $0.category == .procedure }
-        }
+        return _resources.filter { $0.category == .procedure }
     }
-    
-    
-    public required init() {
-        self._resources = []
+
+    /// `FHIRResource`s with category `other`.
+    @MainActor public var otherResources: [FHIRResource] {
+        access(keyPath: \.otherResources)
+        return _resources.filter { $0.category == .other }
     }
-    
-    
-    /// Inserts a FHIR resource into the store.
+
+
+    /// Create an empty ``FHIRStore``.
+    public required init() {}
+
+
+    /// Inserts a FHIR resource into the ``FHIRStore``.
     ///
     /// - Parameter resource: The `FHIRResource` to be inserted.
+    @MainActor
     public func insert(resource: FHIRResource) {
-        withMutation(keyPath: resource.storeKeyPath) {
-            lock.withLock {
-                _resources.append(resource)
-            }
-        }
+        _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
+
+        _resources.append(resource)
+
+        _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
     }
-    
-    /// Removes a FHIR resource from the store.
+
+    /// Inserts a ``Collection`` of FHIR resources into the ``FHIRStore``.
     ///
-    /// - Parameter resource: The `FHIRResource` identifier to be inserted.
-    public func remove(resource resourceId: FHIRResource.ID) {
-        lock.withLock {
-            guard let resource = _resources.first(where: { $0.id == resourceId }) else {
-                return
-            }
-            
-            withMutation(keyPath: resource.storeKeyPath) {
-                _resources.removeAll(where: { $0.id == resourceId })
-            }
+    /// - Parameter resources: The `FHIRResource`s to be inserted.
+    @MainActor
+    public func insert<T: Collection>(resources: T) where T.Element == FHIRResource {
+        let resourceCategories = Set(resources.map(\.category))
+
+        for category in resourceCategories {
+            _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
+        }
+
+        self._resources.append(contentsOf: resources)
+
+        for category in resourceCategories {
+            _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
         }
     }
-    
-    /// Loads resources from a given FHIR `Bundle`.
+
+    /// Loads resources from a given FHIR `Bundle` into the ``FHIRStore``.
     ///
     /// - Parameter bundle: The FHIR `Bundle` containing resources to be loaded.
-    public func load(bundle: Bundle) {
+    public func load(bundle: sending Bundle) async {
         let resourceProxies = bundle.entry?.compactMap { $0.resource } ?? []
-        
+        var resources: [FHIRResource] = []
+
         for resourceProxy in resourceProxies {
-            insert(resource: FHIRResource(resource: resourceProxy.get(), displayName: resourceProxy.displayName))
+            if Task.isCancelled {
+                return
+            }
+
+            resources.append(
+                FHIRResource(
+                    resource: resourceProxy.get(),
+                    displayName: resourceProxy.displayName
+                )
+            )
         }
+
+        if Task.isCancelled {
+            return
+        }
+
+        await insert(resources: resources)
     }
-    
-    /// Removes all resources from the store.
+
+    /// Removes a FHIR resource from the ``FHIRStore``.
+    ///
+    /// - Parameter resource: The `FHIRResource` identifier to be inserted.
+    @MainActor
+    public func remove(resource resourceId: FHIRResource.ID) {
+        guard let resource = _resources.first(where: { $0.id == resourceId }) else {
+            return
+        }
+
+        _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
+
+        _resources.removeAll { $0.id == resourceId }
+
+        _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
+    }
+
+    /// Removes all resources from the ``FHIRStore``.
+    @MainActor
     public func removeAllResources() {
-        lock.withLock {
-            // Not really ideal but seems to be a path to ensure that all observables are called.
-            _$observationRegistrar.willSet(self, keyPath: \.allergyIntolerances)
-            _$observationRegistrar.willSet(self, keyPath: \.conditions)
-            _$observationRegistrar.willSet(self, keyPath: \.diagnostics)
-            _$observationRegistrar.willSet(self, keyPath: \.encounters)
-            _$observationRegistrar.willSet(self, keyPath: \.immunizations)
-            _$observationRegistrar.willSet(self, keyPath: \.medications)
-            _$observationRegistrar.willSet(self, keyPath: \.observations)
-            _$observationRegistrar.willSet(self, keyPath: \.otherResources)
-            _$observationRegistrar.willSet(self, keyPath: \.procedures)
-            _resources = []
-            _$observationRegistrar.didSet(self, keyPath: \.allergyIntolerances)
-            _$observationRegistrar.didSet(self, keyPath: \.conditions)
-            _$observationRegistrar.didSet(self, keyPath: \.diagnostics)
-            _$observationRegistrar.didSet(self, keyPath: \.encounters)
-            _$observationRegistrar.didSet(self, keyPath: \.immunizations)
-            _$observationRegistrar.didSet(self, keyPath: \.medications)
-            _$observationRegistrar.didSet(self, keyPath: \.observations)
-            _$observationRegistrar.didSet(self, keyPath: \.otherResources)
-            _$observationRegistrar.didSet(self, keyPath: \.procedures)
+        for category in FHIRResource.FHIRResourceCategory.allCases {
+            _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
+        }
+
+        _resources = []
+
+        for category in FHIRResource.FHIRResourceCategory.allCases {
+            _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
         }
     }
 }

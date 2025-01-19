@@ -7,19 +7,19 @@
 //
 
 import Foundation
-@preconcurrency import ModelsDSTU2
-@preconcurrency import ModelsR4
+import ModelsDSTU2
+import ModelsR4
 
 
 /// Represents a FHIR (Fast Healthcare Interoperability Resources) entity.
 ///
 /// Handles both DSTU2 and R4 versions, providing a unified interface to interact with different FHIR versions.
-public struct FHIRResource: Sendable, Identifiable, Hashable {
+public struct FHIRResource: Identifiable, Hashable {
     /// Version-specific FHIR resources.
-    public enum VersionedFHIRResource: Sendable, Hashable {
+    public enum VersionedFHIRResource: Hashable {
         /// R4 version of FHIR resources.
         case r4(ModelsR4.Resource) // swiftlint:disable:this identifier_name
-        // DSTU2 version of FHIR resources.
+        /// DSTU2 version of FHIR resources.
         case dstu2(ModelsDSTU2.Resource)
     }
     

@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-@preconcurrency import ModelsR4
+import ModelsR4
 import SwiftUI
 
 
@@ -31,7 +31,12 @@ public struct FHIRMockPatientSelection: View {
             }
         }
             .task {
-                self.bundles = await ModelsR4.Bundle.mockPatients
+                _Concurrency.Task.detached {    // Workaround but enables us to not mark `import ModelsR4` as `@preconcurrency`
+                    let bundles = await ModelsR4.Bundle.mockPatients
+                    await MainActor.run {
+                        self.bundles = bundles
+                    }
+                }
             }
     }
     

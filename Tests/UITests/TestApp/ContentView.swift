@@ -6,17 +6,20 @@
 // SPDX-License-Identifier: MIT
 //
 
+import ModelsR4
 import SpeziFHIR
 import SwiftUI
 
 
 struct ContentView: View {
-    @Environment(FHIRStore.self) var fhirStore
-    @State var presentPatientSelection = false
-    
+    @Environment(FHIRStore.self) private var fhirStore
+    @State private var presentPatientSelection = false
+
+    private let additionalFHIRResourceId = "SuperUniqueFHIRResourceIdentifier"
+
     
     var body: some View {
-        NavigationStack {
+        NavigationStack {   // swiftlint:disable:this closure_body_length
             List {
                 Section {
                     Text("Allergy Intolerances: \(fhirStore.allergyIntolerances.count)")
@@ -26,8 +29,8 @@ struct ContentView: View {
                     Text("Immunizations: \(fhirStore.immunizations.count)")
                     Text("Medications: \(fhirStore.medications.count)")
                     Text("Observations: \(fhirStore.observations.count)")
-                    Text("Other Resources: \(fhirStore.otherResources.count)")
                     Text("Procedures: \(fhirStore.procedures.count)")
+                    Text("Other Resources: \(fhirStore.otherResources.count)")
                 }
                 Section {
                     presentPatientSelectionButton
@@ -35,6 +38,30 @@ struct ContentView: View {
             }
                 .sheet(isPresented: $presentPatientSelection) {
                     MockPatientSelection(presentPatientSelection: $presentPatientSelection)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            fhirStore.insert(
+                                resource: .init(
+                                    resource: ModelsR4.Account(id: .init(stringLiteral: additionalFHIRResourceId), status: .init()),
+                                    displayName: "Random Account FHIR Resource"
+                                )
+                            )
+                        } label: {
+                            Label("Add", systemImage: "doc.badge.plus")
+                                .accessibilityLabel("Add FHIR Resource")
+                        }
+                    }
+
+                    ToolbarItem {
+                        Button {
+                            fhirStore.remove(resource: additionalFHIRResourceId)
+                        } label: {
+                            Label("Remove", systemImage: "folder.badge.minus")
+                                .accessibilityLabel("Remove FHIR Resource")
+                        }
+                    }
                 }
         }
     }
