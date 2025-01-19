@@ -97,19 +97,18 @@ public final class FHIRStore: Module,
     /// Inserts a ``Collection`` of FHIR resources into the ``FHIRStore``.
     ///
     /// - Parameter resources: The `FHIRResource`s to be inserted.
-    public func insert<T: Collection>(resources: sending T) async where T.Element == FHIRResource {
-        let resourceCategories = Set(resources.map { $0.category })
+    @MainActor
+    public func insert<T: Collection>(resources: T) where T.Element == FHIRResource {
+        let resourceCategories = Set(resources.map(\.category))
 
-        await MainActor.run {
-            for category in resourceCategories {
-                _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
-            }
+        for category in resourceCategories {
+            _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
+        }
 
-            self._resources.append(contentsOf: resources)
+        self._resources.append(contentsOf: resources)
 
-            for category in resourceCategories {
-                _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
-            }
+        for category in resourceCategories {
+            _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
         }
     }
 
