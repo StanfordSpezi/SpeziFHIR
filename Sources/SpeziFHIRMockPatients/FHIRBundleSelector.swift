@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-@preconcurrency import class ModelsR4.Bundle
+import class ModelsR4.Bundle
 import class ModelsR4.Patient
 import SpeziFHIR
 import SwiftUI
@@ -16,7 +16,7 @@ import SwiftUI
 ///
 /// The View assumes that the bundle contains a `ModelsR4.Patient` resource to identify the bundle and provide a human-readable name.
 public struct FHIRBundleSelector: View {
-    private struct PatientIdentifiedBundle: Identifiable, Sendable {
+    private struct PatientIdentifiedBundle: Identifiable {
         let id: String
         let bundle: ModelsR4.Bundle
     }
@@ -73,7 +73,7 @@ public struct FHIRBundleSelector: View {
 
                 store.removeAllResources()
 
-                fhirResourceLoadingTask = Task.detached {
+                fhirResourceLoadingTask = Task {
                     await store.load(bundle: selected.bundle)
                 }
             }

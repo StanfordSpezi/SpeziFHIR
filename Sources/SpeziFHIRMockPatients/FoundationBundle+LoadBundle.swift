@@ -7,7 +7,7 @@
 //
 
 import Foundation
-@preconcurrency import class ModelsR4.Bundle
+import class ModelsR4.Bundle
 
 
 extension Foundation.Bundle {
@@ -18,14 +18,12 @@ extension Foundation.Bundle {
         guard let resourceURL = Self.module.url(forResource: name, withExtension: "json") else {
             fatalError("Could not find the resource \"\(name)\".json in the SpeziFHIRMockPatients Resources folder.")
         }
-        
-        let loadingTask = Task {
-            let resourceData = try Data(contentsOf: resourceURL)
-            return try JSONDecoder().decode(Bundle.self, from: resourceData)
-        }
-        
+
         do {
-            return try await loadingTask.value
+            return try JSONDecoder().decode(
+                Bundle.self,
+                from: Data(contentsOf: resourceURL)
+            )
         } catch {
             fatalError("Could not decode the FHIR bundle named \"\(name).json\": \(error)")
         }
