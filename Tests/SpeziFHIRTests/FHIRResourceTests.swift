@@ -299,7 +299,7 @@ final class FHIRResourceTests: XCTestCase {
         mockProcedure.code = nil
         XCTAssertEqual(proxy.displayName, "Procedure")
     }
-    
+
     func testPatientDisplayName() throws {
         let mockPatient = try ModelsR4Mocks.createPatient(date: testDate)
         
@@ -311,6 +311,89 @@ final class FHIRResourceTests: XCTestCase {
         // Test with no name
         mockPatient.name = nil
         XCTAssertEqual(proxy.displayName, "Patient")
+    }
+
+    func testModelsR4Categories() throws {
+        // Define test cases as tuples of (resource creator function, expected category)
+        let testCases: [(resource: () throws -> ModelsR4.Resource, category: FHIRResource.FHIRResourceCategory)] = [
+            // Observation cases
+            ({ try ModelsR4Mocks.createObservation(date: self.testDate) }, .observation),
+            ({ ModelsR4Mocks.createObservationDefinition() }, .observation),
+            
+            // Single resource cases
+            ({ try ModelsR4Mocks.createEncounter(date: self.testDate) }, .encounter),
+            ({ try ModelsR4Mocks.createCondition(date: self.testDate) }, .condition),
+            ({ try ModelsR4Mocks.createDiagnosticReport(date: self.testDate) }, .diagnostic),
+            ({ try ModelsR4Mocks.createProcedure(date: self.testDate) }, .procedure),
+            ({ ModelsR4Mocks.createAllergyIntolerance() }, .allergyIntolerance),
+            
+            // Immunization cases
+            ({ try ModelsR4Mocks.createImmunization(date: self.testDate) }, .immunization),
+            ({ ModelsR4Mocks.createImmunizationEvaluation() }, .immunization),
+            ({ try ModelsR4Mocks.createImmunizationRecommendation(date: self.testDate) }, .immunization),
+            
+            // Medication cases
+            ({ ModelsR4Mocks.createMedication() }, .medication),
+            ({ try ModelsR4Mocks.createMedicationRequest(date: self.testDate) }, .medication),
+            ({ try ModelsR4Mocks.createMedicationAdministration(date: self.testDate) }, .medication),
+            ({ ModelsR4Mocks.createMedicationDispense() }, .medication),
+            ({ ModelsR4Mocks.createMedicationKnowledge() }, .medication),
+            ({ ModelsR4Mocks.createMedicationStatement() }, .medication)
+        ]
+
+        try testCases.forEach { creator, expectedCategory in
+            let resource = try creator()
+            let fhirResource = FHIRResource(versionedResource: .r4(resource), displayName: "")
+            XCTAssertEqual(fhirResource.category, expectedCategory, "Failed for resource type: \(type(of: resource))")
+        }
+    }
+
+    func testModelsDSTU2Categories() throws {
+        let testCases: [(resource: () throws -> ModelsDSTU2.Resource, category: FHIRResource.FHIRResourceCategory)] = [
+            // Single resource cases
+            ({ ModelsDSTU2Mocks.createAllergyIntolerance() }, .allergyIntolerance),
+            ({ ModelsDSTU2Mocks.createEncounter() }, .encounter),
+            ({ try ModelsDSTU2Mocks.createObservation(date: self.testDate) }, .observation),
+            ({ try ModelsDSTU2Mocks.createCondition(date: self.testDate) }, .condition),
+            
+            // Diagnostic cases
+            ({ try ModelsDSTU2Mocks.createDiagnosticReport(date: self.testDate) }, .diagnostic),
+            ({ try ModelsDSTU2Mocks.createDiagnosticOrder(date: self.testDate) }, .diagnostic),
+            
+            // Procedure cases
+            ({ try ModelsDSTU2Mocks.createProcedure(date: self.testDate) }, .procedure),
+            ({ ModelsDSTU2Mocks.createProcedureRequest() }, .procedure),
+            
+            // Immunization cases
+            ({ try ModelsDSTU2Mocks.createImmunization(date: self.testDate) }, .immunization),
+            ({ ModelsDSTU2Mocks.createImmunizationRecommendation() }, .immunization),
+            
+            // Medication cases
+            ({ ModelsDSTU2Mocks.createMedication() }, .medication),
+            ({ try ModelsDSTU2Mocks.createMedicationOrder(date: self.testDate) }, .medication),
+            ({ try ModelsDSTU2Mocks.createMedicationAdministration(date: self.testDate) }, .medication),
+            ({ ModelsDSTU2Mocks.createMedicationDispense() }, .medication),
+            ({ try ModelsDSTU2Mocks.createMedicationStatement(date: self.testDate) }, .medication)
+        ]
+
+        try testCases.forEach { creator, expectedCategory in
+            let resource = try creator()
+            let fhirResource = FHIRResource(versionedResource: .dstu2(resource), displayName: "")
+            XCTAssertEqual(fhirResource.category, expectedCategory, "Failed for resource type: \(type(of: resource))")
+        }
+    }
+
+    @MainActor
+    func testCategoryKeyPaths() {
+        XCTAssertEqual(FHIRResource.FHIRResourceCategory.observation.storeKeyPath, \FHIRStore.observations)
+        XCTAssertEqual(FHIRResource.FHIRResourceCategory.encounter.storeKeyPath, \FHIRStore.encounters)
+        XCTAssertEqual(FHIRResource.FHIRResourceCategory.condition.storeKeyPath, \FHIRStore.conditions)
+        XCTAssertEqual(FHIRResource.FHIRResourceCategory.diagnostic.storeKeyPath, \FHIRStore.diagnostics)
+        XCTAssertEqual(FHIRResource.FHIRResourceCategory.procedure.storeKeyPath, \FHIRStore.procedures)
+        XCTAssertEqual(FHIRResource.FHIRResourceCategory.immunization.storeKeyPath, \FHIRStore.immunizations)
+        XCTAssertEqual(FHIRResource.FHIRResourceCategory.allergyIntolerance.storeKeyPath, \FHIRStore.allergyIntolerances)
+        XCTAssertEqual(FHIRResource.FHIRResourceCategory.medication.storeKeyPath, \FHIRStore.medications)
+        XCTAssertEqual(FHIRResource.FHIRResourceCategory.other.storeKeyPath, \FHIRStore.otherResources)
     }
     
     private func assertEqualDates(_ resourceDate: Date?, _ expectedDate: Date, _ resourceName: String) {
@@ -351,6 +434,13 @@ final class FHIRResourceTests: XCTestCase {
 }
 
 private enum ModelsR4Mocks {
+    static func createAllergyIntolerance() -> ModelsR4.AllergyIntolerance {
+        ModelsR4.AllergyIntolerance(
+            id: "allergy-intolerance-id".asFHIRStringPrimitive(),
+            patient: Reference(id: "patient-id".asFHIRStringPrimitive())
+        )
+    }
+
     static func createCarePlan(date: Date) throws -> ModelsR4.CarePlan {
         let period = ModelsR4.Period()
         period.start = try FHIRPrimitive(DateTime(date: date))
@@ -502,6 +592,54 @@ private enum ModelsR4Mocks {
             )
         )
     }
+
+    static func createImmunizationEvaluation() -> ModelsR4.ImmunizationEvaluation {
+        ModelsR4.ImmunizationEvaluation(
+            doseStatus: CodeableConcept(
+                coding: [
+                    Coding(code: "dose-status".asFHIRStringPrimitive())
+                ]
+            ),
+            id: "immunization-eval-id".asFHIRStringPrimitive(),
+            immunizationEvent: Reference(id: "event-id".asFHIRStringPrimitive()),
+            patient: Reference(id: "patient-id".asFHIRStringPrimitive()),
+            status: FHIRPrimitive(.completed),
+            targetDisease: CodeableConcept(
+                coding: [
+                    Coding(code: "targe-disease".asFHIRStringPrimitive())
+                ]
+            )
+        )
+    }
+    
+    static func createImmunizationRecommendation(date: Date) throws -> ModelsR4.ImmunizationRecommendation {
+        ModelsR4.ImmunizationRecommendation(
+            date: FHIRPrimitive(try DateTime(date: date)),
+            id: "immunization-recommendation-id".asFHIRStringPrimitive(),
+            patient: Reference(id: "patient-id".asFHIRStringPrimitive()),
+            recommendation: []
+        )
+    }
+    
+    static func createMedication() -> ModelsR4.Medication {
+        ModelsR4.Medication(id: "medication-id".asFHIRStringPrimitive())
+    }
+    
+    static func createMedicationDispense() -> ModelsR4.MedicationDispense {
+        ModelsR4.MedicationDispense(
+            id: "medication-dispense-id".asFHIRStringPrimitive(),
+            medication: .codeableConcept(
+                CodeableConcept(coding: [
+                    Coding(code: "med-code".asFHIRStringPrimitive())
+                ])
+            ),
+            status: FHIRPrimitive(.completed)
+        )
+    }
+    
+    static func createMedicationKnowledge() -> ModelsR4.MedicationKnowledge {
+        ModelsR4.MedicationKnowledge(id: "medication-knowledge-id".asFHIRStringPrimitive())
+    }
     
     static func createMedicationRequest(date: Date) throws -> ModelsR4.MedicationRequest {
         ModelsR4.MedicationRequest(
@@ -532,12 +670,32 @@ private enum ModelsR4Mocks {
         )
     }
     
+    static func createMedicationStatement() -> ModelsR4.MedicationStatement {
+        ModelsR4.MedicationStatement(
+            id: "medication-statement-id".asFHIRStringPrimitive(),
+            medication: .codeableConcept(
+                CodeableConcept(coding: [
+                    Coding(code: "med-code".asFHIRStringPrimitive())
+                ])
+            ),
+            status: FHIRPrimitive(.completed),
+            subject: Reference(id: "patient-id".asFHIRStringPrimitive())
+        )
+    }
+    
     static func createObservation(date: Date) throws -> ModelsR4.Observation {
         ModelsR4.Observation(
             code: CodeableConcept(coding: [Coding(code: "code".asFHIRStringPrimitive())]),
             id: "observation-id".asFHIRStringPrimitive(),
             issued: FHIRPrimitive(try Instant(date: date)),
             status: FHIRPrimitive(.final)
+        )
+    }
+    
+    static func createObservationDefinition() -> ModelsR4.ObservationDefinition {
+        ModelsR4.ObservationDefinition(
+            code: CodeableConcept(coding: [Coding(code: "code".asFHIRStringPrimitive())]),
+            id: "observation-definition-id".asFHIRStringPrimitive()
         )
     }
     
@@ -586,6 +744,40 @@ private enum ModelsR4Mocks {
 
 
 private enum ModelsDSTU2Mocks {
+    static func createAllergyIntolerance() -> ModelsDSTU2.AllergyIntolerance {
+        ModelsDSTU2.AllergyIntolerance(
+            id: "allergy-intolerance-id".asFHIRStringPrimitive(),
+            patient: Reference(id: "patient-id".asFHIRStringPrimitive()),
+            substance: CodeableConcept(
+                coding: [
+                    Coding(code: "code".asFHIRStringPrimitive())
+                ]
+            )
+        )
+    }
+    
+    static func createDiagnosticOrder(date: Date) throws -> ModelsDSTU2.DiagnosticOrder {
+        ModelsDSTU2.DiagnosticOrder(
+            id: "diagnostic-order-id".asFHIRStringPrimitive(),
+            subject: Reference(id: "patient-id".asFHIRStringPrimitive())
+        )
+    }
+    
+    static func createDiagnosticReport(date: Date) throws -> ModelsDSTU2.DiagnosticReport {
+        ModelsDSTU2.DiagnosticReport(
+            code: CodeableConcept(
+                coding: [
+                    Coding(code: "code".asFHIRStringPrimitive())
+                ]
+            ),
+            effective: .dateTime(FHIRPrimitive(try DateTime(date: date))),
+            id: "diagnostic-report-id".asFHIRStringPrimitive(),
+            issued: FHIRPrimitive(try Instant(date: date)),
+            performer: Reference(id: "patient-id".asFHIRStringPrimitive()),
+            status: FHIRPrimitive(.final),
+            subject: Reference(id: "patient-id".asFHIRStringPrimitive()))
+    }
+
     static func createObservation(date: Date) throws -> ModelsDSTU2.Observation {
         ModelsDSTU2.Observation(
             code: CodeableConcept(
@@ -596,6 +788,59 @@ private enum ModelsDSTU2Mocks {
             id: "observation-id".asFHIRStringPrimitive(),
             issued: FHIRPrimitive(try Instant(date: date)),
             status: FHIRPrimitive(.final)
+        )
+    }
+    
+    static func createImmunization(date: Date) throws -> ModelsDSTU2.Immunization {
+        ModelsDSTU2.Immunization(
+            id: "immunization-id".asFHIRStringPrimitive(),
+            patient: Reference(id: "patient-id".asFHIRStringPrimitive()),
+            reported: FHIRPrimitive(true),
+            status: FHIRPrimitive(.completed),
+            vaccineCode: CodeableConcept(
+                coding: [
+                    Coding(code: "code".asFHIRStringPrimitive())
+                ]
+            ),
+            wasNotGiven: FHIRPrimitive(true)
+        )
+    }
+    
+    static func createImmunizationRecommendation() -> ModelsDSTU2.ImmunizationRecommendation {
+        ModelsDSTU2.ImmunizationRecommendation(
+            id: "immunization-recommendation-id".asFHIRStringPrimitive(),
+            patient: Reference(id: "patient-id".asFHIRStringPrimitive()),
+            recommendation: []
+        )
+    }
+    
+    static func createMedication() -> ModelsDSTU2.Medication {
+        ModelsDSTU2.Medication(id: "medication-id".asFHIRStringPrimitive())
+    }
+    
+    static func createMedicationAdministration(date: Date) throws -> ModelsDSTU2.MedicationAdministration {
+        ModelsDSTU2.MedicationAdministration(
+            effectiveTime: .dateTime(FHIRPrimitive(try DateTime(date: date))),
+            id: "medication-administration-id".asFHIRStringPrimitive(),
+            medication: .codeableConcept(
+                CodeableConcept(coding: [
+                    Coding(code: "med-code".asFHIRStringPrimitive())
+                ])
+            ),
+            patient: Reference(id: "patient-id".asFHIRStringPrimitive()),
+            status: FHIRPrimitive(.completed)
+        )
+    }
+    
+    static func createMedicationDispense() -> ModelsDSTU2.MedicationDispense {
+        ModelsDSTU2.MedicationDispense(
+            id: "medication-dispense-id".asFHIRStringPrimitive(),
+            medication: .codeableConcept(
+                CodeableConcept(coding: [
+                    Coding(code: "med-code".asFHIRStringPrimitive())
+                ])
+            ),
+            status: FHIRPrimitive(.completed)
         )
     }
     
@@ -640,6 +885,10 @@ private enum ModelsDSTU2Mocks {
         )
     }
     
+    static func createEncounter() -> ModelsDSTU2.Encounter {
+        ModelsDSTU2.Encounter(id: "encounter-id".asFHIRStringPrimitive(), status: FHIRPrimitive(.finished))
+    }
+    
     static func createProcedure(date: Date, usePeriod: Bool = false) throws -> ModelsDSTU2.Procedure {
         let period = ModelsDSTU2.Period()
         period.end = try FHIRPrimitive(DateTime(date: date))
@@ -656,6 +905,20 @@ private enum ModelsDSTU2Mocks {
             ),
             id: "procedure-id".asFHIRStringPrimitive(),
             performed: performed,
+            status: FHIRPrimitive(.completed),
+            subject: Reference(id: "patient-id".asFHIRStringPrimitive())
+        )
+    }
+    
+    static func createProcedureRequest() -> ModelsDSTU2.ProcedureRequest {
+        ModelsDSTU2.ProcedureRequest(
+            code: CodeableConcept(
+                coding: [
+                    Coding(code: "procedure-code".asFHIRStringPrimitive())
+                ]
+            ),
+            id: "procedure-id".asFHIRStringPrimitive(),
+            performer: Reference(id: "performer-id".asFHIRStringPrimitive()),
             status: FHIRPrimitive(.completed),
             subject: Reference(id: "patient-id".asFHIRStringPrimitive())
         )
