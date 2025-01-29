@@ -349,4 +349,17 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
         }
         return supplyDelivery
     }
+    
+    static func createBundle() throws -> ModelsR4.Bundle {
+        let bundle = Bundle(type: FHIRPrimitive(BundleType.transaction))
+        let condition = try ModelsR4Mocks.createCondition()
+        let observation = try ModelsR4Mocks.createObservation()
+
+        bundle.entry = [
+            BundleEntry(resource: .condition(condition)),
+            BundleEntry(resource: .observation(observation))
+        ]
+
+        return bundle
+    }
 }
