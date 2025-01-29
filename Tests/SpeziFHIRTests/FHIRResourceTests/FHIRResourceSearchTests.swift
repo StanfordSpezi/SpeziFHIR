@@ -12,7 +12,7 @@ import XCTest
 
 extension FHIRResourceTests {
     func testMatchesDisplayName() throws {
-        let observation = try ModelsR4Mocks.createObservation(date: testDate)
+        let observation = try ModelsR4Mocks.createObservation()
         
         let resource = FHIRResource(
             versionedResource: .r4(observation),
@@ -28,9 +28,9 @@ extension FHIRResourceTests {
     }
     
     func testFilterByDisplayName() throws {
-        let observation = try ModelsR4Mocks.createObservation(date: testDate)
-        let patient = try ModelsR4Mocks.createPatient(date: testDate)
-        let medicationRequest = try ModelsR4Mocks.createMedicationRequest(date: testDate)
+        let observation = try ModelsR4Mocks.createObservation()
+        let patient = try ModelsR4Mocks.createPatient()
+        let medicationRequest = try ModelsR4Mocks.createMedicationRequest()
         
         let resource1 = FHIRResource(
             versionedResource: .r4(observation),

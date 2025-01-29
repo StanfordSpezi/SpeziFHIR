@@ -17,25 +17,25 @@ extension FHIRResourceTests {
         // Define test cases as tuples of (resource creator function, expected category)
         let testCases: [(resource: () throws -> ModelsR4.Resource, category: FHIRResource.FHIRResourceCategory)] = [
             // Observation cases
-            ({ try ModelsR4Mocks.createObservation(date: self.testDate) }, .observation),
+            ({ try ModelsR4Mocks.createObservation() }, .observation),
             ({ ModelsR4Mocks.createObservationDefinition() }, .observation),
             
             // Single resource cases
-            ({ try ModelsR4Mocks.createEncounter(date: self.testDate) }, .encounter),
-            ({ try ModelsR4Mocks.createCondition(date: self.testDate) }, .condition),
-            ({ try ModelsR4Mocks.createDiagnosticReport(date: self.testDate) }, .diagnostic),
-            ({ try ModelsR4Mocks.createProcedure(date: self.testDate) }, .procedure),
+            ({ try ModelsR4Mocks.createEncounter() }, .encounter),
+            ({ try ModelsR4Mocks.createCondition() }, .condition),
+            ({ try ModelsR4Mocks.createDiagnosticReport() }, .diagnostic),
+            ({ try ModelsR4Mocks.createProcedure() }, .procedure),
             ({ ModelsR4Mocks.createAllergyIntolerance() }, .allergyIntolerance),
             
             // Immunization cases
-            ({ try ModelsR4Mocks.createImmunization(date: self.testDate) }, .immunization),
+            ({ try ModelsR4Mocks.createImmunization() }, .immunization),
             ({ ModelsR4Mocks.createImmunizationEvaluation() }, .immunization),
-            ({ try ModelsR4Mocks.createImmunizationRecommendation(date: self.testDate) }, .immunization),
+            ({ try ModelsR4Mocks.createImmunizationRecommendation(date: Self.testDate) }, .immunization),
             
             // Medication cases
             ({ ModelsR4Mocks.createMedication() }, .medication),
-            ({ try ModelsR4Mocks.createMedicationRequest(date: self.testDate) }, .medication),
-            ({ try ModelsR4Mocks.createMedicationAdministration(date: self.testDate) }, .medication),
+            ({ try ModelsR4Mocks.createMedicationRequest() }, .medication),
+            ({ try ModelsR4Mocks.createMedicationAdministration() }, .medication),
             ({ ModelsR4Mocks.createMedicationDispense() }, .medication),
             ({ ModelsR4Mocks.createMedicationKnowledge() }, .medication),
             ({ ModelsR4Mocks.createMedicationStatement() }, .medication)
@@ -53,27 +53,27 @@ extension FHIRResourceTests {
             // Single resource cases
             ({ ModelsDSTU2Mocks.createAllergyIntolerance() }, .allergyIntolerance),
             ({ ModelsDSTU2Mocks.createEncounter() }, .encounter),
-            ({ try ModelsDSTU2Mocks.createObservation(date: self.testDate) }, .observation),
-            ({ try ModelsDSTU2Mocks.createCondition(date: self.testDate) }, .condition),
+            ({ try ModelsDSTU2Mocks.createObservation() }, .observation),
+            ({ try ModelsDSTU2Mocks.createCondition() }, .condition),
             
             // Diagnostic cases
-            ({ try ModelsDSTU2Mocks.createDiagnosticReport(date: self.testDate) }, .diagnostic),
-            ({ try ModelsDSTU2Mocks.createDiagnosticOrder(date: self.testDate) }, .diagnostic),
+            ({ try ModelsDSTU2Mocks.createDiagnosticReport() }, .diagnostic),
+            ({ ModelsDSTU2Mocks.createDiagnosticOrder() }, .diagnostic),
             
             // Procedure cases
-            ({ try ModelsDSTU2Mocks.createProcedure(date: self.testDate) }, .procedure),
+            ({ try ModelsDSTU2Mocks.createProcedure() }, .procedure),
             ({ ModelsDSTU2Mocks.createProcedureRequest() }, .procedure),
             
             // Immunization cases
-            ({ try ModelsDSTU2Mocks.createImmunization(date: self.testDate) }, .immunization),
+            ({ ModelsDSTU2Mocks.createImmunization() }, .immunization),
             ({ ModelsDSTU2Mocks.createImmunizationRecommendation() }, .immunization),
             
             // Medication cases
             ({ ModelsDSTU2Mocks.createMedication() }, .medication),
-            ({ try ModelsDSTU2Mocks.createMedicationOrder(date: self.testDate) }, .medication),
-            ({ try ModelsDSTU2Mocks.createMedicationAdministration(date: self.testDate) }, .medication),
+            ({ try ModelsDSTU2Mocks.createMedicationOrder() }, .medication),
+            ({ try ModelsDSTU2Mocks.createMedicationAdministration() }, .medication),
             ({ ModelsDSTU2Mocks.createMedicationDispense() }, .medication),
-            ({ try ModelsDSTU2Mocks.createMedicationStatement(date: self.testDate) }, .medication)
+            ({ try ModelsDSTU2Mocks.createMedicationStatement() }, .medication)
         ]
         
         try testCases.forEach { creator, expectedCategory in
