@@ -116,4 +116,97 @@ final class FHIRStoreTests: XCTestCase {
             XCTAssertTrue(store.medications.isEmpty)
         }
     }
+    
+    @MainActor
+    func testLoadEmptyBundle() async {
+        let bundle = ModelsR4.Bundle(type: FHIRPrimitive<BundleType>(.transaction))
+
+        await store.load(bundle: bundle)
+
+        await MainActor.run {
+            XCTAssertEqual(store.allergyIntolerances.count, 0)
+            XCTAssertEqual(store.conditions.count, 0)
+            XCTAssertEqual(store.observations.count, 0)
+            XCTAssertEqual(store.diagnostics.count, 0)
+            XCTAssertEqual(store.encounters.count, 0)
+            XCTAssertEqual(store.immunizations.count, 0)
+            XCTAssertEqual(store.observations.count, 0)
+            XCTAssertEqual(store.procedures.count, 0)
+            XCTAssertEqual(store.otherResources.count, 0)
+        }
+    }
+    
+    @MainActor
+    func testLoadBundleWithMultipleResources() async throws {
+        await store.load(bundle: try ModelsR4Mocks.createBundle())
+        
+        await MainActor.run {
+            XCTAssertEqual(store.conditions.count, 1)
+            XCTAssertEqual(store.observations.count, 1)
+            XCTAssertEqual(store.conditions.first?.id.description, "condition-id")
+            XCTAssertEqual(store.observations.first?.id.description, "observation-id")
+        }
+    }
+    
+    @MainActor
+    func testLoadBundleCancellation() async throws {
+        let bundle = try ModelsR4Mocks.createBundle()
+            
+        var entries: [BundleEntry] = []
+        for _ in 0..<100 {
+            let condition = try ModelsR4Mocks.createCondition()
+            entries.append(BundleEntry(resource: .condition(condition)))
+        }
+        bundle.entry = entries
+
+        let task = _Concurrency.Task {
+            await store.load(bundle: bundle)
+        }
+
+        task.cancel()
+
+        await MainActor.run {
+            XCTAssertEqual(store.conditions.count, 0)
+        }
+    }
+    
+    @MainActor
+    func testLoadBundleWithInvalidResources() async throws {
+        let bundle = try ModelsR4Mocks.createBundle()
+        let condition = try ModelsR4Mocks.createCondition()
+        let emptyEntry = BundleEntry()
+        
+        bundle.entry = [
+            emptyEntry,
+            BundleEntry(resource: .condition(condition))
+        ]
+        
+        await store.load(bundle: bundle)
+        
+        await MainActor.run {
+            XCTAssertEqual(store.conditions.count, 1)
+            XCTAssertEqual(store.conditions.first?.id.description, "condition-id")
+            XCTAssertEqual(store.otherResources.count, 0)
+        }
+    }
+    
+    @MainActor
+    func testLoadBundleWithDuplicateResources() async throws {
+        let bundle = try ModelsR4Mocks.createBundle()
+        let condition1 = try ModelsR4Mocks.createCondition()
+        let condition2 = try ModelsR4Mocks.createCondition()
+        
+        bundle.entry = [
+            BundleEntry(resource: .condition(condition1)),
+            BundleEntry(resource: .condition(condition2))
+        ]
+        
+        await store.load(bundle: bundle)
+        
+        await MainActor.run {
+            XCTAssertEqual(store.conditions.count, 2)
+            XCTAssertEqual(store.conditions[0].id.description, "condition-id")
+            XCTAssertEqual(store.conditions[1].id.description, "condition-id")
+        }
+    }
 }
