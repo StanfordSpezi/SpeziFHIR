@@ -12,7 +12,8 @@ import XCTest
 
 
 final class FHIRStoreTests: XCTestCase {
-    var store: FHIRStore!
+    private var store: FHIRStore!
+
     
     override func setUp() {
         super.setUp()
