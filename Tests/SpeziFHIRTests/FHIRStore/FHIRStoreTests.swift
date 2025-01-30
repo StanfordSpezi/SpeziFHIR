@@ -12,7 +12,7 @@ import XCTest
 
 
 final class FHIRStoreTests: XCTestCase {
-    private var store: FHIRStore!
+    private var store: FHIRStore! // swiftlint:disable:this implicitly_unwrapped_optional
 
     
     override func setUp() {

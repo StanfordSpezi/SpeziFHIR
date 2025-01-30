@@ -20,7 +20,6 @@ public final class FHIRStore: Module,
                              EnvironmentAccessible,
                              DefaultInitializable,
                              Sendable {
-    
     // The `_resources` array needs to be marked with `@ObservationIgnored` to prevent changes to this array
     // from triggering updates to all computed properties.
     // Instead, we explicitly control change notifications through `willSet`/`didSet` calls

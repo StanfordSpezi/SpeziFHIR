@@ -11,9 +11,8 @@ import ModelsR4
 import XCTest
 
 
-// swiftlint:disable file_length
 final class FHIRStoreObservationChangesTests: XCTestCase {
-    private var store: FHIRStore!
+    private var store: FHIRStore! // swiftlint:disable:this implicitly_unwrapped_optional
 
     
     override func setUp() {
@@ -126,6 +125,7 @@ final class FHIRStoreObservationChangesTests: XCTestCase {
         XCTAssertEqual(store.observations.count, 0)
     }
     
+    // swiftlint:disable function_body_length
     @MainActor
     func testChangesOnRemoveAll() async throws {
         let allergyIntolerance = ModelsR4Mocks.createAllergyIntolerance()
