@@ -11,21 +11,11 @@ import ModelsR4
 import XCTest
 
 
+@MainActor
 final class FHIRStoreObservationChangesTests: XCTestCase {
-    private var store: FHIRStore! // swiftlint:disable:this implicitly_unwrapped_optional
+    private var store = FHIRStore()
+    
 
-    
-    override func setUp() {
-        super.setUp()
-        store = FHIRStore()
-    }
-    
-    override func tearDown() {
-        store = nil
-        super.tearDown()
-    }
-    
-    @MainActor
     func testChangesOnInsert() async throws {
         let observation = try ModelsR4Mocks.createObservation()
         let resource = FHIRResource(resource: observation, displayName: "Test Observation")
@@ -53,8 +43,7 @@ final class FHIRStoreObservationChangesTests: XCTestCase {
         XCTAssertEqual(store.procedures.count, 0)
         XCTAssertEqual(store.observations.count, 1)
     }
-    
-    @MainActor
+
     func testChangesOnBulkInsert() async throws {
         let observation = try ModelsR4Mocks.createObservation()
         let observationResource = FHIRResource(resource: observation, displayName: "Test Observation")
@@ -93,8 +82,7 @@ final class FHIRStoreObservationChangesTests: XCTestCase {
         XCTAssertEqual(store.observations.count, 1)
         XCTAssertEqual(store.medications.count, 1)
     }
-    
-    @MainActor
+
     func testChangesOnRemove() async throws {
         let observation = try ModelsR4Mocks.createObservation()
         let resource = FHIRResource(resource: observation, displayName: "Test Observation")
@@ -126,7 +114,6 @@ final class FHIRStoreObservationChangesTests: XCTestCase {
     }
     
     // swiftlint:disable function_body_length
-    @MainActor
     func testChangesOnRemoveAll() async throws {
         let allergyIntolerance = ModelsR4Mocks.createAllergyIntolerance()
         let allergyIntoleranceResource = FHIRResource(resource: allergyIntolerance, displayName: "Test Allergy Intolerance")
