@@ -13,7 +13,7 @@ import XCTest
 
 extension FHIRResourceTests {
     func testConditionDisplayName() throws {
-        let mockCondition = try ModelsR4Mocks.createCondition(date: testDate)
+        let mockCondition = try ModelsR4Mocks.createCondition()
         
         // Test with text value
         mockCondition.code = CodeableConcept(text: "Hypertension")
@@ -26,7 +26,7 @@ extension FHIRResourceTests {
     }
     
     func testDiagnosticReportDisplayName() throws {
-        let mockReport = try ModelsR4Mocks.createDiagnosticReport(date: testDate)
+        let mockReport = try ModelsR4Mocks.createDiagnosticReport()
         
         // Test with display coding
         mockReport.code.coding = [Coding(display: "Blood Test")]
@@ -39,7 +39,7 @@ extension FHIRResourceTests {
     }
     
     func testEncounterDisplayName() throws {
-        let mockEncounter = try ModelsR4Mocks.createEncounter(date: testDate)
+        let mockEncounter = try ModelsR4Mocks.createEncounter()
         
         // Test with reason code
         mockEncounter.reasonCode = [CodeableConcept(coding: [Coding(display: "Follow-up")])]
@@ -57,7 +57,7 @@ extension FHIRResourceTests {
     }
     
     func testImmunizationDisplayName() throws {
-        let mockImmunization = try ModelsR4Mocks.createImmunization(date: testDate)
+        let mockImmunization = try ModelsR4Mocks.createImmunization()
         
         // Test with vaccine text
         mockImmunization.vaccineCode.text = "Flu Shot"
@@ -70,7 +70,7 @@ extension FHIRResourceTests {
     }
     
     func testMedicationRequestDisplayName() throws {
-        let mockMedRequest = try ModelsR4Mocks.createMedicationRequest(date: testDate)
+        let mockMedRequest = try ModelsR4Mocks.createMedicationRequest()
         
         // Test with codeable concept text
         if case let .codeableConcept(medicationCode) = mockMedRequest.medication {
@@ -91,7 +91,7 @@ extension FHIRResourceTests {
     }
     
     func testObservationDisplayName() throws {
-        let mockObservation = try ModelsR4Mocks.createObservation(date: testDate)
+        let mockObservation = try ModelsR4Mocks.createObservation()
         
         // Test with code text
         mockObservation.code.text = "Blood Pressure"
@@ -104,7 +104,7 @@ extension FHIRResourceTests {
     }
     
     func testProcedureDisplayName() throws {
-        let mockProcedure = try ModelsR4Mocks.createProcedure(date: testDate)
+        let mockProcedure = try ModelsR4Mocks.createProcedure()
         
         // Test with code text
         mockProcedure.code = CodeableConcept(text: "Hip Surgery")
@@ -117,7 +117,7 @@ extension FHIRResourceTests {
     }
     
     func testPatientDisplayName() throws {
-        let mockPatient = try ModelsR4Mocks.createPatient(date: testDate)
+        let mockPatient = try ModelsR4Mocks.createPatient()
         
         // Test with name components
         mockPatient.name = [HumanName(family: "Doe", given: ["John"])]

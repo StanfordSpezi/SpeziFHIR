@@ -20,7 +20,13 @@ public final class FHIRStore: Module,
                              EnvironmentAccessible,
                              DefaultInitializable,
                              Sendable {
-    @MainActor private var _resources: [FHIRResource] = []
+    // The `_resources` array needs to be marked with `@ObservationIgnored` to prevent changes to this array
+    // from triggering updates to all computed properties.
+    // Instead, we explicitly control change notifications through `willSet`/`didSet` calls
+    // with specific keyPaths in the `insert`, `remove`, and other mutation methods. This ensures that
+    // only observers of the relevant category (e.g., observations, conditions) are notified when
+    // resources of that category are modified.
+    @ObservationIgnored @MainActor private var _resources: [FHIRResource] = []
 
 
     /// `FHIRResource`s with category `allergyIntolerance`.
