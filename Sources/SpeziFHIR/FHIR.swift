@@ -43,11 +43,10 @@ import Spezi
 /// ```
 ///
 /// > Tip: You can learn more about how to use the store in the ``FHIRStore`` documentation.
+@available(*, deprecated, message: "We recommend using an app-specific `Standard` instead.")
 public actor FHIR: Standard {
-    @Model public private(set) var store: FHIRStore
+    @Model public private(set) var store = FHIRStore()
     
     
-    public init() {
-        self._store = Model(wrappedValue: FHIRStore())
-    }
+    public init() {}
 }
