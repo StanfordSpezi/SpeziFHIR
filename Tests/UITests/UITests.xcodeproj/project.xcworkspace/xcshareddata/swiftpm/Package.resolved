@@ -1,5 +1,5 @@
 {
-  "originHash" : "932bcfc7d6fd1f33a8e5a8e6bc121d237315d806519bc31b8dec8f8a2abee3e1",
+  "originHash" : "4d13986aaafff4daffb297fc4d39f73a354b736afcb33615f772d0166f6f230f",
   "pins" : [
     {
       "identity" : "fhirmodels",
@@ -42,17 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziHealthKit",
       "state" : {
-        "branch" : "clinical",
-        "revision" : "4dc86ef4f7060edf57b20831bbc421517d73576b"
-      }
-    },
-    {
-      "identity" : "spezistorage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordSpezi/SpeziStorage.git",
-      "state" : {
-        "revision" : "b5dfb4a551d3f4243e2798133d6da2414a70e274",
-        "version" : "2.1.0"
+        "revision" : "fbdec78fcb2f90d6338f1968e21dd11fbee65070",
+        "version" : "0.6.0"
       }
     },
     {

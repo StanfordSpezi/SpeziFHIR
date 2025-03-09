@@ -84,7 +84,7 @@ struct ContentView: View {
     }
     
     @ViewBuilder private var collectFromHealthKitButton: some View {
-        AsyncButton("Ask for authorization", state: $viewState) {
+        AsyncButton("Load HealthKit Clinical Records", state: $viewState) {
             try await healthKit.askForAuthorization()
             await standard.loadHealthKitResources()
         }

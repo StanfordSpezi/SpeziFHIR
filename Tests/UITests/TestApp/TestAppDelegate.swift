@@ -21,18 +21,22 @@ class TestAppDelegate: SpeziAppDelegate {
         )
     }
     
+    private var deliverySetting: HealthKitDeliverySetting {
+        .anchorQuery(saveAnchor: false)
+    }
+    
     override var configuration: Configuration {
         Configuration(standard: TestingStandard()) {
             HealthKit {
-                CollectSample(.allergyRecord, predicate: healthKitPredicate)
-                CollectSample(.clinicalNoteRecord, predicate: healthKitPredicate)
-                CollectSample(.conditionRecord, predicate: healthKitPredicate)
-                CollectSample(.coverageRecord, predicate: healthKitPredicate)
-                CollectSample(.immunizationRecord, predicate: healthKitPredicate)
-                CollectSample(.labResultRecord, predicate: healthKitPredicate)
-                CollectSample(.medicationRecord, predicate: healthKitPredicate)
-                CollectSample(.procedureRecord, predicate: healthKitPredicate)
-                CollectSample(.vitalSignRecord, predicate: healthKitPredicate)
+                CollectSample(HKClinicalType(.allergyRecord), predicate: healthKitPredicate, deliverySetting: deliverySetting)
+                CollectSample(HKClinicalType(.clinicalNoteRecord), predicate: healthKitPredicate, deliverySetting: deliverySetting)
+                CollectSample(HKClinicalType(.conditionRecord), predicate: healthKitPredicate, deliverySetting: deliverySetting)
+                CollectSample(HKClinicalType(.coverageRecord), predicate: healthKitPredicate, deliverySetting: deliverySetting)
+                CollectSample(HKClinicalType(.immunizationRecord), predicate: healthKitPredicate, deliverySetting: deliverySetting)
+                CollectSample(HKClinicalType(.labResultRecord), predicate: healthKitPredicate, deliverySetting: deliverySetting)
+                CollectSample(HKClinicalType(.medicationRecord), predicate: healthKitPredicate, deliverySetting: deliverySetting)
+                CollectSample(HKClinicalType(.procedureRecord), predicate: healthKitPredicate, deliverySetting: deliverySetting)
+                CollectSample(HKClinicalType(.vitalSignRecord), predicate: healthKitPredicate, deliverySetting: deliverySetting)
             }
         }
     }
