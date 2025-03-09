@@ -30,6 +30,7 @@ struct ContentView: View {
                     Text("Allergy Intolerances: \(fhirStore.allergyIntolerances.count)")
                     Text("Conditions: \(fhirStore.conditions.count)")
                     Text("Diagnostics: \(fhirStore.diagnostics.count)")
+                    Text("Documents: \(fhirStore.documents.count)")
                     Text("Encounters: \(fhirStore.encounters.count)")
                     Text("Immunizations: \(fhirStore.immunizations.count)")
                     Text("Medications: \(fhirStore.medications.count)")

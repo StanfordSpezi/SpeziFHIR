@@ -170,9 +170,7 @@ extension FHIRResource {
             if attachment.contentType.conforms(to: .text) {
                 let data = try await dataReader.data
                 strings.append((mimeType, String(decoding: data, as: UTF8.self)))
-            }
-            
-            if attachment.contentType.conforms(to: .pdf) {
+            } else if attachment.contentType.conforms(to: .pdf) {
                 let data = try await dataReader.data
                 if let pdf = PDFDocument(data: data) {
                     let pageCount = pdf.pageCount
@@ -190,19 +188,19 @@ extension FHIRResource {
                     
                     strings.append((mimeType, documentContent.string))
                 }
+            } else {
+                print(
+                    """
+                    Could not transform attachement type: \(attachment.contentType) to a string representation.
+                    
+                    Attachement: \(attachment.identifier)
+                        Name: \(attachment.name)
+                        Creation Date: \(attachment.creationDate)
+                        Size: \(attachment.size)
+                        Content Type: \(attachment.contentType)
+                    """
+                )
             }
-            
-            print(
-                """
-                Could not transform attachement type: \(attachment.contentType) to a string representation.
-                
-                Attachement: \(attachment.identifier)
-                    Name: \(attachment.name)
-                    Creation Date: \(attachment.creationDate)
-                    Size: \(attachment.size)
-                    Content Type: \(attachment.contentType)
-                """
-            )
         }
         
         return strings
