@@ -1,8 +1,9 @@
 //
-//  File.swift
-//  SpeziFHIR
+// This source file is part of the Stanford Spezi open source project
 //
-//  Created by Paul Schmiedmayer on 3/8/25.
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
 //
 
 import Foundation
