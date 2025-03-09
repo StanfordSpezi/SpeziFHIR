@@ -32,7 +32,7 @@ extension FHIRResource {
             }
             
             for textEncodedAttachement in try await textEncodedAttachements(for: healthKitSample, hkHealthStore: store) {
-                let data = FHIRPrimitive(ModelsR4.Base64Binary(textEncodedAttachement.content))
+                let data = FHIRPrimitive(ModelsR4.Base64Binary(textEncodedAttachement.base64EncodedString))
                 if let content = documentReference.content.first(
                        where: { $0.attachment.contentType?.value?.string == textEncodedAttachement.identifier }
                    ),
@@ -53,7 +53,7 @@ extension FHIRResource {
             }
             
             for textEncodedAttachement in try await textEncodedAttachements(for: healthKitSample, hkHealthStore: store) {
-                let data = FHIRPrimitive(ModelsDSTU2.Base64Binary(textEncodedAttachement.content))
+                let data = FHIRPrimitive(ModelsDSTU2.Base64Binary(textEncodedAttachement.base64EncodedString))
                 if let content = documentReference.content.first(
                        where: { $0.attachment.contentType?.value?.string == textEncodedAttachement.identifier }
                    ),
@@ -73,51 +73,27 @@ extension FHIRResource {
     private func textEncodedAttachements(
         for healthKitSample: HKSample,
         hkHealthStore: HKHealthStore = HKHealthStore()
-    ) async throws -> [(identifier: String, content: String)] {
-        let attachmentStore = HKAttachmentStore(healthStore: hkHealthStore)
-        let attachments = try await attachmentStore.attachments(for: healthKitSample)
-        
-        var strings: [(identifier: String, content: String)] = []
-        
-        for attachment in attachments {
-            let dataReader = attachmentStore.dataReader(for: attachment)
-            let mimeType = attachment.contentType.preferredMIMEType ?? attachment.contentType.identifier
-            if attachment.contentType.conforms(to: .text) {
-                let data = try await dataReader.data
-                strings.append((mimeType, String(decoding: data, as: UTF8.self)))
-            } else if attachment.contentType.conforms(to: .pdf) {
-                let data = try await dataReader.data
-                if let pdf = PDFDocument(data: data) {
-                    let pageCount = pdf.pageCount
-                    let documentContent = NSMutableAttributedString()
-
-                    for pageNumber in 0 ..< pageCount {
-                        guard let page = pdf.page(at: pageNumber) else {
-                            continue
-                        }
-                        guard let pageContent = page.attributedString else {
-                            continue
-                        }
-                        documentContent.append(pageContent)
-                    }
-                    
-                    strings.append((mimeType, documentContent.string))
+    ) async throws -> [(identifier: String, base64EncodedString: String)] {
+        try await withThrowingTaskGroup(of: (String, String).self, returning: [(String, String)].self) { taskGroup in
+            let attachmentStore = HKAttachmentStore(healthStore: hkHealthStore)
+            let attachments = try await attachmentStore.attachments(for: healthKitSample)
+            
+            for attachment in attachments {
+                taskGroup.addTask {
+                    let mimeType = attachment.contentType.preferredMIMEType ?? attachment.contentType.identifier
+                    let dataReader = attachmentStore.dataReader(for: attachment)
+                    return (mimeType, try await dataReader.data.base64EncodedString())
                 }
-            } else {
-                print(
-                    """
-                    Could not transform attachement type: \(attachment.contentType) to a string representation.
-                    
-                    Attachement: \(attachment.identifier)
-                        Name: \(attachment.name)
-                        Creation Date: \(attachment.creationDate)
-                        Size: \(attachment.size)
-                        Content Type: \(attachment.contentType)
-                    """
-                )
             }
+            
+            var base64Attachments: [(String, String)] = []
+            while let base64Attachment = try await taskGroup.next() {
+                base64Attachments.append(base64Attachment)
+            }
+            return base64Attachments
         }
-        
-        return strings
     }
 }
+
+
+extension HKAttachmentStore: @retroactive @unchecked Sendable {}
