@@ -34,13 +34,10 @@ actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
     }
     
     func loadHealthKitResources() async {
-        await MainActor.run {
-            FHIRStore.loadHealthKitAttachements = true
-        }
         await fhirStore.removeAllResources()
         
         for sample in samples {
-            await fhirStore.add(sample: sample)
+            await fhirStore.add(sample: sample, loadHealthKitAttachements: true)
         }
         
         useHealthKitResources = true
