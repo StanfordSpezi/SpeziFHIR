@@ -11,7 +11,10 @@ import ModelsR4
 
 
 extension FHIRResource {
-    func stringifyAttachements() async throws {
+    /// Best effort function to transform the base64 data representatino of any ``FHIRAttachement`` to a string-based respresentation of the data type.
+    ///
+    /// This funcationality is especially useful if the data content is inspected for debug purposes or passing it ot a LLM component.
+    public func stringifyAttachements() async throws {
         switch versionedResource {
         case let .r4(r4Resource):
             guard let documentReference = r4Resource as? ModelsR4.DocumentReference else {
