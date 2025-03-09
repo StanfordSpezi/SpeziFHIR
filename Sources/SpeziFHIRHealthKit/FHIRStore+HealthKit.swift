@@ -28,7 +28,10 @@ extension FHIRStore {
     /// - Parameters:
     ///   - sample: The sample that should be added.
     ///   - loadHealthKitAttachements: Indicates if the `HKAttachmentStore` should be queried for any document references found in clinical records.
-    public func add(sample: HKSample, loadHealthKitAttachements: Bool = false) async {
+    public func add(
+        sample: HKSample,
+        loadHealthKitAttachements: Bool = false
+    ) async {
         do {
             var resource = try await FHIRResource.initialize(basedOn: sample)
             if loadHealthKitAttachements, let hkHealthStore = Self.hkHealthStore {
