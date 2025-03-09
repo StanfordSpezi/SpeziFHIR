@@ -17,6 +17,7 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Conditions: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Diagnostics: 0"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Documents: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Encounters: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Immunizations: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Medications: 0"].waitForExistence(timeout: 2))
@@ -35,12 +36,13 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Conditions: 70"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Diagnostics: 205"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Documents: 82"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Encounters: 82"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Immunizations: 12"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Medications: 31"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Observations: 769"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Procedures: 106"].waitForExistence(timeout: 2))
-        XCTAssert(app.staticTexts["Other Resources: 302"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Other Resources: 220"].waitForExistence(timeout: 2))
 
         XCTAssert(app.buttons["Select Mock Patient"].waitForExistence(timeout: 2))
         app.buttons["Select Mock Patient"].tap()
@@ -53,12 +55,13 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Conditions: 37"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Diagnostics: 113"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Documents: 86"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Encounters: 86"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Immunizations: 11"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Medications: 55"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Observations: 169"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Procedures: 225"].waitForExistence(timeout: 2))
-        XCTAssert(app.staticTexts["Other Resources: 322"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Other Resources: 236"].waitForExistence(timeout: 2))
     }
 
     func testAddingAndRemovingResources() throws {
@@ -94,24 +97,24 @@ final class SpeziFHIRTests: XCTestCase {
 
         app.navigationBars["Select Mock Patient"].buttons["Dismiss"].tap()
 
-        XCTAssert(app.staticTexts["Other Resources: 302"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Other Resources: 220"].waitForExistence(timeout: 2))
 
         // Add resource to mock patient
         XCTAssert(app.buttons["Add FHIR Resource"].waitForExistence(timeout: 2))
         app.buttons["Add FHIR Resource"].tap()
 
-        XCTAssert(app.staticTexts["Other Resources: 303"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Other Resources: 221"].waitForExistence(timeout: 2))
 
         // Remove resource from mock patient
         XCTAssert(app.buttons["Remove FHIR Resource"].waitForExistence(timeout: 2))
         app.buttons["Remove FHIR Resource"].tap()
 
-        XCTAssert(app.staticTexts["Other Resources: 302"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Other Resources: 220"].waitForExistence(timeout: 2))
 
         // Try removing a second time
         XCTAssert(app.buttons["Remove FHIR Resource"].waitForExistence(timeout: 2))
         app.buttons["Remove FHIR Resource"].tap()
 
-        XCTAssert(app.staticTexts["Other Resources: 302"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Other Resources: 220"].waitForExistence(timeout: 2))
     }
 }
