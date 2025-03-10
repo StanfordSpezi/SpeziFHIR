@@ -1,5 +1,5 @@
 {
-  "originHash" : "9b34b6536014597deb1ec711cbd71207d38c977060bbd264fb4930995e63e38e",
+  "originHash" : "4d13986aaafff4daffb297fc4d39f73a354b736afcb33615f772d0166f6f230f",
   "pins" : [
     {
       "identity" : "fhirmodels",
@@ -33,17 +33,35 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziFoundation",
       "state" : {
-        "revision" : "5b4ad1b343154b52a68c33a6bfe02d9cb07cb9dc",
-        "version" : "2.0.0"
+        "revision" : "78f3d912a82f951564d7e133867cf01351f53062",
+        "version" : "2.1.1"
       }
     },
     {
       "identity" : "spezihealthkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordSpezi/SpeziHealthKit.git",
+      "location" : "https://github.com/StanfordSpezi/SpeziHealthKit",
       "state" : {
         "revision" : "fbdec78fcb2f90d6338f1968e21dd11fbee65070",
         "version" : "0.6.0"
+      }
+    },
+    {
+      "identity" : "speziviews",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StanfordSpezi/SpeziViews.git",
+      "state" : {
+        "revision" : "76be1e28a88c9a102524aded45f6c76850266110",
+        "version" : "1.9.1"
+      }
+    },
+    {
+      "identity" : "swift-algorithms",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-algorithms.git",
+      "state" : {
+        "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
+        "version" : "1.2.1"
       }
     },
     {
@@ -62,6 +80,15 @@
       "state" : {
         "revision" : "ee97538f5b81ae89698fd95938896dec5217b148",
         "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "swift-numerics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-numerics.git",
+      "state" : {
+        "revision" : "e0ec0f5f3af6f3e4d5e7a19d2af26b481acb6ba8",
+        "version" : "1.0.3"
       }
     },
     {

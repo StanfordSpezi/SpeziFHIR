@@ -8,12 +8,17 @@
 
 import ModelsR4
 import SpeziFHIR
+import SpeziHealthKit
+import SpeziViews
 import SwiftUI
 
 
 struct ContentView: View {
+    @Environment(HealthKit.self) private var healthKit
     @Environment(FHIRStore.self) private var fhirStore
+    @Environment(TestingStandard.self) private var standard
     @State private var presentPatientSelection = false
+    @State private var viewState: ViewState = .idle
 
     private let additionalFHIRResourceId = "SuperUniqueFHIRResourceIdentifier"
 
@@ -25,6 +30,7 @@ struct ContentView: View {
                     Text("Allergy Intolerances: \(fhirStore.allergyIntolerances.count)")
                     Text("Conditions: \(fhirStore.conditions.count)")
                     Text("Diagnostics: \(fhirStore.diagnostics.count)")
+                    Text("Documents: \(fhirStore.documents.count)")
                     Text("Encounters: \(fhirStore.encounters.count)")
                     Text("Immunizations: \(fhirStore.immunizations.count)")
                     Text("Medications: \(fhirStore.medications.count)")
@@ -34,8 +40,10 @@ struct ContentView: View {
                 }
                 Section {
                     presentPatientSelectionButton
+                    collectFromHealthKitButton
                 }
             }
+                .viewStateAlert(state: $viewState)
                 .sheet(isPresented: $presentPatientSelection) {
                     MockPatientSelection(presentPatientSelection: $presentPatientSelection)
                 }
@@ -53,7 +61,6 @@ struct ContentView: View {
                                 .accessibilityLabel("Add FHIR Resource")
                         }
                     }
-
                     ToolbarItem {
                         Button {
                             fhirStore.remove(resource: additionalFHIRResourceId)
@@ -75,5 +82,12 @@ struct ContentView: View {
                 Text("Select Mock Patient")
             }
         )
+    }
+    
+    @ViewBuilder private var collectFromHealthKitButton: some View {
+        AsyncButton("Load HealthKit Clinical Records", state: $viewState) {
+            try await healthKit.askForAuthorization()
+            await standard.loadHealthKitResources()
+        }
     }
 }

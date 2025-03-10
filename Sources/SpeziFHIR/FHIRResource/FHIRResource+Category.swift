@@ -15,23 +15,25 @@ import enum ModelsDSTU2.ResourceProxy
 extension FHIRResource {
     /// Enum representing different categories of FHIR resources.
     /// This categorization helps in classifying FHIR resources into common healthcare scenarios and types.
-    enum FHIRResourceCategory: CaseIterable {
-        /// Represents an observation-type resource (e.g., patient measurements, lab results).
-        case observation
-        /// Represents an encounter-type resource (e.g., patient visits, admissions).
-        case encounter
+    package enum FHIRResourceCategory: CaseIterable {
+        /// Represents an allergy or intolerance-type resource.
+        case allergyIntolerance
         ///  Represents a condition-type resource (e.g., diagnoses, patient conditions).
         case condition
         /// Represents a diagnostic-type resource (e.g., radiology, pathology reports).
         case diagnostic
-        /// Represents a procedure-type resource (e.g., surgical procedures, therapies).
-        case procedure
+        ///  Represents a document-type resource (e.g., clinical notes, discharge reports).
+        case document
+        /// Represents an encounter-type resource (e.g., patient visits, admissions).
+        case encounter
         /// Represents an immunization-type resource (e.g., vaccine administrations).
         case immunization
-        /// Represents an allergy or intolerance-type resource.
-        case allergyIntolerance
         /// Represents a medication-type resource (e.g., prescriptions, medication administrations).
         case medication
+        /// Represents an observation-type resource (e.g., patient measurements, lab results).
+        case observation
+        /// Represents a procedure-type resource (e.g., surgical procedures, therapies).
+        case procedure
         /// Represents other types of resources not covered by the above categories.
         case other
 
@@ -41,14 +43,15 @@ extension FHIRResource {
         /// - Note: Needs to be isolated on `MainActor` as the respective ``FHIRStore`` properties referred to by the `KeyPath` are isolated on the `MainActor`.
         @MainActor var storeKeyPath: KeyPath<FHIRStore, [FHIRResource]> {
             switch self {
-            case .observation: \.observations
-            case .encounter: \.encounters
-            case .condition: \.conditions
-            case .diagnostic: \.diagnostics
-            case .procedure: \.procedures
-            case .immunization: \.immunizations
             case .allergyIntolerance: \.allergyIntolerances
+            case .condition: \.conditions
+            case .encounter: \.encounters
+            case .diagnostic: \.diagnostics
+            case .document: \.documents
+            case .immunization: \.immunizations
             case .medication: \.medications
+            case .observation: \.observations
+            case .procedure: \.procedures
             case .other: \.otherResources
             }
         }
@@ -58,7 +61,7 @@ extension FHIRResource {
     /// Category of the FHIR resource.
     ///
     /// Analyzes the type of the underlying resource and assigns it to an appropriate category.
-    var category: FHIRResourceCategory {
+    package var category: FHIRResourceCategory {
         switch versionedResource {
         case let .r4(resource):
             switch ResourceProxy(with: resource) {
@@ -145,7 +148,7 @@ extension FHIRResource {
             case .documentManifest:
                 return FHIRResourceCategory.other
             case .documentReference:
-                return FHIRResourceCategory.other
+                return FHIRResourceCategory.document
             case .domainResource:
                 return FHIRResourceCategory.other
             case .effectEvidenceSynthesis:
@@ -426,7 +429,7 @@ extension FHIRResource {
             case .documentManifest:
                 return FHIRResourceCategory.other
             case .documentReference:
-                return FHIRResourceCategory.other
+                return FHIRResourceCategory.document
             case .domainResource:
                 return FHIRResourceCategory.other
             case .eligibilityRequest:

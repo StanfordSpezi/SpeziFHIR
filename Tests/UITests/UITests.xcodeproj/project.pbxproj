@@ -16,6 +16,9 @@
 		2FBD9AFB2B01E4A800237A04 /* SpeziFHIRHealthKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2FBD9AFA2B01E4A800237A04 /* SpeziFHIRHealthKit */; };
 		2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */; };
 		2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */ = {isa = PBXBuildFile; productRef = 2FF6813E2A849F77002897C6 /* SpeziFHIR */; };
+		65A9650B2D7CF01200F42471 /* TestingStandard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A9650A2D7CF01200F42471 /* TestingStandard.swift */; };
+		65A965112D7CF87500F42471 /* SpeziViews in Frameworks */ = {isa = PBXBuildFile; productRef = 65A965102D7CF87500F42471 /* SpeziViews */; };
+		65A965142D7CF89400F42471 /* SpeziHealthKit in Frameworks */ = {isa = PBXBuildFile; productRef = 65A965132D7CF89400F42471 /* SpeziHealthKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +42,8 @@
 		2FA7382B290ADFAA007ACEB9 /* TestApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestApp.swift; sourceTree = "<group>"; };
 		2FC42FD7290ADD5E00B08F18 /* SpeziFHIR */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SpeziFHIR; path = ../..; sourceTree = "<group>"; };
 		2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppDelegate.swift; sourceTree = "<group>"; };
+		65A9650A2D7CF01200F42471 /* TestingStandard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingStandard.swift; sourceTree = "<group>"; };
+		65A965152D7CF94700F42471 /* TestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestApp.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +54,8 @@
 				2FBD9AFB2B01E4A800237A04 /* SpeziFHIRHealthKit in Frameworks */,
 				2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */,
 				2FBD9AF92B01E4A000237A04 /* SpeziFHIRMockPatients in Frameworks */,
+				65A965112D7CF87500F42471 /* SpeziViews in Frameworks */,
+				65A965142D7CF89400F42471 /* SpeziHealthKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,8 +93,10 @@
 		2F6D139428F5F384007C25D6 /* TestApp */ = {
 			isa = PBXGroup;
 			children = (
+				65A965152D7CF94700F42471 /* TestApp.entitlements */,
 				2FA7382B290ADFAA007ACEB9 /* TestApp.swift */,
 				2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */,
+				65A9650A2D7CF01200F42471 /* TestingStandard.swift */,
 				2F34D14D2B0CF1F1009300C1 /* ContentView.swift */,
 				2F34D1512B0CF59A009300C1 /* MockPatientSelection.swift */,
 				2F6D139928F5F386007C25D6 /* Assets.xcassets */,
@@ -131,6 +140,8 @@
 				2FF6813E2A849F77002897C6 /* SpeziFHIR */,
 				2FBD9AF82B01E4A000237A04 /* SpeziFHIRMockPatients */,
 				2FBD9AFA2B01E4A800237A04 /* SpeziFHIRHealthKit */,
+				65A965102D7CF87500F42471 /* SpeziViews */,
+				65A965132D7CF89400F42471 /* SpeziHealthKit */,
 			);
 			productName = Example;
 			productReference = 2F6D139228F5F384007C25D6 /* TestApp.app */;
@@ -185,6 +196,8 @@
 			);
 			mainGroup = 2F6D138928F5F384007C25D6;
 			packageReferences = (
+				65A9650F2D7CF87500F42471 /* XCRemoteSwiftPackageReference "SpeziViews" */,
+				65A965122D7CF89400F42471 /* XCRemoteSwiftPackageReference "SpeziHealthKit" */,
 			);
 			productRefGroup = 2F6D139328F5F384007C25D6 /* Products */;
 			projectDirPath = "";
@@ -242,6 +255,7 @@
 			files = (
 				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
 				2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */,
+				65A9650B2D7CF01200F42471 /* TestingStandard.swift in Sources */,
 				2F34D1522B0CF59A009300C1 /* MockPatientSelection.swift in Sources */,
 				2F34D14E2B0CF1F1009300C1 /* ContentView.swift in Sources */,
 			);
@@ -389,13 +403,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TestApp/TestApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 637867499T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "The Test App uses the health data to test the Spezi FHIR Package.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "The TestApp accesses your HealthKit data to run the tests.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "The Test App uses the health data to test the Spezi FHIR Package.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -422,13 +439,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TestApp/TestApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 637867499T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "The Test App uses the health data to test the Spezi FHIR Package.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "The TestApp accesses your HealthKit data to run the tests.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "The Test App uses the health data to test the Spezi FHIR Package.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -520,6 +540,25 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		65A9650F2D7CF87500F42471 /* XCRemoteSwiftPackageReference "SpeziViews" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/StanfordSpezi/SpeziViews.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.9.1;
+			};
+		};
+		65A965122D7CF89400F42471 /* XCRemoteSwiftPackageReference "SpeziHealthKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/StanfordSpezi/SpeziHealthKit.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		2FBD9AF82B01E4A000237A04 /* SpeziFHIRMockPatients */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -532,6 +571,16 @@
 		2FF6813E2A849F77002897C6 /* SpeziFHIR */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SpeziFHIR;
+		};
+		65A965102D7CF87500F42471 /* SpeziViews */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65A9650F2D7CF87500F42471 /* XCRemoteSwiftPackageReference "SpeziViews" */;
+			productName = SpeziViews;
+		};
+		65A965132D7CF89400F42471 /* SpeziHealthKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65A965122D7CF89400F42471 /* XCRemoteSwiftPackageReference "SpeziHealthKit" */;
+			productName = SpeziHealthKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

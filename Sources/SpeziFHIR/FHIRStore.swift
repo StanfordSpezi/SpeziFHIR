@@ -46,6 +46,12 @@ public final class FHIRStore: Module,
         access(keyPath: \.diagnostics)
         return _resources.filter { $0.category == .diagnostic }
     }
+    
+    /// `FHIRResource`s with category `documentReference`.
+    @MainActor public var documents: [FHIRResource] {
+        access(keyPath: \.documents)
+        return _resources.filter { $0.category == .document }
+    }
 
     /// `FHIRResource`s with category `encounter`.
     @MainActor public var encounters: [FHIRResource] {

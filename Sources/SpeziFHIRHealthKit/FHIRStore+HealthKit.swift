@@ -1,7 +1,7 @@
 //
 // This source file is part of the Stanford Spezi open source project
 //
-// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2025 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
@@ -25,10 +25,18 @@ extension FHIRStore {
     
     
     /// Add a HealthKit sample to the FHIR store.
-    /// - Parameter sample: The sample that should be added.
-    public func add(sample: HKSample) async {
+    /// - Parameters:
+    ///   - sample: The sample that should be added.
+    ///   - loadHealthKitAttachements: Indicates if the `HKAttachmentStore` should be queried for any document references found in clinical records.
+    public func add(
+        sample: HKSample,
+        loadHealthKitAttachements: Bool = false
+    ) async {
         do {
-            let resource = try await transform(sample: sample)
+            var resource = try await FHIRResource.initialize(basedOn: sample)
+            if loadHealthKitAttachements, let hkHealthStore = Self.hkHealthStore {
+                try await resource.loadAttachements(from: sample, store: hkHealthStore)
+            }
             await insert(resource: resource)
         } catch {
             print("Could not transform HKSample: \(error)")
@@ -39,45 +47,5 @@ extension FHIRStore {
     /// - Parameter sample: The sample delete object that should be removed.
     public func remove(sample: HKDeletedObject) async {
         await remove(resource: sample.uuid.uuidString)
-    }
-    
-    
-    private func transform(sample: HKSample) async throws -> FHIRResource {
-        switch sample {
-        case let clinicalResource as HKClinicalRecord where clinicalResource.fhirResource?.fhirVersion == .primaryDSTU2():
-            guard let fhirResource = clinicalResource.fhirResource else {
-                throw HealthKitOnFHIRError.invalidFHIRResource
-            }
-            
-            let decoder = JSONDecoder()
-            let resourceProxy = try decoder.decode(ModelsDSTU2.ResourceProxy.self, from: fhirResource.data)
-            
-            return FHIRResource(
-                versionedResource: .dstu2(resourceProxy.get()),
-                displayName: clinicalResource.displayName
-            )
-        case let electrocardiogram as HKElectrocardiogram:
-            guard let hkHealthStore = Self.hkHealthStore else {
-                fallthrough
-            }
-            
-            async let symptoms = try electrocardiogram.symptoms(from: hkHealthStore)
-            async let voltageMeasurements = try electrocardiogram.voltageMeasurements(from: hkHealthStore)
-            
-            let electrocardiogramResource = try await electrocardiogram.observation(
-                symptoms: symptoms,
-                voltageMeasurements: voltageMeasurements
-            )
-            return FHIRResource(
-                versionedResource: .r4(electrocardiogramResource),
-                displayName: String(localized: "FHIR_RESOURCES_SUMMARY_ID_TITLE \(electrocardiogramResource.id?.value?.string ?? "-")")
-            )
-        default:
-            let genericResource = try sample.resource.get()
-            return FHIRResource(
-                versionedResource: .r4(genericResource),
-                displayName: String(localized: "FHIR_RESOURCES_SUMMARY_ID_TITLE \(genericResource.id?.value?.string ?? "-")")
-            )
-        }
     }
 }
