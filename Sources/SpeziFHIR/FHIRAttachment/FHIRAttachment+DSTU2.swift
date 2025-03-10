@@ -1,7 +1,7 @@
 //
 // This source file is part of the Stanford Spezi open source project
 //
-// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2025 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
@@ -22,7 +22,11 @@ extension ModelsDSTU2.Attachment: FHIRAttachement {
     }
     
     public var mimeType: UTType? {
-        UTType(mimeType: contentType?.value?.string ?? "")
+        guard let mimeTypeString = contentType?.value?.string,
+              !mimeTypeString.isEmpty else {
+            return nil
+        }
+        return UTType(mimeType: mimeTypeString)
     }
     
     public var base64Data: String? {

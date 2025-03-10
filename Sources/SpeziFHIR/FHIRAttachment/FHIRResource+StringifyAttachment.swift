@@ -1,7 +1,7 @@
 //
 // This source file is part of the Stanford Spezi open source project
 //
-// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2025 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
@@ -14,7 +14,7 @@ extension FHIRResource {
     /// Best effort function to transform the base64 data representatino of any ``FHIRAttachement`` to a string-based respresentation of the data type.
     ///
     /// This funcationality is especially useful if the data content is inspected for debug purposes or passing it ot a LLM component.
-    public func stringifyAttachements() async throws {
+    public func stringifyAttachements() throws {
         switch versionedResource {
         case let .r4(r4Resource):
             guard let documentReference = r4Resource as? ModelsR4.DocumentReference else {
@@ -22,7 +22,7 @@ extension FHIRResource {
             }
             
             for attachement in documentReference.content.compactMap(\.attachment) {
-                try await attachement.stringifyAttachements()
+                try attachement.stringifyAttachements()
             }
         case let .dstu2(dstu2Resource):
             guard let documentReference = dstu2Resource as? ModelsDSTU2.DocumentReference else {
@@ -30,7 +30,7 @@ extension FHIRResource {
             }
             
             for attachement in documentReference.content.compactMap(\.attachment) {
-                try await attachement.stringifyAttachements()
+                try attachement.stringifyAttachements()
             }
         }
     }

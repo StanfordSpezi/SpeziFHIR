@@ -1,7 +1,7 @@
 //
 // This source file is part of the Stanford Spezi open source project
 //
-// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2025 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
@@ -14,7 +14,7 @@ import ModelsR4
 extension FHIRResource {
     /// Creates an (expensive) copy of the underlying FHIR reference types by encoding and decoding the FHIR resource in JSON.
     ///
-    /// - Warning: The computational complexity of creating a copy should only be used in when creating a new copy is strictly nescessary.
+    /// - Warning: The computational complexity of creating a copy should only be used in when creating a new copy is strictly necessary.
     public func copy() throws -> Self {
         switch versionedResource {
         case let .r4(r4Resource):

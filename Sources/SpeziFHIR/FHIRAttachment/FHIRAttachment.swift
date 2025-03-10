@@ -1,7 +1,7 @@
 //
 // This source file is part of the Stanford Spezi open source project
 //
-// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2025 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
@@ -21,11 +21,20 @@ public protocol FHIRAttachement: AnyObject {
 }
 
 
+/// Errors thrown while interacting with FHIR attachment types.
+public enum FHIRAttachmentError: Error {
+    /// Invalid base 64 data.
+    case invalidBase64Data
+    /// Error parsing the attached MIME type.
+    case cannotParseMIMEType(UTType)
+}
+
+
 extension FHIRAttachement {
     /// Best effort function to transform the base64 data representatino of an ``FHIRAttachement`` to a string-based respresentation of the data type.
     ///
     /// This funcationality is especially useful if the data content is inspected for debug purposes or passing it ot a LLM component.
-    public func stringifyAttachements() async throws {
+    public func stringifyAttachements() throws {
         // We inject the data right in the resource if it has the same content type.
         // There are a few shortcomings of this appraoch:
         // 1. We assume that the content type is a MIME type, we would need to more checks around the content.format to be fully correct.
@@ -33,14 +42,14 @@ extension FHIRAttachement {
         guard let contentType = mimeType,
               let base64String = base64Data,
               let data = Data(base64Encoded: base64String) else {
-            return
+            throw FHIRAttachmentError.invalidBase64Data
         }
         
         if contentType.conforms(to: .text) {
             base64Data = String(decoding: data, as: UTF8.self)
         } else if contentType.conforms(to: .pdf) {
             guard let pdf = PDFDocument(data: data) else {
-                return
+                throw FHIRAttachmentError.cannotParseMIMEType(contentType)
             }
             
             let pageCount = pdf.pageCount
@@ -59,6 +68,7 @@ extension FHIRAttachement {
             base64Data = documentContent.string
         } else {
             print(debugDescription)
+            throw FHIRAttachmentError.cannotParseMIMEType(contentType)
         }
     }
 }
