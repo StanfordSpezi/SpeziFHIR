@@ -20,9 +20,7 @@ extension FHIRResource {
         }
         
         // We inject the data right in the resource if it has the same content type.
-        // There are a few shortcomings of this appraoch:
-        // 1. We assume that the content type is a MIME type, we would need to more checks around the content.format to be fully correct.
-        // 2. The data property actually expects a Base64 encoded String. We currently just inject a normal string.
+        // We assume that the content type is a MIME type, we would need to more checks around the content.format to be fully correct.
         // Otherwise we create a new content entry to inject this information in here.
         switch versionedResource {
         case let .r4(r4Resource):
