@@ -10,7 +10,7 @@ import UniformTypeIdentifiers
 
 
 /// Service to handle FHIR attachment content extraction.
-public struct FHIRAttachmentService {
+struct FHIRAttachmentService {
     private let contentExtractors: [ContentExtractor]
     private let base64Decoder: Base64Decoding
 
@@ -19,7 +19,7 @@ public struct FHIRAttachmentService {
     /// - Parameters:
     ///   - contentExtractors: Collection of content extractors to use (defaults to text and PDF).
     ///   - base64Decoder: The base64 decoder to use.
-    public init(
+    init(
         contentExtractors: [ContentExtractor] = [TextContentExtractor(), PDFContentExtractor()],
         base64Decoder: Base64Decoding = DefaultBase64Decoder()
     ) {
@@ -28,11 +28,21 @@ public struct FHIRAttachmentService {
     }
 
 
-    /// Processes an attachment and converts its binary content to a readable string.
-    /// - Parameter attachment: The FHIR attachment to process.
-    /// - Returns: Extracted content as a string.
-    /// - Throws: FHIRAttachmentError if processing fails.
-    public func processAttachment(_ attachment: FHIRAttachment) throws -> String {
+    /// Transforms a FHIR attachment's base64-encoded data into human-readable text.
+    ///
+    /// This method extracts text content from various attachment formats (PDF, text files, etc.)
+    /// based on their MIME type and replaces the original binary content with the extracted text,
+    /// re-encoded as base64 to maintain FHIR data structure compatibility.
+    ///
+    /// - Parameter attachment: The FHIR attachment to transform.
+    /// - Throws: `FHIRAttachmentError` if the transformation fails for any reason,
+    ///           such as missing MIME type, invalid base64 data, or unsupported content type.
+    func stringify(attachment: FHIRAttachment) throws {
+        let content = try processAttachment(attachment)
+        attachment.encode(content: content)
+    }
+
+    private func processAttachment(_ attachment: FHIRAttachment) throws -> String {
         guard let contentType = attachment.mimeType else {
             throw FHIRAttachmentError.missingMimeType
         }
