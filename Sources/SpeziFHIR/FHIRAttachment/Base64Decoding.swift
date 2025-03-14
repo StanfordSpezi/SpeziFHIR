@@ -1,0 +1,28 @@
+//
+// This source file is part of the Stanford Spezi open source project
+//
+// SPDX-FileCopyrightText: 2025 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
+//
+
+import Foundation
+
+
+/// Protocol for base64 decoding - makes testing possible.
+public protocol Base64Decoding {
+    /// Decodes a base64 string to Data.
+    /// - Parameter string: The base64 encoded string to decode.
+    /// - Returns: Decoded data or nil if invalid.
+    func decode(string: String) -> Data?
+}
+
+/// Default implementation using standard Data initializer.
+public struct DefaultBase64Decoder: Base64Decoding {
+    public init() {}
+
+
+    public func decode(string: String) -> Data? {
+        Data(base64Encoded: string)
+    }
+}
