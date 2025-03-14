@@ -19,7 +19,7 @@ protocol FHIRAttachment: AnyObject {
     /// Represents the content type of the attachment data (e.g., text/plain, application/pdf).
     var mimeType: UTType? { get }
 
-    /// Convenience property to get and set the Base64 string representation of the attachment data.
+    /// Convenience property to get the Base64 string representation of the attachment data.
     var base64String: String? { get }
 
     /// Encodes the provided string content into the FHIR attachment.
