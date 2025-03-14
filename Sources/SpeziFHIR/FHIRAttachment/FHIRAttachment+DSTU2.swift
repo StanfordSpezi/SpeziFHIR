@@ -10,8 +10,8 @@ import ModelsDSTU2
 import UniformTypeIdentifiers
 
 
-extension ModelsDSTU2.Attachment: FHIRAttachement {
-    public var debugDescription: String {
+extension ModelsDSTU2.Attachment: FHIRAttachment {
+    var debugDescription: String {
         """
         Could not transform attachement type: \(title?.primitiveDescription ?? "No title") to a string representation.
         
@@ -21,7 +21,7 @@ extension ModelsDSTU2.Attachment: FHIRAttachement {
         """
     }
     
-    public var mimeType: UTType? {
+    var mimeType: UTType? {
         guard let mimeTypeString = contentType?.value?.string,
               !mimeTypeString.isEmpty else {
             return nil
@@ -29,16 +29,11 @@ extension ModelsDSTU2.Attachment: FHIRAttachement {
         return UTType(mimeType: mimeTypeString)
     }
     
-    public var base64Data: String? {
-        get {
-            data?.value?.dataString
-        }
-        set {
-            guard let newValue else {
-                data = nil
-                return
-            }
-            data = FHIRPrimitive(ModelsDSTU2.Base64Binary(newValue))
-        }
+    var base64String: String? {
+        data?.value?.dataString
+    }
+
+    func encode(content: String) {
+        data = FHIRPrimitive(ModelsDSTU2.Base64Binary(content))
     }
 }
