@@ -11,7 +11,7 @@ import UniformTypeIdentifiers
 
 
 /// Uniform interface for FHIR attachment types.
-public protocol FHIRAttachment: AnyObject {
+protocol FHIRAttachment: AnyObject {
     /// Debug description of the attachment.
     var debugDescription: String { get }
 
@@ -27,20 +27,8 @@ public protocol FHIRAttachment: AnyObject {
     func encode(content: String)
 }
 
-extension FHIRAttachment {
-    /// Updates the attachment's base64String
-    ///
-    /// - Parameters:
-    ///   - service: Service to use for content extraction (injectable for testing).
-    /// - Throws: `FHIRAttachmentError` if transformation fails.
-    public func stringifyAttachment(using service: FHIRAttachmentService = FHIRAttachmentService()) throws {
-        let readableContent = try service.processAttachment(self)
-        encode(content: readableContent)
-    }
-}
-
 /// Errors thrown while interacting with FHIR attachment types.
-public enum FHIRAttachmentError: Error, Equatable {
+enum FHIRAttachmentError: Error, Equatable {
     /// The attachment does not have a valid MIME type.
     case missingMimeType
 

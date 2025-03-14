@@ -11,7 +11,7 @@ import UniformTypeIdentifiers
 
 
 /// Protocol for content extraction strategies.
-public protocol ContentExtractor {
+protocol ContentExtractor {
     /// Determines if this extractor is compatible with the given content type.
     /// - Parameter contentType: The content type to check.
     /// - Returns: True if this extractor can handle the content type.
@@ -25,15 +25,12 @@ public protocol ContentExtractor {
 }
 
 /// Extractor for plain text content types.
-public struct TextContentExtractor: ContentExtractor {
-    public init() {}
-
-
-    public func isCompatible(with contentType: UTType) -> Bool {
+struct TextContentExtractor: ContentExtractor {
+    func isCompatible(with contentType: UTType) -> Bool {
         contentType.conforms(to: .text)
     }
 
-    public func extractContent(from data: Data) throws -> String {
+    func extractContent(from data: Data) throws -> String {
         guard let string = String(data: data, encoding: .utf8) else {
             throw FHIRAttachmentError.textDecodingFailed
         }
@@ -42,22 +39,22 @@ public struct TextContentExtractor: ContentExtractor {
 }
 
 /// Extractor for PDF document content types.
-public struct PDFContentExtractor: ContentExtractor {
+struct PDFContentExtractor: ContentExtractor {
     private let pdfDocumentProvider: PDFDocumentProviding
 
 
     /// Creates a new instance of the PDF content extractor.
     /// - Parameter pdfDocumentProvider: The provider used to create PDFDocument instances.
-    public init(pdfDocumentProvider: PDFDocumentProviding = DefaultPDFDocumentProvider()) {
+    init(pdfDocumentProvider: PDFDocumentProviding = DefaultPDFDocumentProvider()) {
         self.pdfDocumentProvider = pdfDocumentProvider
     }
 
 
-    public func isCompatible(with contentType: UTType) -> Bool {
+    func isCompatible(with contentType: UTType) -> Bool {
         contentType.conforms(to: .pdf)
     }
 
-    public func extractContent(from data: Data) throws -> String {
+    func extractContent(from data: Data) throws -> String {
         guard let pdf = pdfDocumentProvider.createPDFDocument(from: data) else {
             throw FHIRAttachmentError.pdfParsingFailed
         }

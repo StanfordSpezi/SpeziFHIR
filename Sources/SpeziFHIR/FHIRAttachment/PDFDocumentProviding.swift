@@ -10,7 +10,7 @@ import PDFKit
 
 
 /// Protocol for creating PDFDocument objects - makes testing possible.
-public protocol PDFDocumentProviding {
+protocol PDFDocumentProviding {
     /// Creates a PDF document from raw data.
     /// - Parameter data: The PDF data to create a document from.
     /// - Returns: A PDFDocument if valid, nil otherwise.
@@ -18,11 +18,8 @@ public protocol PDFDocumentProviding {
 }
 
 /// Default implementation using the PDFDocument class from PDFKit.
-public struct DefaultPDFDocumentProvider: PDFDocumentProviding {
-    public init() {}
-
-
-    public func createPDFDocument(from data: Data) -> PDFDocument? {
+struct DefaultPDFDocumentProvider: PDFDocumentProviding {
+    func createPDFDocument(from data: Data) -> PDFDocument? {
         PDFDocument(data: data)
     }
 }

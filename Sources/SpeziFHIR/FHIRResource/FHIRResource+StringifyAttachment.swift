@@ -14,7 +14,11 @@ extension FHIRResource {
     /// Best effort function to transform the base64 data representatino of any ``FHIRAttachement`` to a string-based respresentation of the data type.
     ///
     /// This funcationality is especially useful if the data content is inspected for debug purposes or passing it ot a LLM component.
-    public func stringifyAttachements(using service: FHIRAttachmentService = FHIRAttachmentService()) throws {
+    public func stringifyAttachements() throws {
+        try stringifyAttachements(using: FHIRAttachmentService())
+    }
+
+    func stringifyAttachements(using service: FHIRAttachmentService) throws {
         switch versionedResource {
         case let .r4(r4Resource):
             guard let documentReference = r4Resource as? ModelsR4.DocumentReference else {
@@ -22,7 +26,7 @@ extension FHIRResource {
             }
             
             for attachement in documentReference.content.compactMap(\.attachment) {
-                try attachement.stringifyAttachment(using: service)
+                try service.stringify(attachment: attachement)
             }
         case let .dstu2(dstu2Resource):
             guard let documentReference = dstu2Resource as? ModelsDSTU2.DocumentReference else {
@@ -30,7 +34,7 @@ extension FHIRResource {
             }
             
             for attachement in documentReference.content.compactMap(\.attachment) {
-                try attachement.stringifyAttachment(using: service)
+                try service.stringify(attachment: attachement)
             }
         }
     }
