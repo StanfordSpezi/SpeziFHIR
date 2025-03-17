@@ -6,16 +6,16 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Testing
-@testable import SpeziFHIR
 import ModelsDSTU2
 import ModelsR4
+@testable import SpeziFHIR
+import Testing
 import UniformTypeIdentifiers
 
 
-enum FHIRVersion {
+enum FHIRModel {
     case dstu2
-    case r4
+    case r4  // swiftlint:disable:this identifier_name
 
     var description: String {
         switch self {
@@ -25,9 +25,9 @@ enum FHIRVersion {
     }
 }
 
-struct FHIRAttachmentTestHelper {
-    static func createAttachment(version: FHIRVersion) -> any FHIRAttachment {
-        switch version {
+enum FHIRAttachmentTestHelper {
+    static func createAttachment(model: FHIRModel) -> any FHIRAttachment {
+        switch model {
         case .dstu2:
             return ModelsDSTU2.Attachment()
         case .r4:
@@ -35,8 +35,8 @@ struct FHIRAttachmentTestHelper {
         }
     }
 
-    static func createAttachmentWithContentType(_ contentType: String, version: FHIRVersion) -> any FHIRAttachment {
-        switch version {
+    static func createAttachmentWithContentType(_ contentType: String, model: FHIRModel) -> any FHIRAttachment {
+        switch model {
         case .dstu2:
             let attachment = ModelsDSTU2.Attachment()
             attachment.contentType = FHIRPrimitive(stringLiteral: contentType)
@@ -48,8 +48,8 @@ struct FHIRAttachmentTestHelper {
         }
     }
 
-    static func createAttachmentWithData(_ data: String, version: FHIRVersion) -> any FHIRAttachment {
-        switch version {
+    static func createAttachmentWithData(_ data: String, model: FHIRModel) -> any FHIRAttachment {
+        switch model {
         case .dstu2:
             let attachment = ModelsDSTU2.Attachment()
             attachment.data = FHIRPrimitive(ModelsDSTU2.Base64Binary(data))
@@ -62,75 +62,75 @@ struct FHIRAttachmentTestHelper {
     }
 }
 
-@Suite struct FHIRAttachmentTests {
-
+@Suite
+struct FHIRAttachmentTests {
     @Test(
         "Attachment returns correct mime type",
-        arguments: [FHIRVersion.dstu2, FHIRVersion.r4]
+        arguments: [FHIRModel.dstu2, FHIRModel.r4]
     )
-    func testMimeType(_ version: FHIRVersion) {
-        let attachment = FHIRAttachmentTestHelper.createAttachmentWithContentType("text/plain", version: version)
+    func testMimeType(_ model: FHIRModel) {
+        let attachment = FHIRAttachmentTestHelper.createAttachmentWithContentType("text/plain", model: model)
         let mimeType = attachment.mimeType
 
-        #expect(mimeType != nil, "\(version.description) attachment should have non-nil MIME type")
-        #expect(mimeType?.preferredMIMEType == "text/plain", "\(version.description) attachment should have correct MIME type")
+        #expect(mimeType != nil, "\(model.description) attachment should have non-nil MIME type")
+        #expect(mimeType?.preferredMIMEType == "text/plain", "\(model.description) attachment should have correct MIME type")
     }
 
     @Test(
         "Attachment returns nil for empty mime type",
-        arguments: [FHIRVersion.dstu2, FHIRVersion.r4]
+        arguments: [FHIRModel.dstu2, FHIRModel.r4]
     )
-    func testEmptyMimeType(_ version: FHIRVersion) {
-        let attachment = FHIRAttachmentTestHelper.createAttachmentWithContentType("", version: version)
+    func testEmptyMimeType(_ model: FHIRModel) {
+        let attachment = FHIRAttachmentTestHelper.createAttachmentWithContentType("", model: model)
         let mimeType = attachment.mimeType
 
-        #expect(mimeType == nil, "\(version.description) attachment should return nil for empty MIME type")
+        #expect(mimeType == nil, "\(model.description) attachment should return nil for empty MIME type")
     }
 
     @Test(
         "Attachment returns nil for missing mime type",
-        arguments: [FHIRVersion.dstu2, FHIRVersion.r4]
+        arguments: [FHIRModel.dstu2, FHIRModel.r4]
     )
-    func testMissingMimeType(_ version: FHIRVersion) {
-        let attachment = FHIRAttachmentTestHelper.createAttachment(version: version)
+    func testMissingMimeType(_ model: FHIRModel) {
+        let attachment = FHIRAttachmentTestHelper.createAttachment(model: model)
         let mimeType = attachment.mimeType
 
-        #expect(mimeType == nil, "\(version.description) attachment should return nil for missing MIME type")
+        #expect(mimeType == nil, "\(model.description) attachment should return nil for missing MIME type")
     }
 
     @Test(
         "Attachment returns base64 string",
-        arguments: [FHIRVersion.dstu2, FHIRVersion.r4]
+        arguments: [FHIRModel.dstu2, FHIRModel.r4]
     )
-    func testBase64String(_ version: FHIRVersion) {
+    func testBase64String(_ model: FHIRModel) {
         let testString = "Test content"
-        let attachment = FHIRAttachmentTestHelper.createAttachmentWithData(testString, version: version)
+        let attachment = FHIRAttachmentTestHelper.createAttachmentWithData(testString, model: model)
         let base64String = attachment.base64String
 
-        #expect(base64String == testString, "\(version.description) attachment should return correct base64 string")
+        #expect(base64String == testString, "\(model.description) attachment should return correct base64 string")
     }
 
     @Test(
         "Attachment returns nil for missing base64 string",
-        arguments: [FHIRVersion.dstu2, FHIRVersion.r4]
+        arguments: [FHIRModel.dstu2, FHIRModel.r4]
     )
-    func testMissingBase64String(_ version: FHIRVersion) {
-        let attachment = FHIRAttachmentTestHelper.createAttachment(version: version)
+    func testMissingBase64String(_ model: FHIRModel) {
+        let attachment = FHIRAttachmentTestHelper.createAttachment(model: model)
         let base64String = attachment.base64String
 
-        #expect(base64String == nil, "\(version.description) attachment should return nil for missing base64 string")
+        #expect(base64String == nil, "\(model.description) attachment should return nil for missing base64 string")
     }
 
     @Test(
         "Attachment encodes content correctly",
-        arguments: [FHIRVersion.dstu2, FHIRVersion.r4]
+        arguments: [FHIRModel.dstu2, FHIRModel.r4]
     )
-    func testEncodeContent(_ version: FHIRVersion) {
-        let attachment = FHIRAttachmentTestHelper.createAttachment(version: version)
+    func testEncodeContent(_ model: FHIRModel) {
+        let attachment = FHIRAttachmentTestHelper.createAttachment(model: model)
         let testContent = "This is test content"
 
         attachment.encode(content: testContent)
 
-        #expect(attachment.base64String == testContent, "\(version.description) attachment should encode content correctly")
+        #expect(attachment.base64String == testContent, "\(model.description) attachment should encode content correctly")
     }
 }

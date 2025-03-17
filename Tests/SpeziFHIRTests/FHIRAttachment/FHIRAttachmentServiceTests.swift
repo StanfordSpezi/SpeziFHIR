@@ -6,13 +6,25 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Testing
-@testable import SpeziFHIR
 import PDFKit
+@testable import SpeziFHIR
+import Testing
 import UniformTypeIdentifiers
 
 
-@Suite struct FHIRAttachmentServiceTests {
+private final class MockFHIRAttachment: FHIRAttachment {
+    var debugDescription: String = "Mock FHIR Attachment"
+    var mimeType: UTType?
+    var base64String: String?
+    var encodedContent: String?
+
+    func encode(content: String) {
+        encodedContent = content
+    }
+}
+
+@Suite
+struct FHIRAttachmentServiceTests {
     @Test("Successfully stringifies text content")
     func testStringifyTextContent() throws {
         let base64Decoder = DefaultBase64Decoder()
@@ -36,7 +48,7 @@ import UniformTypeIdentifiers
     @Test("Successfully stringifies PDF content")
    func testStringifyPDFContent() throws {
        let base64Decoder = DefaultBase64Decoder()
-       let pdfType = UTType(mimeType: "application/pdf")!
+       let pdfType = UTType(mimeType: "application/pdf")
        let pdfContentExtractor = PDFContentExtractor(pdfDocumentProvider: DefaultPDFDocumentProvider())
 
        let service = FHIRAttachmentService(
@@ -46,6 +58,7 @@ import UniformTypeIdentifiers
 
         let attachment = MockFHIRAttachment()
         attachment.mimeType = pdfType
+        // swiftlint:disable:next line_length
         attachment.base64String = "JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GMSA0IDAgUiA+PiA+PiAvQ29udGVudHMgNSAwIFIgPj4KZW5kb2JqCjQgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhID4+CmVuZG9iago1IDAgb2JqCjw8IC9MZW5ndGggNDQgPj4Kc3RyZWFtCkJUCi9GMSAxNiBUZgo1MCA3MDAgVGQKKFBERjogV2VsY29tZSB0byBTcGV6aUZISVIpIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmCjAwMDAwMDAwMDkgMDAwMDAgbgowMDAwMDAwMDU4IDAwMDAwIG4KMDAwMDAwMDExNSAwMDAwMCBuCjAwMDAwMDAyMjkgMDAwMDAgbgowMDAwMDAwMjk1IDAwMDAwIG4KdHJhaWxlcgo8PCAvU2l6ZSA2IC9Sb290IDEgMCBSID4+CnN0YXJ0eHJlZgozOTEKJSVFT0Y="
 
        try service.stringify(attachment: attachment)
@@ -116,7 +129,9 @@ import UniformTypeIdentifiers
         do {
             try service.stringify(attachment: attachment)
         } catch let error as FHIRAttachmentError {
-            #expect(error == .unsupportedContentType(customType!))
+            if let customType = customType {
+                #expect(error == .unsupportedContentType(customType))
+            }
         }
     }
 
@@ -136,18 +151,11 @@ import UniformTypeIdentifiers
         do {
             try service.stringify(attachment: attachment)
         } catch let error as FHIRAttachmentError {
-            #expect(error == .unsupportedContentType(textPlainType!))
+            if let textPlainType = textPlainType {
+                #expect(error == .unsupportedContentType(textPlainType))
+            } else {
+                Issue.record("Expected textPlainType to be non-nil to verify error type")
+            }
         }
-    }
-}
-
-private final class MockFHIRAttachment: FHIRAttachment {
-    var debugDescription: String = "Mock FHIR Attachment"
-    var mimeType: UTType?
-    var base64String: String?
-    var encodedContent: String?
-
-    func encode(content: String) {
-        encodedContent = content
     }
 }

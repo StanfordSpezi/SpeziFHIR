@@ -9,6 +9,7 @@
 import PDFKit
 
 
+// swiftlint:disable file_types_order
 /// Protocol for creating PDFDocument objects - makes testing possible.
 protocol PDFDocumentProviding {
     /// Creates a PDF document from raw data.
@@ -23,4 +24,3 @@ struct DefaultPDFDocumentProvider: PDFDocumentProviding {
         PDFDocument(data: data)
     }
 }
-

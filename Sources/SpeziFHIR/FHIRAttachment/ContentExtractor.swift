@@ -10,6 +10,7 @@ import PDFKit
 import UniformTypeIdentifiers
 
 
+// swiftlint:disable file_types_order
 /// Protocol for content extraction strategies.
 protocol ContentExtractor {
     /// Determines if this extractor is compatible with the given content type.

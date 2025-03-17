@@ -6,13 +6,13 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Testing
+import ModelsR4
 @testable import SpeziFHIR
 import Testing
-import ModelsR4
 
 
-@Suite struct Base64DecoderTests {
+@Suite
+struct Base64DecoderTests {
     private let decoder = DefaultBase64Decoder()
 
     @Test("Successfully decodes valid base64 string")

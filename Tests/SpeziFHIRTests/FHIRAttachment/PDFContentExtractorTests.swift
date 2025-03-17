@@ -7,13 +7,80 @@
 //
 
 import Foundation
-@testable import SpeziFHIR
 import PDFKit
+@testable import SpeziFHIR
 import Testing
 import UniformTypeIdentifiers
 
+private struct MockPDFDocumentProvider: PDFDocumentProviding {
+    enum Result {
+        case success(PDFDocument)
+        case failure
+    }
 
-@Suite struct PDFContentExtractorTests {
+    let result: Result
+
+    func createPDFDocument(from data: Data) -> PDFDocument? {
+        switch result {
+        case .success(let document):
+            return document
+        case .failure:
+            return nil
+        }
+    }
+}
+
+
+private class MockPDFPage: PDFPage {
+    private let mockAttributedString: NSAttributedString
+
+    override var attributedString: NSAttributedString? {
+        mockAttributedString
+    }
+
+
+    init(text: String) {
+        self.mockAttributedString = NSAttributedString(string: text)
+        super.init()
+    }
+}
+
+private class MockPDFDocument: PDFDocument {
+    private var mockPages: [MockPDFPage]
+
+    override var pageCount: Int {
+        mockPages.count
+    }
+
+
+    init(pages: [MockPDFPage]) {
+        self.mockPages = pages
+        super.init()
+    }
+
+
+    override func page(at index: Int) -> PDFPage? {
+        guard index >= 0 && index < mockPages.count else {
+            return nil
+        }
+        return mockPages[index]
+    }
+}
+
+private class MockPartialPagesPDFDocument: PDFDocument {
+    override var pageCount: Int { 3 }
+
+    override func page(at index: Int) -> PDFPage? {
+        if index == 1 {
+            return nil
+        }
+        return MockPDFPage(text: "Page \(index + 1) content")
+    }
+}
+
+
+@Suite
+struct PDFContentExtractorTests {
     @Test("Successfully extracts text from PDF with single page")
     func testPDFSinglePageTextExtraction() throws {
         let expectedText = "This is test content for PDF extraction"
@@ -80,70 +147,16 @@ import UniformTypeIdentifiers
     func testCompatibleContentTypes() {
         let extractor = PDFContentExtractor()
 
-        #expect(extractor.isCompatible(with: UTType(mimeType: "application/pdf")!))
-        #expect(!extractor.isCompatible(with: UTType(mimeType: "text/plain")!))
-    }
-}
-
-private struct MockPDFDocumentProvider: PDFDocumentProviding {
-    enum Result {
-        case success(PDFDocument)
-        case failure
-    }
-
-    let result: Result
-
-    func createPDFDocument(from data: Data) -> PDFDocument? {
-        switch result {
-        case .success(let document):
-            return document
-        case .failure:
-            return nil
+        if let applicationPdfUTType = UTType(mimeType: "application/pdf") {
+            #expect(extractor.isCompatible(with: applicationPdfUTType))
+        } else {
+            Issue.record("Failed to create UTType for application/pdf")
         }
-    }
-}
 
-
-private class MockPDFPage: PDFPage {
-    private let mockAttributedString: NSAttributedString
-
-    init(text: String) {
-        self.mockAttributedString = NSAttributedString(string: text)
-        super.init()
-    }
-
-    override var attributedString: NSAttributedString? {
-        return mockAttributedString
-    }
-}
-
-private class MockPDFDocument: PDFDocument {
-    private var mockPages: [MockPDFPage]
-
-    init(pages: [MockPDFPage]) {
-        self.mockPages = pages
-        super.init()
-    }
-
-    override var pageCount: Int {
-        return mockPages.count
-    }
-
-    override func page(at index: Int) -> PDFPage? {
-        guard index >= 0 && index < mockPages.count else {
-            return nil
+        if let textPlainUTType = UTType(mimeType: "text/plain") {
+            #expect(!extractor.isCompatible(with: textPlainUTType))
+        } else {
+            Issue.record("Failed to create UTType for text/plain")
         }
-        return mockPages[index]
-    }
-}
-
-private class MockPartialPagesPDFDocument: PDFDocument {
-    override var pageCount: Int { return 3 }
-
-    override func page(at index: Int) -> PDFPage? {
-        if index == 1 {
-            return nil
-        }
-        return MockPDFPage(text: "Page \(index + 1) content")
     }
 }

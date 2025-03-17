@@ -12,7 +12,8 @@ import Testing
 import UniformTypeIdentifiers
 
 
-@Suite struct TextContentExtractorTests {
+@Suite
+struct TextContentExtractorTests {
     private let textExtractor = TextContentExtractor()
 
     @Test("Successfully extracts content from text data")
@@ -38,13 +39,20 @@ import UniformTypeIdentifiers
     func testCompatibleContentTypes() {
         if let textPlainUTType = UTType(mimeType: "text/plain") {
             #expect(textExtractor.isCompatible(with: textPlainUTType))
+        } else {
+            Issue.record("Failed to create UTType for text/plain")
         }
+
         if let textHtmlUTType = UTType(mimeType: "text/html") {
             #expect(textExtractor.isCompatible(with: textHtmlUTType))
+        } else {
+            Issue.record("Failed to create UTType for text/html")
         }
+
         if let applicationPdfUTType = UTType(mimeType: "application/pdf") {
             #expect(!textExtractor.isCompatible(with: applicationPdfUTType))
+        } else {
+            Issue.record("Failed to create UTType for application/pdf")
         }
     }
 }
-

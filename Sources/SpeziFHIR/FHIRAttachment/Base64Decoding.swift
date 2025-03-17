@@ -9,6 +9,7 @@
 import Foundation
 
 
+// swiftlint:disable file_types_order
 /// Protocol for base64 decoding - makes testing possible.
 protocol Base64Decoding {
     /// Decodes a base64 string to Data.

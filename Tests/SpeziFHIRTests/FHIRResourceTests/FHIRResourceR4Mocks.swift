@@ -362,4 +362,117 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
 
         return bundle
     }
+
+    static func createAttachment(
+        id: String,
+        title: String,
+        contentType: String,
+        content: String,
+        creationDate: Date? = nil
+    ) throws -> ModelsR4.Attachment {
+        let attachment = ModelsR4.Attachment(
+            contentType: FHIRPrimitive(stringLiteral: contentType),
+            data: FHIRPrimitive(ModelsR4.Base64Binary(content)),
+            id: id.asFHIRStringPrimitive(),
+            title: FHIRPrimitive(ModelsR4.FHIRString(title))
+        )
+
+        if let creationDate {
+            attachment.creation = FHIRPrimitive(try DateTime(date: creationDate))
+        }
+
+        return attachment
+    }
+
+    static func createDocumentReference(
+        id: String = "document-reference-id",
+        status: ModelsR4.DocumentReferenceStatus = .current,
+        type: ModelsR4.CodeableConcept? = nil,
+        attachments: [ModelsR4.Attachment] = [],
+        date: Date? = nil
+    ) throws -> ModelsR4.DocumentReference {
+        let documentType = type ?? CodeableConcept(
+            coding: [
+                Coding(
+                    code: "34108-1".asFHIRStringPrimitive(),
+                    display: "Outpatient Note".asFHIRStringPrimitive(),
+                    system: "http://mock.org".asFHIRURIPrimitive()
+                )
+            ]
+        )
+
+
+        let contentItems = attachments.map { attachment in
+            ModelsR4.DocumentReferenceContent(attachment: attachment)
+        }
+
+        let documentReference = ModelsR4.DocumentReference(
+            content: contentItems,
+            status: FHIRPrimitive(status),
+            type: documentType
+        )
+
+        documentReference.id = id.asFHIRStringPrimitive()
+
+        if let date {
+            documentReference.date = FHIRPrimitive<Instant>(try? Instant(date: date))
+        }
+
+        return documentReference
+    }
+
+    static func createTextAttachment(
+        id: String = "text-attachment-id",
+        title: String = "Text Attachment",
+        creationDate: Date? = nil
+    ) throws -> ModelsR4.Attachment {
+        // This is a minimal base64-encoded text with the text "Welcome to SpeziFHIR"
+        let textBase64 = "V2VsY29tZSB0byBTcGV6aUZISVI="
+
+        return try createAttachment(
+            id: id,
+            title: title,
+            contentType: "text/plain",
+            content: textBase64,
+            creationDate: creationDate
+        )
+    }
+
+    static func createPDFAttachment(
+        id: String = "pdf-attachment-id",
+        title: String = "PDF Attachment",
+        creationDate: Date? = nil
+    ) throws -> ModelsR4.Attachment {
+        // This is a minimal base64-encoded PDF with the text "PDF: Welcome to SpeziFHIR"
+        // swiftlint:disable:next line_length
+        let pdfBase64 = "JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GMSA0IDAgUiA+PiA+PiAvQ29udGVudHMgNSAwIFIgPj4KZW5kb2JqCjQgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhID4+CmVuZG9iago1IDAgb2JqCjw8IC9MZW5ndGggNDQgPj4Kc3RyZWFtCkJUCi9GMSAxNiBUZgo1MCA3MDAgVGQKKFBERjogV2VsY29tZSB0byBTcGV6aUZISVIpIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmCjAwMDAwMDAwMDkgMDAwMDAgbgowMDAwMDAwMDU4IDAwMDAwIG4KMDAwMDAwMDExNSAwMDAwMCBuCjAwMDAwMDAyMjkgMDAwMDAgbgowMDAwMDAwMjk1IDAwMDAwIG4KdHJhaWxlcgo8PCAvU2l6ZSA2IC9Sb290IDEgMCBSID4+CnN0YXJ0eHJlZgozOTEKJSVFT0Y="
+
+        return try createAttachment(
+            id: id,
+            title: title,
+            contentType: "application/pdf",
+            content: pdfBase64,
+            creationDate: creationDate
+        )
+    }
+
+    static func createMixedDocumentReference(
+        id: String = "mixed-document-id",
+        date: Date? = nil
+    ) throws -> ModelsR4.DocumentReference {
+        let textAttachment = try createAttachment(
+            id: "text-attachment-id",
+            title: "Text Component",
+            contentType: "text/plain",
+            content: "V2VsY29tZSB0byBTcGV6aUZISVI="
+        )
+
+        let pdfAttachment = try createPDFAttachment()
+
+        return try createDocumentReference(
+            id: id,
+            attachments: [textAttachment, pdfAttachment],
+            date: date
+        )
+    }
 }
