@@ -10,65 +10,40 @@ import PDFKit
 import UniformTypeIdentifiers
 
 
-/// Uniform interface for FHIR attachment types.
-public protocol FHIRAttachement: AnyObject {
-    /// Debug description of the attachment
-    var debugDescription: String { get }
-    /// Best effort parsing of the MIME type of the attachment.
-    var mimeType: UTType? { get }
-    /// Convenience property to get and set the Base64 string representation of the attachment data.
-    var base64Data: String? { get set }
-}
-
-
 /// Errors thrown while interacting with FHIR attachment types.
-public enum FHIRAttachmentError: Error {
-    /// Invalid base 64 data.
+enum FHIRAttachmentError: Error, Equatable {
+    /// The attachment does not have a valid MIME type.
+    case missingMimeType
+
+    /// The attachment does not contain any base64-encoded string.
+    case missingBase64String
+
+    /// The base64 string couldn't be decoded into valid binary data.
     case invalidBase64Data
-    /// Error parsing the attached MIME type.
-    case cannotParseMIMEType(UTType)
+
+    /// The text data couldn't be decoded using UTF-8 encoding.
+    case textDecodingFailed
+
+    /// The data couldn't be parsed as a valid PDF document.
+    case pdfParsingFailed
+
+    /// The content type is not supported by any available extractor.
+    case unsupportedContentType(UTType)
 }
 
+/// Uniform interface for FHIR attachment types.
+protocol FHIRAttachment: AnyObject {
+    /// Debug description of the attachment.
+    var debugDescription: String { get }
 
-extension FHIRAttachement {
-    /// Best effort function to transform the base64 data representatino of an ``FHIRAttachement`` to a string-based respresentation of the data type.
-    ///
-    /// This funcationality is especially useful if the data content is inspected for debug purposes or passing it ot a LLM component.
-    public func stringifyAttachements() throws {
-        // We inject the data right in the resource if it has the same content type.
-        // There are a few shortcomings of this appraoch:
-        // 1. We assume that the content type is a MIME type, we would need to more checks around the content.format to be fully correct.
-        // 2. The data property expects a Base64 encoded String. This is according to the FHIR spec but we don't check this in detail here.
-        guard let contentType = mimeType,
-              let base64String = base64Data,
-              let data = Data(base64Encoded: base64String) else {
-            throw FHIRAttachmentError.invalidBase64Data
-        }
-        
-        if contentType.conforms(to: .text) {
-            base64Data = String(decoding: data, as: UTF8.self)
-        } else if contentType.conforms(to: .pdf) {
-            guard let pdf = PDFDocument(data: data) else {
-                throw FHIRAttachmentError.cannotParseMIMEType(contentType)
-            }
-            
-            let pageCount = pdf.pageCount
-            let documentContent = NSMutableAttributedString()
-            
-            for pageNumber in 0 ..< pageCount {
-                guard let page = pdf.page(at: pageNumber) else {
-                    continue
-                }
-                guard let pageContent = page.attributedString else {
-                    continue
-                }
-                documentContent.append(pageContent)
-            }
-            
-            base64Data = documentContent.string
-        } else {
-            print(debugDescription)
-            throw FHIRAttachmentError.cannotParseMIMEType(contentType)
-        }
-    }
+    /// Best effort parsing of the MIME type of the attachment.
+    /// Represents the content type of the attachment data (e.g., text/plain, application/pdf).
+    var mimeType: UTType? { get }
+
+    /// Convenience property to get the Base64 string representation of the attachment data.
+    var base64String: String? { get }
+
+    /// Encodes the provided string content into the FHIR attachment.
+    /// - Parameter content: The string content to encode into the FHIR  attachment.
+    func encode(content: String)
 }
