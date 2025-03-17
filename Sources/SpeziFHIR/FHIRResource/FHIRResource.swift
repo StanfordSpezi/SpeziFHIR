@@ -80,7 +80,12 @@ public struct FHIRResource: Identifiable, Hashable {
             case let medicationAdministration as ModelsR4.MedicationAdministration:
                 return medicationAdministration.effective.date
             case let observation as ModelsR4.Observation:
-                return try? observation.issued?.value?.asNSDate()
+                if let issuedDate = observation.issued {
+                    return try? issuedDate.value?.asNSDate()
+                } else if case let .dateTime(effectiveDate) = observation.effective {
+                    return try? effectiveDate.value?.asNSDate()
+                }
+                return nil
             case let procedure as ModelsR4.Procedure:
                 return procedure.performed?.date
             case let patient as ModelsR4.Patient:
@@ -95,7 +100,12 @@ public struct FHIRResource: Identifiable, Hashable {
         case let .dstu2(resource):
             switch resource {
             case let observation as ModelsDSTU2.Observation:
-                return try? observation.issued?.value?.asNSDate()
+                if let issuedDate = observation.issued {
+                    return try? issuedDate.value?.asNSDate()
+                } else if case let .dateTime(effectiveDate) = observation.effective {
+                    return try? effectiveDate.value?.asNSDate()
+                }
+                return nil
             case let medicationOrder as ModelsDSTU2.MedicationOrder:
                 return try? medicationOrder.dateWritten?.value?.asNSDate()
             case let medicationStatement as ModelsDSTU2.MedicationStatement:

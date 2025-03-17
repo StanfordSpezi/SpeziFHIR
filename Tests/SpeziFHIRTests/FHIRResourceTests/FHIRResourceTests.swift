@@ -29,8 +29,8 @@ class FHIRResourceTests: XCTestCase {
 
 
     func testModelsR4ResourceInitialization() throws {
-        let mockObservation = try ModelsR4Mocks.createObservation(date: Self.testDate)
-        
+        let mockObservation = try ModelsR4Mocks.createObservation(issuedDate: Self.testDate)
+
         let resource = FHIRResource(
             resource: mockObservation,
             displayName: "Test Observation"
@@ -42,8 +42,8 @@ class FHIRResourceTests: XCTestCase {
     }
     
     func testModelsDSTU2ResourceInitialization() throws {
-        let mockObservation = try ModelsDSTU2Mocks.createObservation(date: Self.testDate)
-        
+        let mockObservation = try ModelsDSTU2Mocks.createObservation(issuedDate: Self.testDate)
+
         let resource = FHIRResource(
             resource: mockObservation,
             displayName: "Test Observation"
@@ -68,7 +68,8 @@ class FHIRResourceTests: XCTestCase {
             (ModelsR4Mocks.createImmunization(date: Self.testDate), "Immunization"),
             (ModelsR4Mocks.createMedicationRequest(date: Self.testDate), "MedicationRequest"),
             (ModelsR4Mocks.createMedicationAdministration(date: Self.testDate), "MedicationAdministration"),
-            (ModelsR4Mocks.createObservation(date: Self.testDate), "Observation"),
+            (ModelsR4Mocks.createObservation(issuedDate: Self.testDate), "Observation with issued date"),
+            (ModelsR4Mocks.createObservation(effectiveDate: Self.testDate), "Observation with effective date"),
             (ModelsR4Mocks.createProcedure(date: Self.testDate), "Procedure"),
             (ModelsR4Mocks.createPatient(date: Self.testDate), "Patient"),
             (ModelsR4Mocks.createProvenance(date: Self.testDate), "Provenance"),
@@ -91,7 +92,8 @@ class FHIRResourceTests: XCTestCase {
     
     func testModelsDSTU2ResourceDates() throws {
         let modelsDSTU2Resources: [(ModelsDSTU2.Resource, String)] = try [
-            (ModelsDSTU2Mocks.createObservation(date: Self.testDate), "Observation"),
+            (ModelsDSTU2Mocks.createObservation(issuedDate: Self.testDate), "Observation with issued date"),
+            (ModelsDSTU2Mocks.createObservation(effectiveDate: Self.testDate), "Observation with effective date"),
             (ModelsDSTU2Mocks.createMedicationOrder(date: Self.testDate), "MedicationOrder"),
             (ModelsDSTU2Mocks.createMedicationStatement(date: Self.testDate), "MedicationStatement"),
             (ModelsDSTU2Mocks.createCondition(date: Self.testDate), "Condition"),

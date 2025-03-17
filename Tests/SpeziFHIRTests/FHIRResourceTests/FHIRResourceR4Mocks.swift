@@ -276,14 +276,16 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
         )
     }
     
-    static func createObservation(date: Date? = nil) throws -> ModelsR4.Observation {
+    static func createObservation(issuedDate: Date? = nil, effectiveDate: Date? = nil) throws -> ModelsR4.Observation {
         let observation = ModelsR4.Observation(
             code: CodeableConcept(coding: [Coding(code: "code".asFHIRStringPrimitive())]),
             id: "observation-id".asFHIRStringPrimitive(),
             status: FHIRPrimitive(.final)
         )
-        if let date = date {
-            observation.issued = FHIRPrimitive(try Instant(date: date))
+        if let issuedDate {
+            observation.issued = FHIRPrimitive(try Instant(date: issuedDate))
+        } else if let effectiveDate {
+            observation.effective = .dateTime(FHIRPrimitive(try DateTime(date: effectiveDate)))
         }
         return observation
     }
