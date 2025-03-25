@@ -12,9 +12,9 @@ import ModelsR4
 
 
 extension FHIRResource {
-    private static let encoder = PropertyListEncoder()
+    private static let encoder = JSONEncoder()
 
-    private static let decoder = PropertyListDecoder()
+    private static let decoder = JSONDecoder()
 
     private static let lockManager = FHIRResourceLockManager()
 
