@@ -52,7 +52,7 @@ struct FHIRResourceCopyTests {
 
     @Test("FHIRResource - Copy Concurrency")
     func testCopyConcurrency() throws {
-        var resources: [FHIRResource] = [
+        let resources: [FHIRResource] = [
             FHIRResource(resource: try ModelsR4Mocks.createPatient(), displayName: "Patient"),
             FHIRResource(resource: try ModelsR4Mocks.createCondition(), displayName: "Condition"),
             FHIRResource(resource: try ModelsR4Mocks.createObservation(), displayName: "Observation"),
