@@ -39,11 +39,14 @@ extension FHIRResource {
         if let documentReference = r4Resource as? ModelsR4.DocumentReference {
             for textEncodedAttachement in try await textEncodedAttachements(for: healthKitSample, hkHealthStore: store) {
                 let data = FHIRPrimitive(ModelsR4.Base64Binary(textEncodedAttachement.base64EncodedString))
-                if let content = documentReference.content.first(
-                       where: { $0.attachment.contentType?.value?.string == textEncodedAttachement.identifier }
-                   ),
-                   content.attachment.data == nil {
-                    content.attachment.data = data
+                
+                if let matchingContent = documentReference.content.first(
+                    where: {
+                        $0.attachment.contentType?.value?.string == textEncodedAttachement.identifier &&
+                        $0.attachment.data == nil
+                    }
+                ) {
+                    matchingContent.attachment.data = data
                 } else {
                     documentReference.content.append(
                         DocumentReferenceContent(
@@ -55,19 +58,24 @@ extension FHIRResource {
         } else if let diagnosticReport = r4Resource as? ModelsR4.DiagnosticReport {
             for textEncodedAttachement in try await textEncodedAttachements(for: healthKitSample, hkHealthStore: store) {
                 let data = FHIRPrimitive(ModelsR4.Base64Binary(textEncodedAttachement.base64EncodedString))
-                if let attachment = (diagnosticReport.presentedForm ?? []).first(
-                       where: { $0.contentType?.value?.string == textEncodedAttachement.identifier }
-                   ),
-                   attachment.data == nil {
-                    attachment.data = data
-                } else {
-                    if diagnosticReport.presentedForm == nil {
-                        diagnosticReport.presentedForm = []
+                
+                if let presentedForms = diagnosticReport.presentedForm {
+                    if let matchingAttachment = presentedForms.first(
+                        where: {
+                            $0.contentType?.value?.string == textEncodedAttachement.identifier &&
+                            $0.data == nil
+                        }
+                    ) {
+                        matchingAttachment.data = data
+                    } else {
+                        diagnosticReport.presentedForm?.append(
+                            Attachment(contentType: FHIRPrimitive(stringLiteral: textEncodedAttachement.identifier), data: data)
+                        )
                     }
-                    
-                    diagnosticReport.presentedForm?.append(
+                } else {
+                    diagnosticReport.presentedForm = [
                         Attachment(contentType: FHIRPrimitive(stringLiteral: textEncodedAttachement.identifier), data: data)
-                    )
+                    ]
                 }
             }
         } else {
@@ -83,11 +91,14 @@ extension FHIRResource {
         if let documentReference = dstu2Resource as? ModelsDSTU2.DocumentReference {
             for textEncodedAttachement in try await textEncodedAttachements(for: healthKitSample, hkHealthStore: store) {
                 let data = FHIRPrimitive(ModelsDSTU2.Base64Binary(textEncodedAttachement.base64EncodedString))
-                if let content = documentReference.content.first(
-                       where: { $0.attachment.contentType?.value?.string == textEncodedAttachement.identifier }
-                   ),
-                   content.attachment.data == nil {
-                    content.attachment.data = data
+                
+                if let matchingContent = documentReference.content.first(
+                    where: {
+                        $0.attachment.contentType?.value?.string == textEncodedAttachement.identifier &&
+                        $0.attachment.data == nil
+                    }
+                ) {
+                    matchingContent.attachment.data = data
                 } else {
                     documentReference.content.append(
                         DocumentReferenceContent(
@@ -99,19 +110,24 @@ extension FHIRResource {
         } else if let diagnosticReport = dstu2Resource as? ModelsDSTU2.DiagnosticReport {
             for textEncodedAttachement in try await textEncodedAttachements(for: healthKitSample, hkHealthStore: store) {
                 let data = FHIRPrimitive(ModelsDSTU2.Base64Binary(textEncodedAttachement.base64EncodedString))
-                if let attachment = (diagnosticReport.presentedForm ?? []).first(
-                       where: { $0.contentType?.value?.string == textEncodedAttachement.identifier }
-                   ),
-                   attachment.data == nil {
-                    attachment.data = data
-                } else {
-                    if diagnosticReport.presentedForm == nil {
-                        diagnosticReport.presentedForm = []
+                
+                if let presentedForms = diagnosticReport.presentedForm {
+                    if let matchingAttachment = presentedForms.first(
+                        where: {
+                            $0.contentType?.value?.string == textEncodedAttachement.identifier &&
+                            $0.data == nil
+                        }
+                    ) {
+                        matchingAttachment.data = data
+                    } else {
+                        diagnosticReport.presentedForm?.append(
+                            Attachment(contentType: FHIRPrimitive(stringLiteral: textEncodedAttachement.identifier), data: data)
+                        )
                     }
-                    
-                    diagnosticReport.presentedForm?.append(
+                } else {
+                    diagnosticReport.presentedForm = [
                         Attachment(contentType: FHIRPrimitive(stringLiteral: textEncodedAttachement.identifier), data: data)
-                    )
+                    ]
                 }
             }
         } else {
