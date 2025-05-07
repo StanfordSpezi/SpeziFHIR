@@ -25,9 +25,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.6.0")),
-        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.11")),
+        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.15")),
         .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.8.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit", .upToNextMinor(from: "0.6.0"))
+        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit", .upToNextMinor(from: "1.1.2"))
     ] + swiftLintPackage(),
     targets: [
         .target(
