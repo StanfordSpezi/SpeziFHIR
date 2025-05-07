@@ -64,6 +64,7 @@ let package = Package(
             name: "SpeziFHIRTests",
             dependencies: [
                 .target(name: "SpeziFHIR"),
+                .target(name: "SpeziFHIRHealthKit"),
                 .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
                 .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
             ],
