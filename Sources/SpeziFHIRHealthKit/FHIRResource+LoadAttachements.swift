@@ -12,6 +12,7 @@ import ModelsR4
 import PDFKit
 import SpeziFHIR
 
+
 protocol HealthKitAttachmentsProvider {
     func getEncodedAttachments(
         for sample: HKSample
@@ -21,9 +22,11 @@ protocol HealthKitAttachmentsProvider {
 class DefaultHealthKitAttachmentsProvider: HealthKitAttachmentsProvider {
     private let healthStore: HKHealthStore
 
+
     init(healthStore: HKHealthStore = HKHealthStore()) {
         self.healthStore = healthStore
     }
+
 
     func getEncodedAttachments(
         for sample: HKSample
@@ -72,16 +75,16 @@ extension FHIRResource {
         // Otherwise we create a new content entry to inject this information in here.
         switch versionedResource {
         case let .r4(r4Resource):
-            try await processAttachementsForR4(r4Resource: r4Resource, encodedAttachments: encodedAttachments)
+            try processAttachementsForR4(r4Resource: r4Resource, encodedAttachments: encodedAttachments)
         case let .dstu2(dstu2Resource):
-            try await processAttachementsForDSTU2(dstu2Resource: dstu2Resource, encodedAttachments: encodedAttachments)
+            try processAttachementsForDSTU2(dstu2Resource: dstu2Resource, encodedAttachments: encodedAttachments)
         }
     }
 
-    private func processAttachementsForR4(
+    func processAttachementsForR4(
         r4Resource: ModelsR4.Resource,
         encodedAttachments: [(identifier: String, base64EncodedString: String)]
-    ) async throws {
+    ) throws {
         if let documentReference = r4Resource as? ModelsR4.DocumentReference {
             for attachment in encodedAttachments {
                 let data = FHIRPrimitive(ModelsR4.Base64Binary(attachment.base64EncodedString))
@@ -129,10 +132,10 @@ extension FHIRResource {
         }
     }
 
-    private func processAttachementsForDSTU2(
+    func processAttachementsForDSTU2(
         dstu2Resource: ModelsDSTU2.Resource,
         encodedAttachments: [(identifier: String, base64EncodedString: String)]
-    ) async throws {
+    ) throws {
         if let documentReference = dstu2Resource as? ModelsDSTU2.DocumentReference {
             for attachment in encodedAttachments {
                 let data = FHIRPrimitive(ModelsDSTU2.Base64Binary(attachment.base64EncodedString))
