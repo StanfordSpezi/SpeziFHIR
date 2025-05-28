@@ -24,10 +24,10 @@ let package = Package(
         .library(name: "SpeziFHIRMockPatients", targets: ["SpeziFHIRMockPatients"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/FHIRModels", .upToNextMinor(from: "0.6.0")),
-        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR", .upToNextMinor(from: "0.2.11")),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.8.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit", .upToNextMinor(from: "0.6.0"))
+        .package(url: "https://github.com/apple/FHIRModels.git", from: "0.7.0"),
+        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR.git", from: "1.0.0"),
+        .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.8.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", from: "1.1.3")
     ] + swiftLintPackage(),
     targets: [
         .target(
@@ -36,8 +36,10 @@ let package = Package(
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "ModelsR4", package: "FHIRModels"),
                 .product(name: "ModelsDSTU2", package: "FHIRModels"),
-                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR")
+                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
+                .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
             ],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         ),
         .target(
@@ -47,6 +49,7 @@ let package = Package(
                 .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
                 .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
             ],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         ),
         .target(
@@ -55,9 +58,8 @@ let package = Package(
                 .target(name: "SpeziFHIR"),
                 .product(name: "ModelsR4", package: "FHIRModels")
             ],
-            resources: [
-                .process("Resources")
-            ],
+            resources: [.process("Resources")],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
@@ -68,6 +70,7 @@ let package = Package(
                 .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
                 .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
             ],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         )
     ]

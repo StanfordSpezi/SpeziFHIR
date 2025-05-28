@@ -6,11 +6,12 @@
 // SPDX-License-Identifier: MIT
 //
 
-@preconcurrency import HealthKit
+import HealthKit
 import ModelsDSTU2
 import ModelsR4
 import PDFKit
 import SpeziFHIR
+import SpeziHealthKit
 
 
 protocol HealthKitAttachmentsProvider {
@@ -19,22 +20,20 @@ protocol HealthKitAttachmentsProvider {
     ) async throws -> [(identifier: String, base64EncodedString: String)]
 }
 
-class DefaultHealthKitAttachmentsProvider: HealthKitAttachmentsProvider {
-    private let healthStore: HKHealthStore
 
-
-    init(healthStore: HKHealthStore = HKHealthStore()) {
-        self.healthStore = healthStore
+struct DefaultHealthKitAttachmentsProvider: HealthKitAttachmentsProvider {
+    private let healthKit: HealthKit
+    
+    init(healthKit: HealthKit) {
+        self.healthKit = healthKit
     }
-
 
     func getEncodedAttachments(
         for sample: HKSample
     ) async throws -> [(identifier: String, base64EncodedString: String)] {
         try await withThrowingTaskGroup(of: (String, String).self, returning: [(String, String)].self) { taskGroup in
-            let attachmentStore = HKAttachmentStore(healthStore: healthStore)
+            let attachmentStore = HKAttachmentStore(healthStore: healthKit.healthStore)
             let attachments = try await attachmentStore.attachments(for: sample)
-
             for attachment in attachments {
                 taskGroup.addTask {
                     let mimeType = attachment.contentType.preferredMIMEType ?? attachment.contentType.identifier
@@ -42,7 +41,6 @@ class DefaultHealthKitAttachmentsProvider: HealthKitAttachmentsProvider {
                     return (mimeType, try await dataReader.data.base64EncodedString())
                 }
             }
-
             var base64Attachments: [(String, String)] = []
             while let base64Attachment = try await taskGroup.next() {
                 base64Attachments.append(base64Attachment)
@@ -59,17 +57,15 @@ extension FHIRResource {
     ///   - store: The health store to use. Defaults to a new `HKHealthStore` instance.
     ///   - attachmentsProvider: Optional custom provider for attachments. If nil, a default provider will be created.
     mutating func loadAttachements(
-        from healthKitSample: HKSample,
-        store: HKHealthStore = HKHealthStore(),
-        attachmentsProvider: HealthKitAttachmentsProvider? = nil
+        for healthKitSample: HKSample,
+        using healthKit: HealthKit,
+        attachmentsProvider: (any HealthKitAttachmentsProvider)? = nil
     ) async throws {
         guard category == .document || category == .diagnostic else {
             return
         }
-
-        let provider = attachmentsProvider ?? DefaultHealthKitAttachmentsProvider(healthStore: store)
+        let provider = attachmentsProvider ?? DefaultHealthKitAttachmentsProvider(healthKit: healthKit)
         let encodedAttachments = try await provider.getEncodedAttachments(for: healthKitSample)
-
         // We inject the data right in the resource if it has the same content type.
         // We assume that the content type is a MIME type, we would need to more checks around the content.format to be fully correct.
         // Otherwise we create a new content entry to inject this information in here.
@@ -88,13 +84,9 @@ extension FHIRResource {
         if let documentReference = r4Resource as? ModelsR4.DocumentReference {
             for attachment in encodedAttachments {
                 let data = FHIRPrimitive(ModelsR4.Base64Binary(attachment.base64EncodedString))
-
-                if let matchingContent = documentReference.content.first(
-                    where: {
-                        $0.attachment.contentType?.value?.string == attachment.identifier &&
-                        $0.attachment.data == nil
-                    }
-                ) {
+                if let matchingContent = documentReference.content.first(where: {
+                    $0.attachment.contentType?.value?.string == attachment.identifier && $0.attachment.data == nil
+                }) {
                     matchingContent.attachment.data = data
                 } else {
                     documentReference.content.append(
@@ -107,14 +99,10 @@ extension FHIRResource {
         } else if let diagnosticReport = r4Resource as? ModelsR4.DiagnosticReport {
             for attachment in encodedAttachments {
                 let data = FHIRPrimitive(ModelsR4.Base64Binary(attachment.base64EncodedString))
-
                 if let presentedForms = diagnosticReport.presentedForm {
-                    if let matchingAttachment = presentedForms.first(
-                        where: {
-                            $0.contentType?.value?.string == attachment.identifier &&
-                            $0.data == nil
-                        }
-                    ) {
+                    if let matchingAttachment = presentedForms.first(where: {
+                        $0.contentType?.value?.string == attachment.identifier && $0.data == nil
+                    }) {
                         matchingAttachment.data = data
                     } else {
                         diagnosticReport.presentedForm?.append(
@@ -139,13 +127,9 @@ extension FHIRResource {
         if let documentReference = dstu2Resource as? ModelsDSTU2.DocumentReference {
             for attachment in encodedAttachments {
                 let data = FHIRPrimitive(ModelsDSTU2.Base64Binary(attachment.base64EncodedString))
-
-                if let matchingContent = documentReference.content.first(
-                    where: {
-                        $0.attachment.contentType?.value?.string == attachment.identifier &&
-                        $0.attachment.data == nil
-                    }
-                ) {
+                if let matchingContent = documentReference.content.first(where: {
+                    $0.attachment.contentType?.value?.string == attachment.identifier && $0.attachment.data == nil
+                }) {
                     matchingContent.attachment.data = data
                 } else {
                     documentReference.content.append(
@@ -158,14 +142,10 @@ extension FHIRResource {
         } else if let diagnosticReport = dstu2Resource as? ModelsDSTU2.DiagnosticReport {
             for attachment in encodedAttachments {
                 let data = FHIRPrimitive(ModelsDSTU2.Base64Binary(attachment.base64EncodedString))
-
                 if let presentedForms = diagnosticReport.presentedForm {
-                    if let matchingAttachment = presentedForms.first(
-                        where: {
-                            $0.contentType?.value?.string == attachment.identifier &&
-                            $0.data == nil
-                        }
-                    ) {
+                    if let matchingAttachment = presentedForms.first(where: {
+                        $0.contentType?.value?.string == attachment.identifier && $0.data == nil
+                    }) {
                         matchingAttachment.data = data
                     } else {
                         diagnosticReport.presentedForm?.append(

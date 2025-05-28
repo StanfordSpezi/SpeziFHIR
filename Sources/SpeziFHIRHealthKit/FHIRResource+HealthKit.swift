@@ -6,11 +6,12 @@
 // SPDX-License-Identifier: MIT
 //
 
-@preconcurrency import HealthKit
+import HealthKit
 import HealthKitOnFHIR
 import ModelsDSTU2
 import ModelsR4
 import SpeziFHIR
+import SpeziHealthKit
 
 
 extension FHIRResource {
@@ -21,7 +22,7 @@ extension FHIRResource {
     /// - Returns: Created ``FHIRResource`` instance.
      public static func initialize(
         basedOn sample: HKSample,
-        hkHealthStore: HKHealthStore? = HKHealthStore()
+        using healthKit: HealthKit
     ) async throws -> FHIRResource {
         switch sample {
         case let clinicalResource as HKClinicalRecord where clinicalResource.fhirResource?.fhirVersion == .primaryDSTU2():
@@ -38,30 +39,26 @@ extension FHIRResource {
                 displayName: clinicalResource.displayName
             )
         case let clinicalResource as HKClinicalRecord:
-            let fhirModelResource = try clinicalResource.resource.get()
+            let fhirModelResource = try clinicalResource.resource().get()
             
             return FHIRResource(
                 versionedResource: .r4(fhirModelResource),
                 displayName: clinicalResource.displayName
             )
         case let electrocardiogram as HKElectrocardiogram:
-            guard let hkHealthStore = hkHealthStore else {
-                fallthrough
-            }
-            
-            async let symptoms = try electrocardiogram.symptoms(from: hkHealthStore)
-            async let voltageMeasurements = try electrocardiogram.voltageMeasurements(from: hkHealthStore)
+            async let symptoms = try electrocardiogram.symptoms(from: healthKit)
+            async let voltageMeasurements = try electrocardiogram.voltageMeasurements(from: healthKit.healthStore)
             
             let electrocardiogramResource = try await electrocardiogram.observation(
                 symptoms: symptoms,
-                voltageMeasurements: voltageMeasurements
+                voltageMeasurements: voltageMeasurements.map { ($0.timeOffset, $0.voltage) }
             )
             return FHIRResource(
                 versionedResource: .r4(electrocardiogramResource),
                 displayName: String(localized: "FHIR_RESOURCES_SUMMARY_ID_TITLE \(electrocardiogramResource.id?.value?.string ?? "-")")
             )
         default:
-            let genericResource = try sample.resource.get()
+            let genericResource = try sample.resource().get()
             return FHIRResource(
                 versionedResource: .r4(genericResource),
                 displayName: String(localized: "FHIR_RESOURCES_SUMMARY_ID_TITLE \(genericResource.id?.value?.string ?? "-")")
