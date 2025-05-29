@@ -3,20 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F34D14E2B0CF1F1009300C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F34D14D2B0CF1F1009300C1 /* ContentView.swift */; };
-		2F34D1522B0CF59A009300C1 /* MockPatientSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F34D1512B0CF59A009300C1 /* MockPatientSelection.swift */; };
-		2F36AD33299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F36AD32299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift */; };
-		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
-		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
 		2FBD9AF92B01E4A000237A04 /* SpeziFHIRMockPatients in Frameworks */ = {isa = PBXBuildFile; productRef = 2FBD9AF82B01E4A000237A04 /* SpeziFHIRMockPatients */; };
 		2FBD9AFB2B01E4A800237A04 /* SpeziFHIRHealthKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2FBD9AFA2B01E4A800237A04 /* SpeziFHIRHealthKit */; };
-		2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */; };
 		2FF6813F2A849F77002897C6 /* SpeziFHIR in Frameworks */ = {isa = PBXBuildFile; productRef = 2FF6813E2A849F77002897C6 /* SpeziFHIR */; };
-		65A9650B2D7CF01200F42471 /* TestingStandard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A9650A2D7CF01200F42471 /* TestingStandard.swift */; };
 		65A965112D7CF87500F42471 /* SpeziViews in Frameworks */ = {isa = PBXBuildFile; productRef = 65A965102D7CF87500F42471 /* SpeziViews */; };
 		65A965142D7CF89400F42471 /* SpeziHealthKit in Frameworks */ = {isa = PBXBuildFile; productRef = 65A965132D7CF89400F42471 /* SpeziHealthKit */; };
 /* End PBXBuildFile section */
@@ -32,19 +25,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2F34D14D2B0CF1F1009300C1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		2F34D1512B0CF59A009300C1 /* MockPatientSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPatientSelection.swift; sourceTree = "<group>"; };
-		2F36AD32299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FHIRMockDataStorageProviderTests.swift; sourceTree = "<group>"; };
 		2F6D139228F5F384007C25D6 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F6D139928F5F386007C25D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F7B6CB4294C03C800FDC494 /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = TestApp.xctestplan; path = UITests.xcodeproj/TestApp.xctestplan; sourceTree = "<group>"; };
-		2FA7382B290ADFAA007ACEB9 /* TestApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestApp.swift; sourceTree = "<group>"; };
 		2FC42FD7290ADD5E00B08F18 /* SpeziFHIR */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SpeziFHIR; path = ../..; sourceTree = "<group>"; };
-		2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppDelegate.swift; sourceTree = "<group>"; };
-		65A9650A2D7CF01200F42471 /* TestingStandard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingStandard.swift; sourceTree = "<group>"; };
-		65A965152D7CF94700F42471 /* TestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestApp.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		807ED9E92DE7A51F00243452 /* TestAppUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TestAppUITests; sourceTree = "<group>"; };
+		807ED9F52DE7A53800243452 /* TestApp */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TestApp; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		2F6D138F28F5F384007C25D6 /* Frameworks */ = {
@@ -74,8 +64,8 @@
 			children = (
 				2F7B6CB4294C03C800FDC494 /* TestApp.xctestplan */,
 				2FC42FD7290ADD5E00B08F18 /* SpeziFHIR */,
-				2F6D139428F5F384007C25D6 /* TestApp */,
-				2F6D13AF28F5F386007C25D6 /* TestAppUITests */,
+				807ED9F52DE7A53800243452 /* TestApp */,
+				807ED9E92DE7A51F00243452 /* TestAppUITests */,
 				2F6D139328F5F384007C25D6 /* Products */,
 				2F6D13C228F5F3BE007C25D6 /* Frameworks */,
 			);
@@ -88,28 +78,6 @@
 				2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		2F6D139428F5F384007C25D6 /* TestApp */ = {
-			isa = PBXGroup;
-			children = (
-				65A965152D7CF94700F42471 /* TestApp.entitlements */,
-				2FA7382B290ADFAA007ACEB9 /* TestApp.swift */,
-				2FD021DC299E0F2900E5B91B /* TestAppDelegate.swift */,
-				65A9650A2D7CF01200F42471 /* TestingStandard.swift */,
-				2F34D14D2B0CF1F1009300C1 /* ContentView.swift */,
-				2F34D1512B0CF59A009300C1 /* MockPatientSelection.swift */,
-				2F6D139928F5F386007C25D6 /* Assets.xcassets */,
-			);
-			path = TestApp;
-			sourceTree = "<group>";
-		};
-		2F6D13AF28F5F386007C25D6 /* TestAppUITests */ = {
-			isa = PBXGroup;
-			children = (
-				2F36AD32299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift */,
-			);
-			path = TestAppUITests;
 			sourceTree = "<group>";
 		};
 		2F6D13C228F5F3BE007C25D6 /* Frameworks */ = {
@@ -135,6 +103,9 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				807ED9F52DE7A53800243452 /* TestApp */,
+			);
 			name = TestApp;
 			packageProductDependencies = (
 				2FF6813E2A849F77002897C6 /* SpeziFHIR */,
@@ -159,6 +130,9 @@
 			);
 			dependencies = (
 				2F6D13AE28F5F386007C25D6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				807ED9E92DE7A51F00243452 /* TestAppUITests */,
 			);
 			name = TestAppUITests;
 			packageProductDependencies = (
@@ -214,7 +188,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,11 +226,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
-				2FD021DD299E0F2900E5B91B /* TestAppDelegate.swift in Sources */,
-				65A9650B2D7CF01200F42471 /* TestingStandard.swift in Sources */,
-				2F34D1522B0CF59A009300C1 /* MockPatientSelection.swift in Sources */,
-				2F34D14E2B0CF1F1009300C1 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,7 +233,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F36AD33299DB72400B1077C /* FHIRMockDataStorageProviderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -553,8 +520,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/StanfordSpezi/SpeziHealthKit.git";
 			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 0.6.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

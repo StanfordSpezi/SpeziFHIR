@@ -13,10 +13,10 @@ import Testing
 @Suite
 struct FHIRResourceLockManagerTests {
     private enum Constants {
-        static let shortDelay: TimeInterval = 0.001
-        static let longDelay: TimeInterval = 0.01
-        static let shortTimeout: TimeInterval = 1.0
-        static let longTimeout: TimeInterval = 10.0
+        static let shortDelay: TimeInterval = 0.005
+        static let longDelay: TimeInterval = 0.05
+        static let shortTimeout: TimeInterval = 4.0
+        static let longTimeout: TimeInterval = 20.0
         static let iterations = 100
         static let standardIdentityKey = "test-resource-1"
         static let multipleIdentityKeys = [

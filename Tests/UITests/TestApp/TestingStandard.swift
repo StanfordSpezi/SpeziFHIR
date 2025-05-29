@@ -18,18 +18,21 @@ actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
     private var useHealthKitResources = true
     private var samples: [HKSample] = []
     
-    
-    func add(sample: HKSample) async {
-        samples.append(sample)
+    func handleNewSamples<Sample>(_ addedSamples: some Collection<Sample>, ofType sampleType: SampleType<Sample>) async {
+        samples.append(contentsOf: addedSamples.lazy.map { $0 as HKSample })
         if useHealthKitResources {
-            await fhirStore.add(sample: sample)
+            for sample in addedSamples {
+                await fhirStore.add(sample: sample)
+            }
         }
     }
     
-    func remove(sample: HKDeletedObject) async {
-        samples.removeAll(where: { $0.id == sample.uuid })
-        if useHealthKitResources {
-            await fhirStore.remove(sample: sample)
+    func handleDeletedObjects<Sample>(_ deletedObjects: some Collection<HKDeletedObject>, ofType sampleType: SampleType<Sample>) async {
+        for object in deletedObjects {
+            samples.removeAll { $0.id == object.uuid }
+            if useHealthKitResources {
+                await fhirStore.remove(sample: object)
+            }
         }
     }
     

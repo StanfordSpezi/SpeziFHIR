@@ -1,13 +1,13 @@
 {
-  "originHash" : "4d13986aaafff4daffb297fc4d39f73a354b736afcb33615f772d0166f6f230f",
+  "originHash" : "17624361e7b61b36b2d4c01ffe2657ff6d840bd02a9b529c9fc79aba451397b4",
   "pins" : [
     {
       "identity" : "fhirmodels",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/FHIRModels",
       "state" : {
-        "revision" : "8a1cb1bdc4a01a814825aca47ada4186dc8a6ee1",
-        "version" : "0.6.0"
+        "revision" : "b7fcf26b818704f489719f8cdd9e270aaab37823",
+        "version" : "0.7.0"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordBDHG/HealthKitOnFHIR",
       "state" : {
-        "revision" : "a1a71254a75c6a3b18a0b356fd8f76bc489a3030",
-        "version" : "0.2.12"
+        "revision" : "fb63d33cd119f87794536f3dc39ee4e31a40e211",
+        "version" : "1.0.0"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/Spezi",
       "state" : {
-        "revision" : "4513a697572e8e1faea1e0ee52e6fad4b8d3dd8d",
-        "version" : "1.8.0"
+        "revision" : "a7b3a178aca371b9a3621b87021ea1dfcd9dde17",
+        "version" : "1.8.2"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziFoundation",
       "state" : {
-        "revision" : "78f3d912a82f951564d7e133867cf01351f53062",
-        "version" : "2.1.1"
+        "revision" : "404dd76502fed1e0cc03dcdb8bba9818f206b244",
+        "version" : "2.1.8"
       }
     },
     {
@@ -42,8 +42,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziHealthKit",
       "state" : {
-        "revision" : "fbdec78fcb2f90d6338f1968e21dd11fbee65070",
-        "version" : "0.6.0"
+        "revision" : "9d7f54852d40da9376a5189b124ad30c76d9d78d",
+        "version" : "1.1.3"
+      }
+    },
+    {
+      "identity" : "spezistorage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StanfordSpezi/SpeziStorage.git",
+      "state" : {
+        "revision" : "eda8a13d2a9c3570f1b8767a338fa720c2e37c75",
+        "version" : "2.1.1"
       }
     },
     {
@@ -96,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordBDHG/XCTRuntimeAssertions",
       "state" : {
-        "revision" : "f560ec8410af032dd485ca9386e8c2b5d3e1a1f8",
-        "version" : "1.1.3"
+        "revision" : "d3394b8c432f4e3d30cdf14cb5892695e923b06d",
+        "version" : "2.1.0"
       }
     }
   ],
