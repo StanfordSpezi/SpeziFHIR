@@ -52,7 +52,22 @@ struct FHIRResourceCopyTests {
 
     @Test("FHIRResource - Copy Concurrency")
     func testCopyConcurrency() throws {
-        let resources: [FHIRResource] = [
+        struct UnsafelySendableFHIRResource: @unchecked Sendable {
+            let resource: FHIRResource
+        }
+        
+        final class CopiedResources: @unchecked Sendable {
+            private let lock = NSLock()
+            private(set) var resources: [Int: UnsafelySendableFHIRResource] = [:]
+            
+            func add(_ resource: FHIRResource, at index: Int) {
+                lock.withLock {
+                    resources[index] = .init(resource: resource)
+                }
+            }
+        }
+        
+        let resources: [UnsafelySendableFHIRResource] = [
             FHIRResource(resource: try ModelsR4Mocks.createPatient(), displayName: "Patient"),
             FHIRResource(resource: try ModelsR4Mocks.createCondition(), displayName: "Condition"),
             FHIRResource(resource: try ModelsR4Mocks.createObservation(), displayName: "Observation"),
@@ -63,23 +78,11 @@ struct FHIRResourceCopyTests {
             FHIRResource(resource: try ModelsDSTU2Mocks.createDiagnosticReport(), displayName: "DiagnosticReport"),
             FHIRResource(resource: try ModelsDSTU2Mocks.createObservation(), displayName: "Observation"),
             FHIRResource(resource: ModelsDSTU2Mocks.createImmunization(), displayName: "Immunization")
-        ]
+        ].map { .init(resource: $0) }
 
         let group = DispatchGroup()
         let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
-        
-        struct CopiedResources: @unchecked Sendable {
-            private let lock = NSLock()
-            private(set) var resources: [Int: FHIRResource] = [:]
-            
-            mutating func add(_ resource: FHIRResource, at index: Int) {
-                lock.withLock {
-                    resources[index] = resource
-                }
-            }
-        }
-
-        nonisolated(unsafe) var copiedResources = CopiedResources()
+        let copiedResources = CopiedResources()
 
         for (index, resource) in resources.enumerated() {
             group.enter()
@@ -88,10 +91,10 @@ struct FHIRResourceCopyTests {
                     group.leave()
                 }
                 do {
-                    let copiedResource = try resource.copy()
+                    let copiedResource = try resource.resource.copy()
                     copiedResources.add(copiedResource, at: index)
                 } catch {
-                    Issue.record("Failed to copy resource \(resource.displayName): \(error)")
+                    Issue.record("Failed to copy resource \(resource.resource.displayName): \(error)")
                 }
             }
         }
@@ -101,6 +104,8 @@ struct FHIRResourceCopyTests {
 
         for (index, original) in resources.enumerated() {
             if let copy = copiedResources.resources[index] {
+                let original = original.resource
+                let copy = copy.resource
                 #expect(original.displayName == copy.displayName, "Copy at index \(index) has incorrect displayName: expected \(original.displayName), got \(copy.displayName)")
             } else {
                 Issue.record("Missing copied resource at index \(index)")
