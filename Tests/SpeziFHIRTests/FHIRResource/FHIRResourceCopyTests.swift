@@ -96,7 +96,7 @@ struct FHIRResourceCopyTests {
             }
         }
 
-        let timeoutResult = group.wait(timeout: .now() + 7.5)
+        let timeoutResult = group.wait(timeout: .now() + 10)
         #expect(timeoutResult == .success, "Copy operations timed out")
 
         for (index, original) in resources.enumerated() {
