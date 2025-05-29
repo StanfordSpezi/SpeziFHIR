@@ -51,7 +51,7 @@ struct FHIRResourceCopyTests {
     }
 
     @Test("FHIRResource - Copy Concurrency")
-    func testCopyConcurrency() throws {
+    func testCopyConcurrency() async throws {
         struct UnsafelySendableFHIRResource: @unchecked Sendable {
             let resource: FHIRResource
         }
@@ -79,37 +79,73 @@ struct FHIRResourceCopyTests {
             FHIRResource(resource: try ModelsDSTU2Mocks.createObservation(), displayName: "Observation"),
             FHIRResource(resource: ModelsDSTU2Mocks.createImmunization(), displayName: "Immunization")
         ].map { .init(resource: $0) }
-
-        let group = DispatchGroup()
-        let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
-        let copiedResources = CopiedResources()
-
-        for (index, resource) in resources.enumerated() {
-            group.enter()
-            queue.async {
-                defer {
-                    group.leave()
+        
+        if false {
+//            let group = DispatchGroup()
+//            let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
+//            let copiedResources = CopiedResources()
+//            
+//            for (index, resource) in resources.enumerated() {
+//                group.enter()
+//                queue.async {
+//                    defer {
+//                        group.leave()
+//                    }
+//                    do {
+//                        let copiedResource = try resource.resource.copy()
+//                        copiedResources.add(copiedResource, at: index)
+//                    } catch {
+//                        Issue.record("Failed to copy resource \(resource.resource.displayName): \(error)")
+//                    }
+//                }
+//            }
+//            
+//            let timeoutResult = group.wait(timeout: .now() + 10)
+//            #expect(timeoutResult == .success, "Copy operations timed out")
+//            
+//            for (index, original) in resources.enumerated() {
+//                if let copy = copiedResources.resources[index] {
+//                    let original = original.resource
+//                    let copy = copy.resource
+//                    #expect(original.displayName == copy.displayName, "Copy at index \(index) has incorrect displayName: expected \(original.displayName), got \(copy.displayName)")
+//                } else {
+//                    Issue.record("Missing copied resource at index \(index)")
+//                }
+//            }
+        } else {
+            let copiedResources = try await withThrowingTaskGroup(of: UnsafelySendableFHIRResource.self) { taskGroup in
+                // copy every resource 20 times, and hope that at least some of them end up happening in parallel.
+                for _ in 0..<20 {
+                    for resource in resources {
+                        taskGroup.addTask {
+                            UnsafelySendableFHIRResource(resource: try resource.resource.copy())
+                        }
+                    }
                 }
-                do {
-                    let copiedResource = try resource.resource.copy()
-                    copiedResources.add(copiedResource, at: index)
-                } catch {
-                    Issue.record("Failed to copy resource \(resource.resource.displayName): \(error)")
+                var results: [UnsafelySendableFHIRResource] = []
+                for try await resource in taskGroup {
+                    results.append(resource)
                 }
+                return results
+            }
+            for original in resources {
+                print(original.resource.id)
+                let copies = copiedResources.filter { copy in
+                    copy.resource.displayName == original.resource.displayName && copy.resource.variantDesc == original.resource.variantDesc
+                }
+                #expect(copies.count == 20, "Copying of '\(original.resource.displayName)' failed.")
             }
         }
+    }
+}
 
-        let timeoutResult = group.wait(timeout: .now() + 10)
-        #expect(timeoutResult == .success, "Copy operations timed out")
 
-        for (index, original) in resources.enumerated() {
-            if let copy = copiedResources.resources[index] {
-                let original = original.resource
-                let copy = copy.resource
-                #expect(original.displayName == copy.displayName, "Copy at index \(index) has incorrect displayName: expected \(original.displayName), got \(copy.displayName)")
-            } else {
-                Issue.record("Missing copied resource at index \(index)")
-            }
+
+extension FHIRResource {
+    var variantDesc: String {
+        switch versionedResource {
+        case .r4: "r4"
+        case .dstu2: "dstu2"
         }
     }
 }
