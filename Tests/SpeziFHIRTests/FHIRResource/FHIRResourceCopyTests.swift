@@ -67,10 +67,19 @@ struct FHIRResourceCopyTests {
 
         let group = DispatchGroup()
         let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
+        
+        struct CopiedResources: @unchecked Sendable {
+            private let lock = NSLock()
+            private(set) var resources: [Int: FHIRResource] = [:]
+            
+            mutating func add(_ resource: FHIRResource, at index: Int) {
+                lock.withLock {
+                    resources[index] = resource
+                }
+            }
+        }
 
-        let lock = NSLock()
-
-        var copiedResourcesDict = [Int: FHIRResource]()
+        nonisolated(unsafe) var copiedResources = CopiedResources()
 
         for (index, resource) in resources.enumerated() {
             group.enter()
@@ -80,9 +89,7 @@ struct FHIRResourceCopyTests {
                 }
                 do {
                     let copiedResource = try resource.copy()
-                    lock.withLock {
-                        copiedResourcesDict[index] = copiedResource
-                    }
+                    copiedResources.add(copiedResource, at: index)
                 } catch {
                     Issue.record("Failed to copy resource \(resource.displayName): \(error)")
                 }
@@ -93,7 +100,7 @@ struct FHIRResourceCopyTests {
         #expect(timeoutResult == .success, "Copy operations timed out")
 
         for (index, original) in resources.enumerated() {
-            if let copy = copiedResourcesDict[index] {
+            if let copy = copiedResources.resources[index] {
                 #expect(original.displayName == copy.displayName, "Copy at index \(index) has incorrect displayName: expected \(original.displayName), got \(copy.displayName)")
             } else {
                 Issue.record("Missing copied resource at index \(index)")
