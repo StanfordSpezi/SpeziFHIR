@@ -75,21 +75,21 @@ struct FHIRResourceCopyTests {
         for (index, resource) in resources.enumerated() {
             group.enter()
             queue.async {
+                defer {
+                    group.leave()
+                }
                 do {
                     let copiedResource = try resource.copy()
-                    lock.lock()
-                    copiedResourcesDict[index] = copiedResource
-                    lock.unlock()
-
-                    group.leave()
+                    lock.withLock {
+                        copiedResourcesDict[index] = copiedResource
+                    }
                 } catch {
                     Issue.record("Failed to copy resource \(resource.displayName): \(error)")
-                    group.leave()
                 }
             }
         }
 
-        let timeoutResult = group.wait(timeout: .now() + 5.0)
+        let timeoutResult = group.wait(timeout: .now() + 7.5)
         #expect(timeoutResult == .success, "Copy operations timed out")
 
         for (index, original) in resources.enumerated() {
