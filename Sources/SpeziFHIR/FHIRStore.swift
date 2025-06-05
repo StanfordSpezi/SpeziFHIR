@@ -10,16 +10,14 @@ import Observation
 import class ModelsR4.Bundle
 import enum ModelsDSTU2.ResourceProxy
 import Spezi
+import SpeziHealthKit
 
 
 /// `Module` to manage FHIR resources grouped into automatically computed and updated categories.
 ///
 /// The ``FHIRStore`` is automatically injected in the environment if you use the ``FHIR`` standard or can be used as a standalone module.
 @Observable
-public final class FHIRStore: Module,
-                             EnvironmentAccessible,
-                             DefaultInitializable,
-                             Sendable {
+public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable, @unchecked Sendable { // unchecked bc of the HealthKit dependency
     // The `_resources` array needs to be marked with `@ObservationIgnored` to prevent changes to this array
     // from triggering updates to all computed properties.
     // Instead, we explicitly control change notifications through `willSet`/`didSet` calls
@@ -27,6 +25,7 @@ public final class FHIRStore: Module,
     // only observers of the relevant category (e.g., observations, conditions) are notified when
     // resources of that category are modified.
     @ObservationIgnored @MainActor private var _resources: [FHIRResource] = []
+    @ObservationIgnored @Dependency(HealthKit.self) package var healthKit
 
 
     /// `FHIRResource`s with category `allergyIntolerance`.
