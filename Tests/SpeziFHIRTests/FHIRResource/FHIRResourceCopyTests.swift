@@ -140,7 +140,6 @@ struct FHIRResourceCopyTests {
 }
 
 
-
 extension FHIRResource {
     var variantDesc: String {
         switch versionedResource {
