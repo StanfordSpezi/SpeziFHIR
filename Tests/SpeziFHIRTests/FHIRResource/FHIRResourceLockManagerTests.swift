@@ -14,11 +14,13 @@ import Testing
 struct FHIRResourceLockManagerTests {
     private enum Constants {
         static let iterations = 100
-        static let iterationDelay: TimeInterval = 0.001
-        static let iterationsTimeout: TimeInterval = iterationDelay * Double(iterations) * max(4, 64 / Double(ProcessInfo().activeProcessorCount))
+        static let iterationDelay = 0.001
+        // Base timeout of 0.1 seconds for an initial setup and adding the number of iterations times 4 or a larger factor if less processor cores are involved.
+        static let iterationsTimeout = 0.1 + iterationDelay * Double(iterations) * max(4, 64 / Double(ProcessInfo().activeProcessorCount))
         
-        static let operationDelay: TimeInterval = 0.001
-        static let operationTimeout: TimeInterval = operationDelay * max(4, 64 / Double(ProcessInfo().activeProcessorCount))
+        static let operationDelay = 0.001
+        // Base timeout of 0.1 seconds for an initial setup and adding the number of iterations times 4 or a larger factor if less processor cores are involved.
+        static let operationTimeout = 0.1 + operationDelay * max(4, 64 / Double(ProcessInfo().activeProcessorCount))
         
         static let standardIdentityKey = "test-resource-1"
         static let multipleIdentityKeys = [
