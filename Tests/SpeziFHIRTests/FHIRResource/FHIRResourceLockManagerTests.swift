@@ -15,10 +15,10 @@ struct FHIRResourceLockManagerTests {
     private enum Constants {
         static let iterations = 100
         static let iterationDelay: TimeInterval = 0.001
-        static let iterationsTimeout: TimeInterval = iterationDelay * Double(iterations) * max(2, 32/Double(ProcessInfo().activeProcessorCount))
+        static let iterationsTimeout: TimeInterval = iterationDelay * Double(iterations) * max(2, 32 / Double(ProcessInfo().activeProcessorCount))
         
         static let operationDelay: TimeInterval = 0.001
-        static let operationTimeout: TimeInterval = operationDelay * max(2, 32/Double(ProcessInfo().activeProcessorCount))
+        static let operationTimeout: TimeInterval = operationDelay * max(2, 32 / Double(ProcessInfo().activeProcessorCount))
         
         static let standardIdentityKey = "test-resource-1"
         static let multipleIdentityKeys = [
