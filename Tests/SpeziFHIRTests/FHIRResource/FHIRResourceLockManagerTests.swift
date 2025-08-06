@@ -42,7 +42,7 @@ struct FHIRResourceLockManagerTests {
         let counter = UnsafeCounter()
 
         let group = DispatchGroup()
-        let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
+        let queue = DispatchQueue(label: "com.test.concurrent.1", attributes: .concurrent)
 
         group.enter()
         queue.async {
@@ -101,7 +101,7 @@ struct FHIRResourceLockManagerTests {
         let iterations = Constants.iterations
 
         let group = DispatchGroup()
-        let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
+        let queue = DispatchQueue(label: "com.test.concurrent.2", attributes: .concurrent)
 
         let iterationsFactor = 2
         
@@ -157,7 +157,7 @@ struct FHIRResourceLockManagerTests {
 
         let iterations = Constants.iterations
         let group = DispatchGroup()
-        let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
+        let queue = DispatchQueue(label: "com.test.concurrent.3", attributes: .concurrent)
 
         let iterationsFactor = 2
         
