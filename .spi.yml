@@ -13,5 +13,4 @@ builder:
       documentation_targets:
       - SpeziFHIR
       - SpeziFHIRHealthKit
-      - SpeziFHIRInterpretation
       - SpeziFHIRMockPatients
