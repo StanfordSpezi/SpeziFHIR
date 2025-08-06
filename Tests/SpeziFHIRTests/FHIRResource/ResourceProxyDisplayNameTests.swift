@@ -8,67 +8,72 @@
 
 import ModelsR4
 @testable import SpeziFHIR
-import XCTest
+import Testing
 
 
 extension FHIRResourceTests {
+    @Test
     func testConditionDisplayName() throws {
         let mockCondition = try ModelsR4Mocks.createCondition()
         
         // Test with text value
         mockCondition.code = CodeableConcept(text: "Hypertension")
         let proxy = ResourceProxy(with: mockCondition)
-        XCTAssertEqual(proxy.displayName, "Hypertension")
+        #expect(proxy.displayName == "Hypertension")
         
         // Test with no code
         mockCondition.code = nil
-        XCTAssertEqual(proxy.displayName, "Condition")
+        #expect(proxy.displayName == "Condition")
     }
     
+    @Test
     func testDiagnosticReportDisplayName() throws {
         let mockReport = try ModelsR4Mocks.createDiagnosticReport()
         
         // Test with display coding
         mockReport.code.coding = [Coding(display: "Blood Test")]
         let proxy = ResourceProxy(with: mockReport)
-        XCTAssertEqual(proxy.displayName, "Blood Test")
+        #expect(proxy.displayName == "Blood Test")
         
         // Test with no codings
         mockReport.code.coding?.removeAll()
-        XCTAssertEqual(proxy.displayName, "DiagnosticReport")
+        #expect(proxy.displayName == "DiagnosticReport")
     }
     
+    @Test
     func testEncounterDisplayName() throws {
         let mockEncounter = try ModelsR4Mocks.createEncounter()
         
         // Test with reason code
         mockEncounter.reasonCode = [CodeableConcept(coding: [Coding(display: "Follow-up")])]
         let proxy = ResourceProxy(with: mockEncounter)
-        XCTAssertEqual(proxy.displayName, "Follow-up")
+        #expect(proxy.displayName == "Follow-up")
         
         // Test with encounter type
         mockEncounter.reasonCode = nil
         mockEncounter.type = [CodeableConcept(coding: [Coding(display: "Office Visit")])]
-        XCTAssertEqual(proxy.displayName, "Office Visit")
+        #expect(proxy.displayName == "Office Visit")
         
         // Test with no type or reason
         mockEncounter.type = nil
-        XCTAssertEqual(proxy.displayName, "Encounter")
+        #expect(proxy.displayName == "Encounter")
     }
     
+    @Test
     func testImmunizationDisplayName() throws {
         let mockImmunization = try ModelsR4Mocks.createImmunization()
         
         // Test with vaccine text
         mockImmunization.vaccineCode.text = "Flu Shot"
         let proxy = ResourceProxy(with: mockImmunization)
-        XCTAssertEqual(proxy.displayName, "Flu Shot")
+        #expect(proxy.displayName == "Flu Shot")
         
         // Test with no vaccine text
         mockImmunization.vaccineCode.text = nil
-        XCTAssertEqual(proxy.displayName, "Immunization")
+        #expect(proxy.displayName == "Immunization")
     }
     
+    @Test
     func testMedicationRequestDisplayName() throws {
         let mockMedRequest = try ModelsR4Mocks.createMedicationRequest()
         
@@ -77,55 +82,58 @@ extension FHIRResourceTests {
             medicationCode.text = "Aspirin"
         }
         let proxy = ResourceProxy(with: mockMedRequest)
-        XCTAssertEqual(proxy.displayName, "Aspirin")
+        #expect(proxy.displayName == "Aspirin")
         
         // Test with no text in codeable concept
         if case let .codeableConcept(medicationCode) = mockMedRequest.medication {
             medicationCode.text = nil
         }
-        XCTAssertEqual(proxy.displayName, "MedicationRequest")
+        #expect(proxy.displayName == "MedicationRequest")
         
         // Test with reference instead of codeable concept
         mockMedRequest.medication = .reference(Reference())
-        XCTAssertEqual(proxy.displayName, "MedicationRequest")
+        #expect(proxy.displayName == "MedicationRequest")
     }
     
+    @Test
     func testObservationDisplayName() throws {
         let mockObservation = try ModelsR4Mocks.createObservation()
         
         // Test with code text
         mockObservation.code.text = "Blood Pressure"
         let proxy = ResourceProxy(with: mockObservation)
-        XCTAssertEqual(proxy.displayName, "Blood Pressure")
+        #expect(proxy.displayName == "Blood Pressure")
         
         // Test with no code text
         mockObservation.code.text = nil
-        XCTAssertEqual(proxy.displayName, "Observation")
+        #expect(proxy.displayName == "Observation")
     }
     
+    @Test
     func testProcedureDisplayName() throws {
         let mockProcedure = try ModelsR4Mocks.createProcedure()
         
         // Test with code text
         mockProcedure.code = CodeableConcept(text: "Hip Surgery")
         let proxy = ResourceProxy(with: mockProcedure)
-        XCTAssertEqual(proxy.displayName, "Hip Surgery")
+        #expect(proxy.displayName == "Hip Surgery")
         
         // Test with no code
         mockProcedure.code = nil
-        XCTAssertEqual(proxy.displayName, "Procedure")
+        #expect(proxy.displayName == "Procedure")
     }
     
+    @Test
     func testPatientDisplayName() throws {
         let mockPatient = try ModelsR4Mocks.createPatient()
         
         // Test with name components
         mockPatient.name = [HumanName(family: "Doe", given: ["John"])]
         let proxy = ResourceProxy(with: mockPatient)
-        XCTAssertEqual(proxy.displayName, "JohnDoe")
+        #expect(proxy.displayName == "JohnDoe")
         
         // Test with no name
         mockPatient.name = nil
-        XCTAssertEqual(proxy.displayName, "Patient")
+        #expect(proxy.displayName == "Patient")
     }
 }

@@ -6,13 +6,15 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import ModelsDSTU2
 import ModelsR4
 @testable import SpeziFHIR
-import XCTest
+import Testing
 
 
-class FHIRResourceTests: XCTestCase {
+@Suite
+struct FHIRResourceTests {
     private static let utcDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -28,6 +30,7 @@ class FHIRResourceTests: XCTestCase {
     }()
 
 
+    @Test
     func testModelsR4ResourceInitialization() throws {
         let mockObservation = try ModelsR4Mocks.createObservation(issuedDate: Self.testDate)
 
@@ -36,11 +39,12 @@ class FHIRResourceTests: XCTestCase {
             displayName: "Test Observation"
         )
         
-        XCTAssertEqual(resource.id, "observation-id")
-        XCTAssertEqual(resource.displayName, "Test Observation")
-        XCTAssertEqual(resource.resourceType, "Observation")
+        #expect(resource.id == "observation-id")
+        #expect(resource.displayName == "Test Observation")
+        #expect(resource.resourceType == "Observation")
     }
-    
+
+    @Test
     func testModelsDSTU2ResourceInitialization() throws {
         let mockObservation = try ModelsDSTU2Mocks.createObservation(issuedDate: Self.testDate)
 
@@ -49,11 +53,12 @@ class FHIRResourceTests: XCTestCase {
             displayName: "Test Observation"
         )
         
-        XCTAssertEqual(resource.id, "observation-id")
-        XCTAssertEqual(resource.displayName, "Test Observation")
-        XCTAssertEqual(resource.resourceType, "Observation")
+        #expect(resource.id == "observation-id")
+        #expect(resource.displayName == "Test Observation")
+        #expect(resource.resourceType == "Observation")
     }
-    
+
+    @Test
     func testModelsR4ResourceDates() throws {
         let modelsR4Resources: [(ModelsR4.Resource, String)] = try [
             (ModelsR4Mocks.createCarePlan(date: Self.testDate), "CarePlan"),
@@ -82,14 +87,14 @@ class FHIRResourceTests: XCTestCase {
                 displayName: "Test \(name)"
             )
             
-            XCTAssertEqual(
-                fhirResource.date,
-                Self.testDate,
+            #expect(
+                fhirResource.date == Self.testDate,
                 "Date extraction failed for \(name)"
             )
         }
     }
-    
+
+    @Test
     func testModelsDSTU2ResourceDates() throws {
         let modelsDSTU2Resources: [(ModelsDSTU2.Resource, String)] = try [
             (ModelsDSTU2Mocks.createObservation(issuedDate: Self.testDate), "Observation with issued date"),
@@ -108,14 +113,14 @@ class FHIRResourceTests: XCTestCase {
                 displayName: "Test \(name)"
             )
             
-            XCTAssertEqual(
-                fhirResource.date,
-                Self.testDate,
+            #expect(
+                fhirResource.date == Self.testDate,
                 "Date extraction failed for DSTU2 \(name)"
             )
         }
     }
-    
+
+    @Test
     func testModelsR4JSON() throws {
         let observation = ModelsR4.Observation(
             code: CodeableConcept(
@@ -138,11 +143,12 @@ class FHIRResourceTests: XCTestCase {
         let decoder = JSONDecoder()
         let decodedObservation = try decoder.decode(ModelsR4.Observation.self, from: jsonData)
         
-        XCTAssertEqual(decodedObservation.id, observation.id)
-        XCTAssertEqual(decodedObservation.code, observation.code)
-        XCTAssertEqual(decodedObservation.status, observation.status)
+        #expect(decodedObservation.id == observation.id)
+        #expect(decodedObservation.code == observation.code)
+        #expect(decodedObservation.status == observation.status)
     }
     
+    @Test
     func testModelsDSTU2JSON() throws {
         let observation = ModelsDSTU2.Observation(
             code: CodeableConcept(
@@ -165,8 +171,8 @@ class FHIRResourceTests: XCTestCase {
         let decoder = JSONDecoder()
         let decodedObservation = try decoder.decode(ModelsDSTU2.Observation.self, from: jsonData)
         
-        XCTAssertEqual(decodedObservation.id, observation.id)
-        XCTAssertEqual(decodedObservation.code, observation.code)
-        XCTAssertEqual(decodedObservation.status, observation.status)
+        #expect(decodedObservation.id == observation.id)
+        #expect(decodedObservation.code == observation.code)
+        #expect(decodedObservation.status == observation.status)
     }
 }

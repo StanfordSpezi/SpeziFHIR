@@ -8,39 +8,42 @@
 
 import ModelsR4
 @testable import SpeziFHIR
-import XCTest
+import Testing
 
 
+@Suite
 @MainActor
-final class FHIRStoreTests: XCTestCase {
+struct FHIRStoreTests {
     private var store = FHIRStore()
     
 
-    @MainActor
+    @Test
     func testInitialState() async {
         await MainActor.run {
-            XCTAssertTrue(store.allergyIntolerances.isEmpty)
-            XCTAssertTrue(store.conditions.isEmpty)
-            XCTAssertTrue(store.diagnostics.isEmpty)
-            XCTAssertTrue(store.encounters.isEmpty)
-            XCTAssertTrue(store.immunizations.isEmpty)
-            XCTAssertTrue(store.medications.isEmpty)
-            XCTAssertTrue(store.observations.isEmpty)
-            XCTAssertTrue(store.procedures.isEmpty)
-            XCTAssertTrue(store.otherResources.isEmpty)
+            #expect(store.allergyIntolerances.isEmpty)
+            #expect(store.conditions.isEmpty)
+            #expect(store.diagnostics.isEmpty)
+            #expect(store.encounters.isEmpty)
+            #expect(store.immunizations.isEmpty)
+            #expect(store.medications.isEmpty)
+            #expect(store.observations.isEmpty)
+            #expect(store.procedures.isEmpty)
+            #expect(store.otherResources.isEmpty)
         }
     }
 
+    @Test
     func testInsertSingleResource() throws {
         let observation = try ModelsR4Mocks.createObservation()
         let resource = FHIRResource(resource: observation, displayName: "Test Observation")
         store.insert(resource: resource)
 
-        XCTAssertEqual(store.observations.count, 1)
-        XCTAssertEqual(store.observations.first?.displayName, "Test Observation")
-        XCTAssertTrue(store.conditions.isEmpty)
+        #expect(store.observations.count == 1)
+        #expect(store.observations.first?.displayName == "Test Observation")
+        #expect(store.conditions.isEmpty)
     }
 
+    @Test
     func testInsertMultipleResources() throws {
         let observation1 = try ModelsR4Mocks.createObservation()
         let observation2 = try ModelsR4Mocks.createObservation()
@@ -58,23 +61,25 @@ final class FHIRStoreTests: XCTestCase {
 
         store.insert(resources: resources)
         
-        XCTAssertEqual(store.observations.count, 2)
-        XCTAssertEqual(store.procedures.count, 1)
-        XCTAssertEqual(store.medications.count, 1)
-        XCTAssertEqual(store.otherResources.count, 1)
+        #expect(store.observations.count == 2)
+        #expect(store.procedures.count == 1)
+        #expect(store.medications.count == 1)
+        #expect(store.otherResources.count == 1)
     }
 
+    @Test
     func testRemoveResource() {
         let medication = ModelsR4Mocks.createMedication()
         let resource = FHIRResource(resource: medication, displayName: "Medication")
             
         store.insert(resource: resource)
-        XCTAssertEqual(store.medications.count, 1)
+        #expect(store.medications.count == 1)
         
         store.remove(resource: resource.id)
-        XCTAssertTrue(store.medications.isEmpty)
+        #expect(store.medications.isEmpty)
     }
 
+    @Test
     func testRemoveAllResources() throws {
         let observation1 = try ModelsR4Mocks.createObservation()
         let observation2 = try ModelsR4Mocks.createObservation()
@@ -91,36 +96,39 @@ final class FHIRStoreTests: XCTestCase {
         store.insert(resources: resources)
         store.removeAllResources()
 
-        XCTAssertTrue(store.observations.isEmpty)
-        XCTAssertTrue(store.conditions.isEmpty)
-        XCTAssertTrue(store.medications.isEmpty)
+        #expect(store.observations.isEmpty)
+        #expect(store.conditions.isEmpty)
+        #expect(store.medications.isEmpty)
     }
 
+    @Test
     func testLoadEmptyBundle() async {
         let bundle = ModelsR4.Bundle(type: FHIRPrimitive<BundleType>(.transaction))
 
         await store.load(bundle: bundle)
 
-        XCTAssertEqual(store.allergyIntolerances.count, 0)
-        XCTAssertEqual(store.conditions.count, 0)
-        XCTAssertEqual(store.observations.count, 0)
-        XCTAssertEqual(store.diagnostics.count, 0)
-        XCTAssertEqual(store.encounters.count, 0)
-        XCTAssertEqual(store.immunizations.count, 0)
-        XCTAssertEqual(store.observations.count, 0)
-        XCTAssertEqual(store.procedures.count, 0)
-        XCTAssertEqual(store.otherResources.count, 0)
+        #expect(store.allergyIntolerances.isEmpty)
+        #expect(store.conditions.isEmpty)
+        #expect(store.observations.isEmpty)
+        #expect(store.diagnostics.isEmpty)
+        #expect(store.encounters.isEmpty)
+        #expect(store.immunizations.isEmpty)
+        #expect(store.observations.isEmpty)
+        #expect(store.procedures.isEmpty)
+        #expect(store.otherResources.isEmpty)
     }
 
+    @Test
     func testLoadBundleWithMultipleResources() async throws {
         await store.load(bundle: try ModelsR4Mocks.createBundle())
         
-        XCTAssertEqual(store.conditions.count, 1)
-        XCTAssertEqual(store.observations.count, 1)
-        XCTAssertEqual(store.conditions.first?.id.description, "condition-id")
-        XCTAssertEqual(store.observations.first?.id.description, "observation-id")
+        #expect(store.conditions.count == 1)
+        #expect(store.observations.count == 1)
+        #expect(store.conditions.first?.id.description == "condition-id")
+        #expect(store.observations.first?.id.description == "observation-id")
     }
 
+    @Test
     func testLoadBundleCancellation() async throws {
         let bundle = try ModelsR4Mocks.createBundle()
             
@@ -138,10 +146,11 @@ final class FHIRStoreTests: XCTestCase {
         task.cancel()
 
         await MainActor.run {
-            XCTAssertEqual(store.conditions.count, 0)
+            #expect(store.conditions.isEmpty)
         }
     }
 
+    @Test
     func testLoadBundleWithInvalidResources() async throws {
         let bundle = try ModelsR4Mocks.createBundle()
         let condition = try ModelsR4Mocks.createCondition()
@@ -154,11 +163,12 @@ final class FHIRStoreTests: XCTestCase {
         
         await store.load(bundle: bundle)
         
-        XCTAssertEqual(store.conditions.count, 1)
-        XCTAssertEqual(store.conditions.first?.id.description, "condition-id")
-        XCTAssertEqual(store.otherResources.count, 0)
+        #expect(store.conditions.count == 1)
+        #expect(store.conditions.first?.id.description == "condition-id")
+        #expect(store.otherResources.isEmpty)
     }
 
+    @Test
     func testLoadBundleWithDuplicateResources() async throws {
         let bundle = try ModelsR4Mocks.createBundle()
         let condition1 = try ModelsR4Mocks.createCondition()
@@ -171,8 +181,8 @@ final class FHIRStoreTests: XCTestCase {
         
         await store.load(bundle: bundle)
         
-        XCTAssertEqual(store.conditions.count, 2)
-        XCTAssertEqual(store.conditions[0].id.description, "condition-id")
-        XCTAssertEqual(store.conditions[1].id.description, "condition-id")
+        #expect(store.conditions.count == 2)
+        #expect(store.conditions[0].id.description == "condition-id")
+        #expect(store.conditions[1].id.description == "condition-id")
     }
 }
