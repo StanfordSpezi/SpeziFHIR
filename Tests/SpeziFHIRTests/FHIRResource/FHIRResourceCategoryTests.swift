@@ -9,10 +9,11 @@
 import ModelsDSTU2
 import ModelsR4
 @testable import SpeziFHIR
-import XCTest
+import Testing
 
 
 extension FHIRResourceTests {
+    @Test
     func testModelsR4Categories() throws {
         // Define test cases as tuples of (resource creator function, expected category)
         let testCases: [(resource: () throws -> ModelsR4.Resource, category: FHIRResource.FHIRResourceCategory)] = [
@@ -44,10 +45,11 @@ extension FHIRResourceTests {
         try testCases.forEach { creator, expectedCategory in
             let resource = try creator()
             let fhirResource = FHIRResource(versionedResource: .r4(resource), displayName: "")
-            XCTAssertEqual(fhirResource.category, expectedCategory, "Failed for resource type: \(type(of: resource))")
+            #expect(fhirResource.category == expectedCategory, "Failed for resource type: \(type(of: resource))")
         }
     }
     
+    @Test
     func testModelsDSTU2Categories() throws {
         let testCases: [(resource: () throws -> ModelsDSTU2.Resource, category: FHIRResource.FHIRResourceCategory)] = [
             // Single resource cases
@@ -79,20 +81,21 @@ extension FHIRResourceTests {
         try testCases.forEach { creator, expectedCategory in
             let resource = try creator()
             let fhirResource = FHIRResource(versionedResource: .dstu2(resource), displayName: "")
-            XCTAssertEqual(fhirResource.category, expectedCategory, "Failed for resource type: \(type(of: resource))")
+            #expect(fhirResource.category == expectedCategory, "Failed for resource type: \(type(of: resource))")
         }
     }
     
+    @Test
     @MainActor
     func testCategoryKeyPaths() {
-        XCTAssertEqual(FHIRResource.FHIRResourceCategory.observation.storeKeyPath, \FHIRStore.observations)
-        XCTAssertEqual(FHIRResource.FHIRResourceCategory.encounter.storeKeyPath, \FHIRStore.encounters)
-        XCTAssertEqual(FHIRResource.FHIRResourceCategory.condition.storeKeyPath, \FHIRStore.conditions)
-        XCTAssertEqual(FHIRResource.FHIRResourceCategory.diagnostic.storeKeyPath, \FHIRStore.diagnostics)
-        XCTAssertEqual(FHIRResource.FHIRResourceCategory.procedure.storeKeyPath, \FHIRStore.procedures)
-        XCTAssertEqual(FHIRResource.FHIRResourceCategory.immunization.storeKeyPath, \FHIRStore.immunizations)
-        XCTAssertEqual(FHIRResource.FHIRResourceCategory.allergyIntolerance.storeKeyPath, \FHIRStore.allergyIntolerances)
-        XCTAssertEqual(FHIRResource.FHIRResourceCategory.medication.storeKeyPath, \FHIRStore.medications)
-        XCTAssertEqual(FHIRResource.FHIRResourceCategory.other.storeKeyPath, \FHIRStore.otherResources)
+        #expect(FHIRResource.FHIRResourceCategory.observation.storeKeyPath == \FHIRStore.observations)
+        #expect(FHIRResource.FHIRResourceCategory.encounter.storeKeyPath == \FHIRStore.encounters)
+        #expect(FHIRResource.FHIRResourceCategory.condition.storeKeyPath == \FHIRStore.conditions)
+        #expect(FHIRResource.FHIRResourceCategory.diagnostic.storeKeyPath == \FHIRStore.diagnostics)
+        #expect(FHIRResource.FHIRResourceCategory.procedure.storeKeyPath == \FHIRStore.procedures)
+        #expect(FHIRResource.FHIRResourceCategory.immunization.storeKeyPath == \FHIRStore.immunizations)
+        #expect(FHIRResource.FHIRResourceCategory.allergyIntolerance.storeKeyPath == \FHIRStore.allergyIntolerances)
+        #expect(FHIRResource.FHIRResourceCategory.medication.storeKeyPath == \FHIRStore.medications)
+        #expect(FHIRResource.FHIRResourceCategory.other.storeKeyPath == \FHIRStore.otherResources)
     }
 }

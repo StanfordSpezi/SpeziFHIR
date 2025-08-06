@@ -17,9 +17,9 @@ import Spezi
 /// The ``FHIRStore`` is automatically injected in the environment if you use the ``FHIR`` standard or can be used as a standalone module.
 @Observable
 public final class FHIRStore: Module,
-                             EnvironmentAccessible,
-                             DefaultInitializable,
-                             Sendable {
+                              EnvironmentAccessible,
+                              DefaultInitializable,
+                              Sendable {
     // The `_resources` array needs to be marked with `@ObservationIgnored` to prevent changes to this array
     // from triggering updates to all computed properties.
     // Instead, we explicitly control change notifications through `willSet`/`didSet` calls

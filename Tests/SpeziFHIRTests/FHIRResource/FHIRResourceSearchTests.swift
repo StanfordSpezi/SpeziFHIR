@@ -8,9 +8,10 @@
 
 import ModelsR4
 @testable import SpeziFHIR
-import XCTest
+import Testing
 
 extension FHIRResourceTests {
+    @Test
     func testMatchesDisplayName() throws {
         let observation = try ModelsR4Mocks.createObservation()
         
@@ -19,14 +20,15 @@ extension FHIRResourceTests {
             displayName: "Test Resource"
         )
         
-        XCTAssertTrue(resource.matchesDisplayName(with: "test"))
-        XCTAssertTrue(resource.matchesDisplayName(with: "resource"))
-        XCTAssertTrue(resource.matchesDisplayName(with: "  test  "))
-        XCTAssertTrue(resource.matchesDisplayName(with: "TEST"))
-        XCTAssertFalse(resource.matchesDisplayName(with: "xyz"))
-        XCTAssertFalse(resource.matchesDisplayName(with: ""))
+        #expect(resource.matchesDisplayName(with: "test"))
+        #expect(resource.matchesDisplayName(with: "resource"))
+        #expect(resource.matchesDisplayName(with: "  test  "))
+        #expect(resource.matchesDisplayName(with: "TEST"))
+        #expect(!resource.matchesDisplayName(with: "xyz"))
+        #expect(!resource.matchesDisplayName(with: ""))
     }
     
+    @Test
     func testFilterByDisplayName() throws {
         let observation = try ModelsR4Mocks.createObservation()
         let patient = try ModelsR4Mocks.createPatient()
@@ -49,9 +51,9 @@ extension FHIRResourceTests {
         
         let resources = [resource1, resource2, resource3]
         
-        XCTAssertEqual(resources.filterByDisplayName(with: "test").count, 3)
-        XCTAssertEqual(resources.filterByDisplayName(with: "resource1").count, 1)
-        XCTAssertEqual(resources.filterByDisplayName(with: "xyz").count, 0)
-        XCTAssertEqual(resources.filterByDisplayName(with: "").count, 3)
+        #expect(resources.filterByDisplayName(with: "test").count == 3)
+        #expect(resources.filterByDisplayName(with: "resource1").count == 1)
+        #expect(resources.filterByDisplayName(with: "xyz").isEmpty)
+        #expect(resources.filterByDisplayName(with: "").count == 3)
     }
 }

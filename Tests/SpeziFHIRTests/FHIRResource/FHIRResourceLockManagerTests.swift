@@ -8,73 +8,61 @@
 
 import Foundation
 @testable import SpeziFHIR
+import SpeziFoundation
 import Testing
+
 
 @Suite
 struct FHIRResourceLockManagerTests {
     private enum Constants {
-        static let shortDelay: TimeInterval = 0.001
-        static let longDelay: TimeInterval = 0.01
-        static let shortTimeout: TimeInterval = 1.0
-        static let longTimeout: TimeInterval = 10.0
         static let iterations = 100
-        static let standardIdentityKey = "test-resource-1"
-        static let multipleIdentityKeys = [
-            "test-resource-1",
-            "test-resource-2",
-            "test-resource-3",
-            "test-resource-4",
-            "test-resource-5"
-        ]
+        static let iterationDelay = 0.001
+        static let operationDelay = 0.001
     }
-
+    
+    
     private let lockManager = FHIRResourceLockManager()
-
+    
+    
     @Test("FHIRResourceLockManager - Lock Protection Test")
-    func testLockProtection() throws {
-        let identityKey = Constants.standardIdentityKey
-
+    func testLockProtection() async throws {
+        let identityKey = "testLockProtection"
         let orderTracker = UnsafeOrderTracker()
         let counter = UnsafeCounter()
 
-        let group = DispatchGroup()
-        let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
-
-        group.enter()
-        queue.async {
-            do {
-                try lockManager.withLock(for: identityKey) {
-                    orderTracker.append(1)
-                    counter.increment(after: Constants.longDelay)
-                    orderTracker.append(-1)
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            // Add first task
+            group.addTask {
+                do {
+                    try self.lockManager.withLock(for: identityKey) {
+                        orderTracker.append(1)
+                        counter.increment(after: Constants.operationDelay)
+                        orderTracker.append(-1)
+                    }
+                } catch {
+                    Issue.record("Lock execution failed: \(error)")
+                    throw error
                 }
-                group.leave()
-            } catch {
-                Issue.record("Lock execution failed: \(error)")
-                group.leave()
             }
-        }
 
-        group.enter()
-        queue.async {
-            do {
-                try lockManager.withLock(for: identityKey) {
-                    orderTracker.append(2)
-                    counter.increment(after: Constants.longDelay)
-                    orderTracker.append(-2)
+            // Add second task
+            group.addTask {
+                do {
+                    try self.lockManager.withLock(for: identityKey) {
+                        orderTracker.append(2)
+                        counter.increment(after: Constants.operationDelay)
+                        orderTracker.append(-2)
+                    }
+                } catch {
+                    Issue.record("Lock execution failed: \(error)")
+                    throw error
                 }
-                group.leave()
-            } catch {
-                Issue.record("Lock execution failed: \(error)")
-                group.leave()
             }
-        }
 
-        let timeoutResult = group.wait(timeout: .now() + Constants.shortTimeout)
-        #expect(timeoutResult == .success, "Operations timed out")
+            try await group.waitForAll()
+        }
 
         #expect(counter.value == 2, "With proper locking, counter should be 2 but got \(counter.value)")
-
         #expect(orderTracker.checkNoInterleaving(), "Operations interleaved - lock is not working properly. Order: \(orderTracker.order)")
 
         let validPatterns = [
@@ -87,47 +75,46 @@ struct FHIRResourceLockManagerTests {
     }
 
     @Test("FHIRResourceLockManager - Concurrent Lock Access")
-    func testConcurrentLockAccess() throws {
-        let identityKey = Constants.standardIdentityKey
-
+    func testConcurrentLockAccess() async throws {
+        let identityKey = "testConcurrentLockAccess"
         let orderTracker = UnsafeOrderTracker()
         let counter = UnsafeCounter()
-        let iterations = Constants.iterations
-
-        let group = DispatchGroup()
-        let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
-
-        for iterationStep in 0..<iterations * 2 {
-            group.enter()
-            queue.async {
-                do {
-                    let opType = (iterationStep % 2) + 1
-                    try lockManager.withLock(for: identityKey) {
-                        orderTracker.append(opType)
-                        counter.increment(after: Constants.shortDelay)
-                        orderTracker.append(-opType)
+        let iterationsFactor = 2
+        
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            for iterationStep in 0..<Constants.iterations * iterationsFactor {
+                group.addTask {
+                    do {
+                        let opType = (iterationStep % 2) + 1
+                        try self.lockManager.withLock(for: identityKey) {
+                            orderTracker.append(opType)
+                            counter.increment(after: Constants.iterationDelay)
+                            orderTracker.append(-opType)
+                        }
+                    } catch {
+                        Issue.record("Lock execution failed: \(error)")
+                        throw error
                     }
-                    group.leave()
-                } catch {
-                    Issue.record("Lock execution failed: \(error)")
-                    group.leave()
                 }
             }
+            try await group.waitForAll()
         }
-
-        let timeoutResult = group.wait(timeout: .now() + Constants.longTimeout)
-        #expect(timeoutResult == .success, "Operations timed out")
-
-        #expect(counter.value == iterations * 2, "With proper locking, counter should be \(iterations * 2) but got \(counter.value)")
-
+        
+        #expect(counter.value == Constants.iterations * iterationsFactor, "With proper locking, counter should be \(Constants.iterations * iterationsFactor) but got \(counter.value)")
         #expect(orderTracker.checkNoInterleaving(), "Operations interleaved - lock is not working properly")
     }
 
     // swiftlint:disable function_body_length
     @Test("FHIRResourceLockManager - Multiple Distinct Locks")
-    func testMultipleDistinctLocks() throws {
-        let identityKeys = Constants.multipleIdentityKeys
-
+    func testMultipleDistinctLocks() async throws {
+        let totalIdentityKey = "testMultipleDistinctLocks"
+        let identityKeys = [
+            "test-resource-1",
+            "test-resource-2",
+            "test-resource-3",
+            "test-resource-4",
+            "test-resource-5"
+        ]
         let trackers: [String: UnsafeKeyAwareOrderTracker] = {
             var result = [String: UnsafeKeyAwareOrderTracker]()
             for key in identityKeys {
@@ -135,7 +122,6 @@ struct FHIRResourceLockManagerTests {
             }
             return result
         }()
-
         let counters: [String: UnsafeCounter] = {
             var result = [String: UnsafeCounter]()
             for key in identityKeys {
@@ -143,47 +129,40 @@ struct FHIRResourceLockManagerTests {
             }
             return result
         }()
-
-        let totalKey = "global-counter"
         let totalCounter = UnsafeCounter()
+        let iterationsFactor = 2
+        
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            for identityKey in identityKeys {
+                guard let tracker = trackers[identityKey],
+                      let counter = counters[identityKey] else {
+                    Issue.record("Missing tracker or counter for key: \(identityKey)")
+                    return
+                }
 
-        let iterations = Constants.iterations
-        let group = DispatchGroup()
-        let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
+                for iterationStep in 0..<Constants.iterations * iterationsFactor {
+                    group.addTask {
+                        do {
+                            let opType = (iterationStep % 2) + 1
+                            try self.lockManager.withLock(for: identityKey) {
+                                tracker.append(key: identityKey, opType: opType)
+                                counter.increment(after: Constants.iterationDelay)
+                                tracker.append(key: identityKey, opType: -opType)
+                            }
 
-        for identityKey in identityKeys {
-            guard let tracker = trackers[identityKey],
-                  let counter = counters[identityKey] else {
-                Issue.record("Missing tracker or counter for key: \(identityKey)")
-                return
-            }
-
-            for iterationStep in 0..<iterations * 2 {
-                group.enter()
-                queue.async {
-                    do {
-                        let opType = (iterationStep % 2) + 1
-                        try lockManager.withLock(for: identityKey) {
-                            tracker.append(key: identityKey, opType: opType)
-                            counter.increment(after: Constants.shortDelay)
-                            tracker.append(key: identityKey, opType: -opType)
+                            try self.lockManager.withLock(for: totalIdentityKey) {
+                                totalCounter.increment()
+                            }
+                        } catch {
+                            Issue.record("Lock execution failed: \(error)")
+                            throw error
                         }
-
-                        try lockManager.withLock(for: totalKey) {
-                            totalCounter.increment()
-                        }
-
-                        group.leave()
-                    } catch {
-                        Issue.record("Lock execution failed: \(error)")
-                        group.leave()
                     }
                 }
             }
+            
+            try await group.waitForAll()
         }
-
-        let timeoutResult = group.wait(timeout: .now() + Constants.longTimeout)
-        #expect(timeoutResult == .success, "Operations timed out")
 
         for key in identityKeys {
             guard let counter = counters[key] else {
@@ -191,11 +170,11 @@ struct FHIRResourceLockManagerTests {
                 continue
             }
 
-            let expectedKeyOperations = iterations * 2
+            let expectedKeyOperations = Constants.iterations * iterationsFactor
             #expect(counter.value == expectedKeyOperations, "Expected \(expectedKeyOperations) operations for key \(key) but got \(counter.value)")
         }
 
-        let expectedTotal = identityKeys.count * iterations * 2
+        let expectedTotal = identityKeys.count * Constants.iterations * iterationsFactor
         #expect(totalCounter.value == expectedTotal, "Expected \(expectedTotal) total operations but got \(totalCounter.value)")
 
         for key in identityKeys {
