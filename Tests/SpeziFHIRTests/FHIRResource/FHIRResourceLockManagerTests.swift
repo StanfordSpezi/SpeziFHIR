@@ -13,11 +13,13 @@ import Testing
 @Suite
 struct FHIRResourceLockManagerTests {
     private enum Constants {
-        static let shortDelay: TimeInterval = 0.001
-        static let longDelay: TimeInterval = 0.01
-        static let shortTimeout: TimeInterval = 1.0
-        static let longTimeout: TimeInterval = 10.0
         static let iterations = 100
+        static let iterationDelay: TimeInterval = 0.001
+        static let iterationsTimeout: TimeInterval = iterationDelay * Double(iterations) * max(2, 32/Double(ProcessInfo().activeProcessorCount))
+        
+        static let operationDelay: TimeInterval = 0.001
+        static let operationTimeout: TimeInterval = operationDelay * max(2, 32/Double(ProcessInfo().activeProcessorCount))
+        
         static let standardIdentityKey = "test-resource-1"
         static let multipleIdentityKeys = [
             "test-resource-1",
@@ -45,7 +47,7 @@ struct FHIRResourceLockManagerTests {
             do {
                 try lockManager.withLock(for: identityKey) {
                     orderTracker.append(1)
-                    counter.increment(after: Constants.longDelay)
+                    counter.increment(after: Constants.operationDelay)
                     orderTracker.append(-1)
                 }
                 group.leave()
@@ -60,7 +62,7 @@ struct FHIRResourceLockManagerTests {
             do {
                 try lockManager.withLock(for: identityKey) {
                     orderTracker.append(2)
-                    counter.increment(after: Constants.longDelay)
+                    counter.increment(after: Constants.operationDelay)
                     orderTracker.append(-2)
                 }
                 group.leave()
@@ -70,7 +72,9 @@ struct FHIRResourceLockManagerTests {
             }
         }
 
-        let timeoutResult = group.wait(timeout: .now() + Constants.shortTimeout)
+        // Two operations above
+        let operatinosFactor = 2
+        let timeoutResult = group.wait(timeout: .now() + Constants.operationTimeout * Double(operatinosFactor))
         #expect(timeoutResult == .success, "Operations timed out")
 
         #expect(counter.value == 2, "With proper locking, counter should be 2 but got \(counter.value)")
@@ -97,14 +101,16 @@ struct FHIRResourceLockManagerTests {
         let group = DispatchGroup()
         let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
 
-        for iterationStep in 0..<iterations * 2 {
+        let iterationsFactor = 2
+        
+        for iterationStep in 0..<iterations * iterationsFactor {
             group.enter()
             queue.async {
                 do {
                     let opType = (iterationStep % 2) + 1
                     try lockManager.withLock(for: identityKey) {
                         orderTracker.append(opType)
-                        counter.increment(after: Constants.shortDelay)
+                        counter.increment(after: Constants.iterationDelay)
                         orderTracker.append(-opType)
                     }
                     group.leave()
@@ -115,10 +121,10 @@ struct FHIRResourceLockManagerTests {
             }
         }
 
-        let timeoutResult = group.wait(timeout: .now() + Constants.longTimeout)
+        let timeoutResult = group.wait(timeout: .now() + Constants.iterationsTimeout * Double(iterationsFactor))
         #expect(timeoutResult == .success, "Operations timed out")
 
-        #expect(counter.value == iterations * 2, "With proper locking, counter should be \(iterations * 2) but got \(counter.value)")
+        #expect(counter.value == iterations * iterationsFactor, "With proper locking, counter should be \(iterations * iterationsFactor) but got \(counter.value)")
 
         #expect(orderTracker.checkNoInterleaving(), "Operations interleaved - lock is not working properly")
     }
@@ -151,6 +157,8 @@ struct FHIRResourceLockManagerTests {
         let group = DispatchGroup()
         let queue = DispatchQueue(label: "com.test.concurrent", attributes: .concurrent)
 
+        let iterationsFactor = 2
+        
         for identityKey in identityKeys {
             guard let tracker = trackers[identityKey],
                   let counter = counters[identityKey] else {
@@ -158,14 +166,14 @@ struct FHIRResourceLockManagerTests {
                 return
             }
 
-            for iterationStep in 0..<iterations * 2 {
+            for iterationStep in 0..<iterations * iterationsFactor {
                 group.enter()
                 queue.async {
                     do {
                         let opType = (iterationStep % 2) + 1
                         try lockManager.withLock(for: identityKey) {
                             tracker.append(key: identityKey, opType: opType)
-                            counter.increment(after: Constants.shortDelay)
+                            counter.increment(after: Constants.iterationDelay)
                             tracker.append(key: identityKey, opType: -opType)
                         }
 
@@ -181,8 +189,8 @@ struct FHIRResourceLockManagerTests {
                 }
             }
         }
-
-        let timeoutResult = group.wait(timeout: .now() + Constants.longTimeout)
+        
+        let timeoutResult = group.wait(timeout: .now() + Constants.iterationsTimeout * Double(iterationsFactor) * Double(identityKeys.count))
         #expect(timeoutResult == .success, "Operations timed out")
 
         for key in identityKeys {
@@ -191,11 +199,11 @@ struct FHIRResourceLockManagerTests {
                 continue
             }
 
-            let expectedKeyOperations = iterations * 2
+            let expectedKeyOperations = iterations * iterationsFactor
             #expect(counter.value == expectedKeyOperations, "Expected \(expectedKeyOperations) operations for key \(key) but got \(counter.value)")
         }
 
-        let expectedTotal = identityKeys.count * iterations * 2
+        let expectedTotal = identityKeys.count * iterations * iterationsFactor
         #expect(totalCounter.value == expectedTotal, "Expected \(expectedTotal) total operations but got \(totalCounter.value)")
 
         for key in identityKeys {
