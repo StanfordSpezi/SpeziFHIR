@@ -22,16 +22,12 @@ extension FHIRStore {
     public func add(
         sample: HKSample,
         loadHealthKitAttachements: Bool = false
-    ) async {
-        do {
-            var resource = try await FHIRResource.initialize(basedOn: sample, using: healthKit)
-            if loadHealthKitAttachements {
-                try await resource.loadAttachements(for: sample, using: healthKit)
-            }
-            await insert(resource: resource)
-        } catch {
-            print("Could not transform HKSample: \(error)")
+    ) async throws {
+        var resource = try await FHIRResource.initialize(basedOn: sample, using: healthKit)
+        if loadHealthKitAttachements {
+            try await resource.loadAttachements(for: sample, using: healthKit)
         }
+        await insert(resource: resource)
     }
     
     /// Remove a HealthKit sample delete object from the FHIR store.

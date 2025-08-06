@@ -18,11 +18,13 @@ extension FHIRResource {
     /// Creates a new ``FHIRResource`` instance using an `HKSample`.
     /// - Parameters:
     ///   - sample: The sample that should be transformed in a ``FHIRResource``.
-    ///   - hkHealthStore: Optional `HKHealthStore` used to query additional context such as symptoms and voltage measurements for electrocardiograms. Set to nil to avoid this behavior.
+    ///   - healthKit: Optional `HealthKit` module used to query additional context such as symptoms and voltage measurements for electrocardiograms and attachements for clinical records.
+    ///   - loadHealthKitAttachements: Indicates if the `HKAttachmentStore` should be queried for any document references found in clinical records.
     /// - Returns: Created ``FHIRResource`` instance.
-     public static func initialize(
+    public static func initialize(
         basedOn sample: HKSample,
-        using healthKit: HealthKit
+        using healthKit: HealthKit? = nil,
+        loadHealthKitAttachements: Bool = false
     ) async throws -> FHIRResource {
         switch sample {
         case let clinicalResource as HKClinicalRecord where clinicalResource.fhirResource?.fhirVersion == .primaryDSTU2():
@@ -34,18 +36,30 @@ extension FHIRResource {
             let resourceProxy = try decoder.decode(ModelsDSTU2.ResourceProxy.self, from: fhirResource.data)
             let fhirModelResource = resourceProxy.get()
             
-            return FHIRResource(
+            var resource = FHIRResource(
                 versionedResource: .dstu2(fhirModelResource),
                 displayName: clinicalResource.displayName
             )
+            if loadHealthKitAttachements, let healthKit = healthKit {
+                try await resource.loadAttachements(for: sample, using: healthKit)
+            }
+            return resource
         case let clinicalResource as HKClinicalRecord:
             let fhirModelResource = try clinicalResource.resource().get()
             
-            return FHIRResource(
+            var resource = FHIRResource(
                 versionedResource: .r4(fhirModelResource),
                 displayName: clinicalResource.displayName
             )
+            if loadHealthKitAttachements, let healthKit = healthKit {
+                try await resource.loadAttachements(for: sample, using: healthKit)
+            }
+            return resource
         case let electrocardiogram as HKElectrocardiogram:
+            guard let healthKit = healthKit else {
+                fallthrough
+            }
+            
             async let symptoms = try electrocardiogram.symptoms(from: healthKit)
             async let voltageMeasurements = try electrocardiogram.voltageMeasurements(from: healthKit.healthStore)
             
