@@ -7,43 +7,38 @@
 //
 
 import ModelsR4
+import Observation
 @testable import SpeziFHIR
-import XCTest
+import Testing
 
 
+@Suite
 @MainActor
-final class FHIRStoreObservationChangesTests: XCTestCase {
+struct FHIRStoreObservationChangesTests {
     private var store = FHIRStore()
     
 
+    @Test
     func testChangesOnInsert() async throws {
         let observation = try ModelsR4Mocks.createObservation()
         let resource = FHIRResource(resource: observation, displayName: "Test Observation")
 
-        let observationsExpectation = expectation(description: "Observations should change")
-        let proceduresExpectation = expectation(description: "Procedures should NOT change")
-        proceduresExpectation.isInverted = true
-
-        withObservationTracking {
-            _ = store.procedures.count
-        } onChange: {
-            proceduresExpectation.fulfill()
+        await confirmation { observationsExpectation in
+            withObservationTracking {
+                #expect(store.procedures.isEmpty)
+                #expect(store.observations.isEmpty)
+            } onChange: {
+                observationsExpectation()
+            }
+            
+            store.insert(resource: resource)
+            
+            #expect(store.procedures.isEmpty)
+            #expect(store.observations.count == 1)
         }
-
-        withObservationTracking {
-            _ = store.observations.count
-        } onChange: {
-            observationsExpectation.fulfill()
-        }
-
-        store.insert(resource: resource)
-        
-        await fulfillment(of: [observationsExpectation, proceduresExpectation], timeout: 1.0)
-        
-        XCTAssertEqual(store.procedures.count, 0)
-        XCTAssertEqual(store.observations.count, 1)
     }
 
+    @Test
     func testChangesOnBulkInsert() async throws {
         let observation = try ModelsR4Mocks.createObservation()
         let observationResource = FHIRResource(resource: observation, displayName: "Test Observation")
@@ -51,69 +46,65 @@ final class FHIRStoreObservationChangesTests: XCTestCase {
         let medication = ModelsR4Mocks.createMedication()
         let medicationResource = FHIRResource(resource: medication, displayName: "Test Medication")
 
-        let observationsExpectation = expectation(description: "Observations should change")
-        let medicationsExpectation = expectation(description: "Medications should change")
-        let proceduresExpectation = expectation(description: "Procedures should NOT change")
-        proceduresExpectation.isInverted = true
-
-        withObservationTracking {
-            _ = store.procedures.count
-        } onChange: {
-            proceduresExpectation.fulfill()
+        await confirmation("Observations and medications should change", expectedCount: 3) { changeExpectation in
+            withObservationTracking {
+                #expect(store.procedures.isEmpty)
+                #expect(store.observations.isEmpty)
+                #expect(store.medications.isEmpty)
+            } onChange: {
+                // Should be triggered, but only once.
+                changeExpectation()
+            }
+            withObservationTracking {
+                #expect(store.procedures.isEmpty)
+            } onChange: {
+                changeExpectation()
+            }
+            withObservationTracking {
+                // Should be triggered
+                #expect(store.observations.isEmpty)
+            } onChange: {
+                changeExpectation()
+            }
+            withObservationTracking {
+                #expect(store.medications.isEmpty)
+            } onChange: {
+                // Should be triggered
+                changeExpectation()
+            }
+            
+            store.insert(resources: [observationResource, medicationResource])
+            
+            #expect(store.procedures.isEmpty)
+            #expect(store.observations.count == 1)
+            #expect(store.medications.count == 1)
         }
-
-        withObservationTracking {
-            _ = store.observations.count
-        } onChange: {
-            observationsExpectation.fulfill()
-        }
-        
-        withObservationTracking {
-            _ = store.medications.count
-        } onChange: {
-            medicationsExpectation.fulfill()
-        }
-
-        store.insert(resources: [observationResource, medicationResource])
-        
-        await fulfillment(of: [observationsExpectation, medicationsExpectation, proceduresExpectation], timeout: 1.0)
-        
-        XCTAssertEqual(store.procedures.count, 0)
-        XCTAssertEqual(store.observations.count, 1)
-        XCTAssertEqual(store.medications.count, 1)
     }
 
+    @Test
     func testChangesOnRemove() async throws {
         let observation = try ModelsR4Mocks.createObservation()
         let resource = FHIRResource(resource: observation, displayName: "Test Observation")
         
         store.insert(resource: resource)
-
-        let observationsExpectation = expectation(description: "Observations should change")
-        let proceduresExpectation = expectation(description: "Procedures should NOT change")
-        proceduresExpectation.isInverted = true
-
-        withObservationTracking {
-            _ = store.procedures.count
-        } onChange: {
-            proceduresExpectation.fulfill()
-        }
-
-        withObservationTracking {
-            _ = store.observations.count
-        } onChange: {
-            observationsExpectation.fulfill()
-        }
-
-        store.remove(resource: resource.id)
         
-        await fulfillment(of: [observationsExpectation, proceduresExpectation], timeout: 1.0)
-        
-        XCTAssertEqual(store.procedures.count, 0)
-        XCTAssertEqual(store.observations.count, 0)
+        await confirmation { observationsExpectation in
+            withObservationTracking {
+                #expect(store.observations.count == 1)
+                #expect(store.procedures.isEmpty)
+            } onChange: {
+                observationsExpectation()
+            }
+            
+            store.remove(resource: resource.id)
+            
+            #expect(store.procedures.isEmpty)
+            #expect(store.observations.isEmpty)
+        }
     }
     
     // swiftlint:disable function_body_length
+    @Test
     func testChangesOnRemoveAll() async throws {
         let allergyIntolerance = ModelsR4Mocks.createAllergyIntolerance()
         let allergyIntoleranceResource = FHIRResource(resource: allergyIntolerance, displayName: "Test Allergy Intolerance")
@@ -153,95 +144,44 @@ final class FHIRStoreObservationChangesTests: XCTestCase {
             procedureResource,
             otherResource
         ])
-        
-        let allergyIntolerancesExpectation = expectation(description: "Allergy Intolerances should change")
-        let conditionsExpectation = expectation(description: "Conditions should change")
-        let diagnosticsExpectation = expectation(description: "Diagnostics should change")
-        let encountersExpectation = expectation(description: "Encounters should change")
-        let immunizationsExpectation = expectation(description: "Immunizations should change")
-        let observationsExpectation = expectation(description: "Observations should change")
-        let medicationsExpectation = expectation(description: "Medications should change")
-        let proceduresExpectation = expectation(description: "Procedures should change")
-        let otherResourcesExpectation = expectation(description: "Other Resources should change")
 
-        withObservationTracking {
-            _ = store.allergyIntolerances.count
-        } onChange: {
-            allergyIntolerancesExpectation.fulfill()
+        await confirmation("All resource collections should change", expectedCount: 10) { changeExpectation in
+            withObservationTracking {
+                #expect(store.allergyIntolerances.count == 1)
+                #expect(store.conditions.count == 1)
+                #expect(store.diagnostics.count == 1)
+                #expect(store.encounters.count == 1)
+                #expect(store.immunizations.count == 1)
+                #expect(store.procedures.count == 1)
+                #expect(store.observations.count == 1)
+                #expect(store.medications.count == 1)
+                #expect(store.otherResources.count == 1)
+            } onChange: {
+                // Should be triggered, but only once.
+                changeExpectation()
+            }
+            withObservationTracking { #expect(store.allergyIntolerances.count == 1) } onChange: { changeExpectation() }
+            withObservationTracking { #expect(store.conditions.count == 1) } onChange: { changeExpectation() }
+            withObservationTracking { #expect(store.diagnostics.count == 1) } onChange: { changeExpectation() }
+            withObservationTracking { #expect(store.encounters.count == 1) } onChange: { changeExpectation() }
+            withObservationTracking { #expect(store.immunizations.count == 1) } onChange: { changeExpectation() }
+            withObservationTracking { #expect(store.procedures.count == 1) } onChange: { changeExpectation() }
+            withObservationTracking { #expect(store.observations.count == 1) } onChange: { changeExpectation() }
+            withObservationTracking { #expect(store.medications.count == 1) } onChange: { changeExpectation() }
+            withObservationTracking { #expect(store.otherResources.count == 1) } onChange: { changeExpectation() }
+            
+            store.removeAllResources()
+            
+            // Verify all resources were removed
+            #expect(store.allergyIntolerances.isEmpty)
+            #expect(store.conditions.isEmpty)
+            #expect(store.diagnostics.isEmpty)
+            #expect(store.encounters.isEmpty)
+            #expect(store.immunizations.isEmpty)
+            #expect(store.procedures.isEmpty)
+            #expect(store.observations.isEmpty)
+            #expect(store.medications.isEmpty)
+            #expect(store.otherResources.isEmpty)
         }
-        
-        withObservationTracking {
-            _ = store.conditions.count
-        } onChange: {
-            conditionsExpectation.fulfill()
-        }
-        
-        withObservationTracking {
-            _ = store.diagnostics.count
-        } onChange: {
-            diagnosticsExpectation.fulfill()
-        }
-        
-        withObservationTracking {
-            _ = store.encounters.count
-        } onChange: {
-            encountersExpectation.fulfill()
-        }
-        
-        withObservationTracking {
-            _ = store.immunizations.count
-        } onChange: {
-            immunizationsExpectation.fulfill()
-        }
-
-        withObservationTracking {
-            _ = store.procedures.count
-        } onChange: {
-            proceduresExpectation.fulfill()
-        }
-        
-        withObservationTracking {
-            _ = store.observations.count
-        } onChange: {
-            observationsExpectation.fulfill()
-        }
-        
-        withObservationTracking {
-            _ = store.medications.count
-        } onChange: {
-            medicationsExpectation.fulfill()
-        }
-        
-        withObservationTracking {
-            _ = store.otherResources.count
-        } onChange: {
-            otherResourcesExpectation.fulfill()
-        }
-
-        store.removeAllResources()
-        
-        let expectations = [
-            allergyIntolerancesExpectation,
-            conditionsExpectation,
-            diagnosticsExpectation,
-            encountersExpectation,
-            immunizationsExpectation,
-            proceduresExpectation,
-            observationsExpectation,
-            medicationsExpectation,
-            otherResourcesExpectation
-        ]
-        
-        await fulfillment(of: expectations, timeout: 1.0)
-        
-        XCTAssertEqual(store.allergyIntolerances.count, 0)
-        XCTAssertEqual(store.conditions.count, 0)
-        XCTAssertEqual(store.diagnostics.count, 0)
-        XCTAssertEqual(store.encounters.count, 0)
-        XCTAssertEqual(store.immunizations.count, 0)
-        XCTAssertEqual(store.procedures.count, 0)
-        XCTAssertEqual(store.observations.count, 0)
-        XCTAssertEqual(store.medications.count, 0)
-        XCTAssertEqual(store.otherResources .count, 0)
     }
 }
