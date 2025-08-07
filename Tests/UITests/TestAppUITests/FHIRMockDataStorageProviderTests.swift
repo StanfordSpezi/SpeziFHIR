@@ -31,7 +31,7 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.buttons["Jamison785 Denesik803"].waitForExistence(timeout: 20))
         app.buttons["Jamison785 Denesik803"].tap()
         
-        app.navigationBars["Select Mock Patient"].buttons["Dismiss"].tap()
+        app.navigationBars["Select Mock Patient"].buttons["Close Mock Patient Selection"].tap()
         
         XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Conditions: 70"].waitForExistence(timeout: 2))
@@ -50,7 +50,7 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.buttons["Maye976 Dickinson688"].waitForExistence(timeout: 20))
         app.buttons["Maye976 Dickinson688"].tap()
         
-        app.navigationBars["Select Mock Patient"].buttons["Dismiss"].tap()
+        app.navigationBars["Select Mock Patient"].buttons["Close Mock Patient Selection"].tap()
         
         XCTAssert(app.staticTexts["Allergy Intolerances: 0"].waitForExistence(timeout: 2))
         XCTAssert(app.staticTexts["Conditions: 37"].waitForExistence(timeout: 2))
@@ -95,7 +95,7 @@ final class SpeziFHIRTests: XCTestCase {
         XCTAssert(app.buttons["Jamison785 Denesik803"].waitForExistence(timeout: 20))
         app.buttons["Jamison785 Denesik803"].tap()
 
-        app.navigationBars["Select Mock Patient"].buttons["Dismiss"].tap()
+        app.navigationBars["Select Mock Patient"].buttons["Close Mock Patient Selection"].tap()
 
         XCTAssert(app.staticTexts["Other Resources: 220"].waitForExistence(timeout: 2))
 
