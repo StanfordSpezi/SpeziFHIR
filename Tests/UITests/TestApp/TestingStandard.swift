@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import os
 import Spezi
 import SpeziFHIR
 import SpeziFHIRHealthKit
@@ -15,6 +16,7 @@ import SpeziHealthKit
 actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
     @Model private(set) var fhirStore = FHIRStore()
     
+    private let logger = Logger()
     private var useHealthKitResources = true
     private var samples: [HKSample] = []
     
@@ -22,7 +24,11 @@ actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
         samples.append(contentsOf: addedSamples.lazy.map { $0 as HKSample })
         if useHealthKitResources {
             for sample in addedSamples {
-                await fhirStore.add(sample: sample)
+                do {
+                    try await fhirStore.add(sample: sample)
+                } catch {
+                    logger.error("Cloud not transform HealthKit sample with id: \(sample.id)")
+                }
             }
         }
     }
@@ -40,7 +46,11 @@ actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
         await fhirStore.removeAllResources()
         
         for sample in samples {
-            await fhirStore.add(sample: sample, loadHealthKitAttachements: true)
+            do {
+                try await fhirStore.add(sample: sample, loadHealthKitAttachements: true)
+            } catch {
+                logger.error("Cloud not transform HealthKit sample with id: \(sample.id)")
+            }
         }
         
         useHealthKitResources = true
