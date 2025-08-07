@@ -41,12 +41,12 @@ struct TextContentExtractor: ContentExtractor {
 
 /// Extractor for PDF document content types.
 struct PDFContentExtractor: ContentExtractor {
-    private let pdfDocumentProvider: PDFDocumentProviding
+    private let pdfDocumentProvider: any PDFDocumentProviding
 
 
     /// Creates a new instance of the PDF content extractor.
     /// - Parameter pdfDocumentProvider: The provider used to create PDFDocument instances.
-    init(pdfDocumentProvider: PDFDocumentProviding = DefaultPDFDocumentProvider()) {
+    init(pdfDocumentProvider: any PDFDocumentProviding = DefaultPDFDocumentProvider()) {
         self.pdfDocumentProvider = pdfDocumentProvider
     }
 

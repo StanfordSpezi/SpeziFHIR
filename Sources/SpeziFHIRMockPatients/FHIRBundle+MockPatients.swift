@@ -20,7 +20,7 @@ actor MockR4Bundles {
                 return jamison785Denesik803
             }
             
-            let jamison785Denesik803 = await Foundation.Bundle.module.loadFHIRBundle(
+            let jamison785Denesik803 = Foundation.Bundle.module.loadFHIRBundle(
                 withName: "Jamison785_Denesik803_1e08cb3f-9e6a-b083-b6ee-0bb38f70ba50"
             )
             Self._jamison785Denesik803 = jamison785Denesik803
@@ -36,7 +36,7 @@ actor MockR4Bundles {
                 return maye976Dickinson688
             }
             
-            let maye976Dickinson688 = await Foundation.Bundle.module.loadFHIRBundle(
+            let maye976Dickinson688 = Foundation.Bundle.module.loadFHIRBundle(
                 withName: "Maye976_Dickinson688_04f25f73-04b2-469c-3806-540417a0d61c"
             )
             Self._maye976Dickinson688 = maye976Dickinson688
@@ -52,7 +52,7 @@ actor MockR4Bundles {
                 return milagros256Hills818
             }
             
-            let milagros256Hills818 = await Foundation.Bundle.module.loadFHIRBundle(
+            let milagros256Hills818 = Foundation.Bundle.module.loadFHIRBundle(
                 withName: "Milagros256_Hills818_79b1d90a-0eaf-be78-9bbf-91c638626012"
             )
             Self._milagros256Hills818 = milagros256Hills818
@@ -68,7 +68,7 @@ actor MockR4Bundles {
                 return napoleon578Fay398
             }
             
-            let napoleon578Fay398 = await Foundation.Bundle.module.loadFHIRBundle(
+            let napoleon578Fay398 = Foundation.Bundle.module.loadFHIRBundle(
                 withName: "Napoleon578_Fay398_38f38890-b80f-6542-51d4-882c7b37b0bf"
             )
             Self._napoleon578Fay398 = napoleon578Fay398
@@ -84,7 +84,7 @@ actor MockR4Bundles {
                 return allen322Ferry570
             }
             
-            let allen322Ferry570 = await Foundation.Bundle.main.loadFHIRBundle(
+            let allen322Ferry570 = Foundation.Bundle.main.loadFHIRBundle(
                 withName: "Allen322_Ferry570_ad134528-56a5-35fd-c37f-466ff119c625"
             )
             self._allen322Ferry570 = allen322Ferry570
@@ -100,7 +100,7 @@ actor MockR4Bundles {
                 return beatris270Bogan287
             }
             
-            let beatris270Bogan287 = await Foundation.Bundle.main.loadFHIRBundle(
+            let beatris270Bogan287 = Foundation.Bundle.main.loadFHIRBundle(
                 withName: "Beatris270_Bogan287_5b3645de-a2d0-d016-0839-bab3757c4c58"
             )
             Self._beatris270Bogan287 = beatris270Bogan287
@@ -116,7 +116,7 @@ actor MockR4Bundles {
                 return edythe31Morar593
             }
             
-            let edythe31Morar593 = await Foundation.Bundle.main.loadFHIRBundle(
+            let edythe31Morar593 = Foundation.Bundle.main.loadFHIRBundle(
                 withName: "Edythe31_Morar593_9c3df38a-d3b7-2198-3898-51f9153d023d"
             )
             Self._edythe31Morar593 = edythe31Morar593
@@ -132,7 +132,7 @@ actor MockR4Bundles {
                 return gonzalo160Duenas839
             }
             
-            let gonzalo160Duenas839 = await Foundation.Bundle.main.loadFHIRBundle(
+            let gonzalo160Duenas839 = Foundation.Bundle.main.loadFHIRBundle(
                 withName: "Gonzalo160_Duenas839_ed70a28f-30b2-acb7-658a-8b340dadd685"
             )
             Self._gonzalo160Duenas839 = gonzalo160Duenas839
@@ -148,7 +148,7 @@ actor MockR4Bundles {
                 return jacklyn830Veum823
             }
             
-            let jacklyn830Veum823 = await Foundation.Bundle.main.loadFHIRBundle(
+            let jacklyn830Veum823 = Foundation.Bundle.main.loadFHIRBundle(
                 withName: "Jacklyn830_Veum823_e0e1f21a-22a7-d166-7bb1-63f6bbce1a32"
             )
             Self._jacklyn830Veum823 = jacklyn830Veum823
@@ -164,7 +164,7 @@ actor MockR4Bundles {
                 return milton509Ortiz186
             }
             
-            let milton509Ortiz186 = await Foundation.Bundle.main.loadFHIRBundle(
+            let milton509Ortiz186 = Foundation.Bundle.main.loadFHIRBundle(
                 withName: "Milton509_Ortiz186_d66b5418-06cb-fc8a-8c13-85685b6ac939"
             )
             Self._milton509Ortiz186 = milton509Ortiz186

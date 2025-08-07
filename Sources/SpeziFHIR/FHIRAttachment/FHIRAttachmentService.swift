@@ -11,8 +11,8 @@ import UniformTypeIdentifiers
 
 /// Service to handle FHIR attachment content extraction.
 struct FHIRAttachmentService {
-    private let contentExtractors: [ContentExtractor]
-    private let base64Decoder: Base64Decoding
+    private let contentExtractors: [any ContentExtractor]
+    private let base64Decoder: any Base64Decoding
 
 
     /// Creates a new attachment service instance.
@@ -20,8 +20,8 @@ struct FHIRAttachmentService {
     ///   - contentExtractors: Collection of content extractors to use (defaults to text and PDF).
     ///   - base64Decoder: The base64 decoder to use.
     init(
-        contentExtractors: [ContentExtractor] = [TextContentExtractor(), PDFContentExtractor()],
-        base64Decoder: Base64Decoding = DefaultBase64Decoder()
+        contentExtractors: [any ContentExtractor] = [TextContentExtractor(), PDFContentExtractor()],
+        base64Decoder: any Base64Decoding = DefaultBase64Decoder()
     ) {
         self.contentExtractors = contentExtractors
         self.base64Decoder = base64Decoder
@@ -37,12 +37,12 @@ struct FHIRAttachmentService {
     /// - Parameter attachment: The FHIR attachment to transform.
     /// - Throws: `FHIRAttachmentError` if the transformation fails for any reason,
     ///           such as missing MIME type, invalid base64 data, or unsupported content type.
-    func stringify(attachment: FHIRAttachment) throws {
+    func stringify(attachment: some FHIRAttachment) throws {
         let content = try processAttachment(attachment)
         attachment.encode(content: content)
     }
 
-    private func processAttachment(_ attachment: FHIRAttachment) throws -> String {
+    private func processAttachment(_ attachment: some FHIRAttachment) throws -> String {
         guard let contentType = attachment.mimeType else {
             throw FHIRAttachmentError.missingMimeType
         }
@@ -63,7 +63,7 @@ struct FHIRAttachmentService {
         return content
     }
 
-    private func contentExtractor(for contentType: UTType) -> ContentExtractor? {
+    private func contentExtractor(for contentType: UTType) -> (any ContentExtractor)? {
          contentExtractors.first { extractor in
              extractor.isCompatible(with: contentType)
          }

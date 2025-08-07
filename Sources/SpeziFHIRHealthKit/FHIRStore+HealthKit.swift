@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-@preconcurrency import HealthKit
+import HealthKit
 import HealthKitOnFHIR
 import ModelsDSTU2
 import ModelsR4
@@ -15,15 +15,6 @@ import SpeziHealthKit
 
 
 extension FHIRStore {
-    private static let hkHealthStore: HKHealthStore? = {
-        guard HKHealthStore.isHealthDataAvailable() else {
-            return nil
-        }
-        
-        return HKHealthStore()
-    }()
-    
-    
     /// Add a HealthKit sample to the FHIR store.
     /// - Parameters:
     ///   - sample: The sample that should be added.
@@ -31,16 +22,12 @@ extension FHIRStore {
     public func add(
         sample: HKSample,
         loadHealthKitAttachements: Bool = false
-    ) async {
-        do {
-            var resource = try await FHIRResource.initialize(basedOn: sample)
-            if loadHealthKitAttachements, let hkHealthStore = Self.hkHealthStore {
-                try await resource.loadAttachements(from: sample, store: hkHealthStore)
-            }
-            await insert(resource: resource)
-        } catch {
-            print("Could not transform HKSample: \(error)")
+    ) async throws {
+        var resource = try await FHIRResource.initialize(basedOn: sample, using: healthKit)
+        if loadHealthKitAttachements {
+            try await resource.loadAttachements(for: sample, using: healthKit)
         }
+        await insert(resource: resource)
     }
     
     /// Remove a HealthKit sample delete object from the FHIR store.
