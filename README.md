@@ -54,6 +54,7 @@ Configure the `FHIRStore` in your `SpeziAppDelegate` to manage FHIR resources in
 import Spezi
 import SpeziFHIR
 
+
 class ExampleAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
         Configuration {
@@ -63,15 +64,17 @@ class ExampleAppDelegate: SpeziAppDelegate {
 }
 ```
 
-Use the `FHIRStore` to manage FHIR resources in your application:
+Use the `FHIRStore` to manage FHIR resources in your application as well as adding and removing `FHIRResource`s in the `FHIRStore`.
 
 ```swift
 import SpeziFHIR
 import SwiftUI
 
+
 struct ExampleView: View {
     @Environment(FHIRStore.self) private var fhirStore
     
+
     var body: some View {
         List {
             Section("Observations") {
@@ -90,115 +93,15 @@ struct ExampleView: View {
 }
 ```
 
-Load FHIR bundles and work with individual resources:
-
-```swift
-import ModelsR4
-import SpeziFHIR
-
-// Load a FHIR bundle
-await fhirStore.load(bundle: fhirBundle)
-
-// Create and insert individual resources
-let observation = Observation(/* FHIR observation data */)
-let fhirResource = FHIRResource(resource: observation, displayName: "Blood Pressure")
-fhirStore.insert(resource: fhirResource)
-
-// Search and filter resources
-let recentObservations = fhirStore.observations.filter { observation in
-    // Filter logic
-}
-```
-
 ### SpeziFHIRHealthKit
 
-Seamlessly integrate HealthKit data with FHIR resources:
-
-#### Setup
-
-Ensure your app is configured to use both SpeziHealthKit and SpeziFHIR:
-
-```swift
-import SpeziHealthKit
-import SpeziFHIR
-import SpeziFHIRHealthKit
-
-class ExampleAppDelegate: SpeziAppDelegate {
-    override var configuration: Configuration {
-        Configuration(standard: ExampleStandard()) {
-            FHIRStore()
-            HealthKit {
-                CollectSample(.heartRate)
-                CollectSample(.stepCount)
-                // Configure other HealthKit data collection
-            }
-        }
-    }
-}
-```
-
-#### Usage
-
-Convert HealthKit samples to FHIR resources:
-
-```swift
-import HealthKit
-import SpeziFHIRHealthKit
-
-// Convert HealthKit samples to FHIR observations
-let healthKitSamples: [HKQuantitySample] = // Your HealthKit data
-let fhirObservations = healthKitSamples.map { sample in
-    sample.fhirR4Observation() // Convert to FHIR R4 Observation
-}
-
-// Add to FHIR store
-for observation in fhirObservations {
-    let fhirResource = FHIRResource(resource: observation, displayName: "HealthKit Data")
-    fhirStore.insert(resource: fhirResource)
-}
-```
+Seamlessly integrate HealthKit data with FHIR resources including easy ways to add `HKSample`s to the `FHIRStore` while loading attachments from the FHIR resources stored in HealthKit or attached information such as voltage information of symptoms for electrocardiograms.
+For more information, please refer to the [API documentation](https://swiftpackageindex.com/stanfordspezi/spezifhir/documentation/spezifhirhealthkit).
 
 ### SpeziFHIRMockPatients
 
-Use mock patient data for testing and development:
-
-#### Usage
-
-Load mock patient bundles for testing:
-
-```swift
-import SpeziFHIRMockPatients
-
-// Load a random mock patient bundle
-let mockBundle = FHIRBundleSelector().randomPatient
-await fhirStore.load(bundle: mockBundle)
-
-// Or select a specific mock patient
-let specificPatient = FHIRBundleSelector().mockPatients.first
-await fhirStore.load(bundle: specificPatient)
-```
-
-Use in your test setup:
-
-```swift
-import Testing
-import SpeziFHIRMockPatients
-
-@Test
-func testFHIRFunctionality() async throws {
-    let fhirStore = FHIRStore()
-    await fhirStore.loadMockPatients()
-    
-    #expect(!fhirStore.observations.isEmpty)
-    #expect(!fhirStore.conditions.isEmpty)
-}
-```
-
-## The Spezi Template Application
-
-The [Spezi Template Application](https://github.com/StanfordSpezi/SpeziTemplateApplication) provides a great starting point and example using the SpeziFHIR modules.
-
-For more information, please refer to the [API documentation](https://swiftpackageindex.com/StanfordSpezi/SpeziFHIR/documentation).
+The target offers easily loadable mock patient data for testing and development.
+For more information, please refer to the [API documentation](https://swiftpackageindex.com/stanfordspezi/spezifhir/documentation/spezifhirmockpatients).
 
 ## Contributing
 
