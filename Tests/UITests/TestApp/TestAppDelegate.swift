@@ -7,21 +7,16 @@
 //
 
 import Spezi
+import SpeziFHIR
 import SpeziHealthKit
 
 
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
         Configuration(standard: TestingStandard()) {
+            FHIRStore()
             HealthKit {
-                let recordTypes: [SampleType<HKClinicalRecord>] = [
-                    .allergyRecord, .clinicalNoteRecord, .conditionRecord,
-                    .coverageRecord, .immunizationRecord, .labResultRecord,
-                    .medicationRecord, .procedureRecord, .vitalSignRecord
-                ]
-                for recordType in recordTypes {
-                    CollectSample(recordType)
-                }
+                RequestReadAccess(other: TestingStandard.recordTypes)
             }
         }
     }

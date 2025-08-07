@@ -20,15 +20,11 @@ struct MockPatientSelection: View {
                 FHIRMockPatientSelection()
             }
                 .toolbar {
-                    ToolbarItem {
-                        Button(
-                            action: {
-                                presentPatientSelection.toggle()
-                            },
-                            label: {
-                                Text("Dismiss")
-                            }
-                        )
+                    Button {
+                        presentPatientSelection.toggle()
+                    } label: {
+                        Label("Close", systemImage: "xmark")
+                            .accessibilityLabel("Close Mock Patient Selection")
                     }
                 }
                 .navigationTitle("Select Mock Patient")
