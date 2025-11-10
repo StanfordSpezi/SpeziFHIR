@@ -14,4 +14,3 @@ extension Resource: @retroactive Identifiable {
 }
 
 
-extension FHIRPrimitive: @retroactive Identifiable where PrimitiveType: Identifiable { }
