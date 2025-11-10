@@ -10,7 +10,7 @@ import HealthKit
 import HealthKitOnFHIR
 import ModelsDSTU2
 import ModelsR4
-import SpeziFHIR
+@_spi(Internal) import SpeziFHIR
 import SpeziHealthKit
 
 
@@ -20,7 +20,7 @@ extension FHIRStore {
     ///   - sample: The sample that should be added.
     ///   - loadHealthKitAttachments: Indicates if the `HKAttachmentStore` should be queried for any document references found in clinical records.
     public func add(
-        sample: HKSample,
+        _ sample: HKSample,
         loadHealthKitAttachments: Bool = false
     ) async throws {
         var resource = try await FHIRResource.initialize(basedOn: sample, using: healthKit)
@@ -32,7 +32,7 @@ extension FHIRStore {
     
     /// Remove a HealthKit sample delete object from the FHIR store.
     /// - Parameter sample: The sample delete object that should be removed.
-    public func remove(sample: HKDeletedObject) async {
-        await remove(resource: sample.uuid.uuidString)
+    public func remove(_ deletedObject: HKDeletedObject) async {
+        await removeResource(withHealthKitUUID: deletedObject.uuid.uuidString)
     }
 }

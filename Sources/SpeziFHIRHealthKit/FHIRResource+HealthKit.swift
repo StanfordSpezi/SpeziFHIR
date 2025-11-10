@@ -27,34 +27,90 @@ extension FHIRResource {
         loadHealthKitAttachments: Bool = false
     ) async throws -> FHIRResource {
         switch sample {
-        case let clinicalResource as HKClinicalRecord where clinicalResource.fhirResource?.fhirVersion == .primaryDSTU2():
-            guard let fhirResource = clinicalResource.fhirResource else {
+        case let record as HKClinicalRecord:
+            guard let fhirResource = record.fhirResource else {
                 throw HealthKitOnFHIRError.invalidFHIRResource
             }
-            
             let decoder = JSONDecoder()
-            let resourceProxy = try decoder.decode(ModelsDSTU2.ResourceProxy.self, from: fhirResource.data)
-            let fhirModelResource = resourceProxy.get()
-            
-            var resource = FHIRResource(
-                versionedResource: .dstu2(fhirModelResource),
-                displayName: clinicalResource.displayName
-            )
-            if loadHealthKitAttachments, let healthKit = healthKit {
-                try await resource.loadAttachments(for: sample, using: healthKit)
+            switch fhirResource.fhirVersion.fhirRelease {
+            case .dstu2:
+                let resourceProxy = try decoder.decode(ModelsDSTU2.ResourceProxy.self, from: fhirResource.data)
+                if let domainResource = resourceProxy.get(if: ModelsDSTU2.DomainResource.self) {
+                    if domainResource.extension == nil {
+                        domainResource.extension = []
+                    }
+                    domainResource.extension!.append(
+                        ModelsDSTU2.Extension(
+                            url: Self.fhirExtensionUrlHKSampleId.asFHIRURIPrimitive(),
+                            value: .id(record.uuid.uuidString.asFHIRStringPrimitive())
+                        )
+                    )
+                }
+                var resource = FHIRResource(
+                    versionedResource: .dstu2(resourceProxy.get()),
+                    displayName: record.displayName
+                )
+                if loadHealthKitAttachments, let healthKit {
+                    try await resource.loadAttachments(for: record, using: healthKit)
+                }
+                return resource
+            case .r4:
+                let resourceProxy = try decoder.decode(ModelsR4.ResourceProxy.self, from: fhirResource.data)
+                if let domainResource = resourceProxy.get(if: ModelsR4.DomainResource.self) {
+                    if domainResource.extension == nil {
+                        domainResource.extension = []
+                    }
+                    domainResource.extension!.append(
+                        ModelsR4.Extension(
+                            url: Self.fhirExtensionUrlHKSampleId.asFHIRURIPrimitive(),
+                            value: .id(record.uuid.uuidString.asFHIRStringPrimitive())
+                        )
+                    )
+                }
+                var resource = FHIRResource(
+                    versionedResource: .r4(resourceProxy.get()),
+                    displayName: record.displayName
+                )
+                if loadHealthKitAttachments, let healthKit {
+                    try await resource.loadAttachments(for: record, using: healthKit)
+                }
+                return resource
+            case .unknown:
+                fallthrough
+            default:
+                throw HealthKitOnFHIRError.invalidFHIRResource
             }
-            return resource
-        case let clinicalResource as HKClinicalRecord:
-            let fhirModelResource = try clinicalResource.resource().get()
-            
-            var resource = FHIRResource(
-                versionedResource: .r4(fhirModelResource),
-                displayName: clinicalResource.displayName
-            )
-            if loadHealthKitAttachments, let healthKit = healthKit {
-                try await resource.loadAttachments(for: sample, using: healthKit)
-            }
-            return resource
+//        case let clinicalResource as HKClinicalRecord where clinicalResource.fhirResource?.fhirVersion == .primaryDSTU2():
+//            guard let fhirResource = clinicalResource.fhirResource else {
+//                throw HealthKitOnFHIRError.invalidFHIRResource
+//            }
+//            
+//            let decoder = JSONDecoder()
+//            let resourceProxy = try decoder.decode(ModelsDSTU2.ResourceProxy.self, from: fhirResource.data)
+//            let fhirModelResource = resourceProxy.get()
+//            if let domainResource = resourceProxy.get(if: ModelsDSTU2.DomainResource.self) {
+//                if let
+//            }
+//            
+//            var resource = FHIRResource(
+//                versionedResource: .dstu2(fhirModelResource),
+//                displayName: clinicalResource.displayName
+//            )
+//            if loadHealthKitAttachments, let healthKit = healthKit {
+//                try await resource.loadAttachments(for: sample, using: healthKit)
+//            }
+//            return resource
+//        case let clinicalResource as HKClinicalRecord:
+//            let fhirModelResource = try clinicalResource.resource().get()
+//            
+//            var resource = FHIRResource(
+//                versionedResource: .r4(fhirModelResource),
+//                displayName: clinicalResource.displayName
+//            )
+//            if loadHealthKitAttachments, let healthKit = healthKit {
+//                try await resource.loadAttachments(for: sample, using: healthKit)
+//            }
+//            return resource
         case let electrocardiogram as HKElectrocardiogram:
             guard let healthKit = healthKit else {
                 fallthrough
