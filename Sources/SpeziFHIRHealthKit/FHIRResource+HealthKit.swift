@@ -80,37 +80,6 @@ extension FHIRResource {
             default:
                 throw HealthKitOnFHIRError.invalidFHIRResource
             }
-//        case let clinicalResource as HKClinicalRecord where clinicalResource.fhirResource?.fhirVersion == .primaryDSTU2():
-//            guard let fhirResource = clinicalResource.fhirResource else {
-//                throw HealthKitOnFHIRError.invalidFHIRResource
-//            }
-//            
-//            let decoder = JSONDecoder()
-//            let resourceProxy = try decoder.decode(ModelsDSTU2.ResourceProxy.self, from: fhirResource.data)
-//            let fhirModelResource = resourceProxy.get()
-//            if let domainResource = resourceProxy.get(if: ModelsDSTU2.DomainResource.self) {
-//                if let
-//            }
-//            
-//            var resource = FHIRResource(
-//                versionedResource: .dstu2(fhirModelResource),
-//                displayName: clinicalResource.displayName
-//            )
-//            if loadHealthKitAttachments, let healthKit = healthKit {
-//                try await resource.loadAttachments(for: sample, using: healthKit)
-//            }
-//            return resource
-//        case let clinicalResource as HKClinicalRecord:
-//            let fhirModelResource = try clinicalResource.resource().get()
-//            
-//            var resource = FHIRResource(
-//                versionedResource: .r4(fhirModelResource),
-//                displayName: clinicalResource.displayName
-//            )
-//            if loadHealthKitAttachments, let healthKit = healthKit {
-//                try await resource.loadAttachments(for: sample, using: healthKit)
-//            }
-//            return resource
         case let electrocardiogram as HKElectrocardiogram:
             guard let healthKit = healthKit else {
                 fallthrough
