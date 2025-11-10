@@ -7,7 +7,7 @@
 //
 
 import ModelsR4
-@testable import SpeziFHIR
+@testable @_spi(Testing) import SpeziFHIR
 import Testing
 
 
@@ -75,7 +75,7 @@ struct FHIRStoreTests {
         store.insert(resource: resource)
         #expect(store.medications.count == 1)
         
-        store.remove(resource: resource.id)
+        store.removeResource(withId: resource.id.fhirResourceId)
         #expect(store.medications.isEmpty)
     }
 
@@ -124,8 +124,8 @@ struct FHIRStoreTests {
         
         #expect(store.conditions.count == 1)
         #expect(store.observations.count == 1)
-        #expect(store.conditions.first?.id.description == "condition-id")
-        #expect(store.observations.first?.id.description == "observation-id")
+        #expect(store.conditions.first?.fhirId == "condition-id")
+        #expect(store.observations.first?.fhirId == "observation-id")
     }
 
     @Test
@@ -164,7 +164,7 @@ struct FHIRStoreTests {
         await store.load(bundle: bundle)
         
         #expect(store.conditions.count == 1)
-        #expect(store.conditions.first?.id.description == "condition-id")
+        #expect(store.conditions.first?.id.fhirResourceId == "condition-id")
         #expect(store.otherResources.isEmpty)
     }
 
@@ -182,7 +182,7 @@ struct FHIRStoreTests {
         await store.load(bundle: bundle)
         
         #expect(store.conditions.count == 2)
-        #expect(store.conditions[0].id.description == "condition-id")
-        #expect(store.conditions[1].id.description == "condition-id")
+        #expect(store.conditions[0].id.fhirResourceId == "condition-id")
+        #expect(store.conditions[1].id.fhirResourceId == "condition-id")
     }
 }

@@ -24,8 +24,9 @@ public struct FHIRResource: Identifiable, Hashable {
     }
     
     public struct ID: Hashable, Codable, Sendable {
-        fileprivate let fhirResourceId: String
-        fileprivate let healthKitUUID: String?
+        @_spi(Testing) public let fhirResourceId: String
+        
+        @_spi(Testing) public let healthKitUUID: String?
     }
     
     public static let fhirExtensionUrlHKSampleId = URL(string: "https://bdh.stanford.edu/fhir/defs/HealthKitSampleID")!
@@ -39,22 +40,12 @@ public struct FHIRResource: Identifiable, Hashable {
     
     
     public var id: ID {
-        switch versionedResource {
-        case let .r4(resource):
-            guard let fhirId else {
-                preconditionFailure(
-                    "A stable identifier must be present when wrapping content in a FHIRResource. The identifier might have been changed."
-                )
-            }
-            return ID(fhirResourceId: fhirId, healthKitUUID: healthKitSampleId)
-        case let .dstu2(resource):
-            guard let fhirId else {
-                preconditionFailure(
-                    "A stable identifier must be present when wrapping content in a FHIRResource. The identifier might have been changed."
-                )
-            }
-            return ID(fhirResourceId: fhirId, healthKitUUID: healthKitSampleId)
+        guard let fhirId else {
+            preconditionFailure(
+                "A stable identifier must be present when wrapping content in a FHIRResource. The identifier might have been changed."
+            )
         }
+        return ID(fhirResourceId: fhirId, healthKitUUID: healthKitSampleId)
     }
     
     /// The `id` of the underlying FHIR `Resource`.
