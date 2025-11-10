@@ -107,7 +107,7 @@ actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
             for newHealthKitSample in records {
                 sampleTaskGroup.addTask { [self] in
                     do {
-                        try await fhirStore.add(sample: newHealthKitSample, loadHealthKitAttachements: true)
+                        try await fhirStore.add(sample: newHealthKitSample, loadHealthKitAttachments: true)
                     } catch {
                         logger.error("Could not transform sample \(newHealthKitSample.id) to FHIR resource: \(error)")
                     }

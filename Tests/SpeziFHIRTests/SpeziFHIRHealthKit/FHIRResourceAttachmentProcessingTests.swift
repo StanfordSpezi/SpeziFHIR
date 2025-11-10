@@ -54,7 +54,7 @@ struct FHIRResourceAttachmentProcessingTests { // swiftlint:disable:this type_bo
                 displayName: "R4 Document Reference"
             )
 
-            try resource.processAttachementsForR4(
+            try resource.processAttachmentsForR4(
                 r4Resource: docRef,
                 encodedAttachments: encodedAttachments
             )
@@ -100,7 +100,7 @@ struct FHIRResourceAttachmentProcessingTests { // swiftlint:disable:this type_bo
                 displayName: "DSTU2 Document Reference"
             )
 
-            try resource.processAttachementsForDSTU2(
+            try resource.processAttachmentsForDSTU2(
                 dstu2Resource: docRef,
                 encodedAttachments: encodedAttachments
             )
@@ -146,7 +146,7 @@ struct FHIRResourceAttachmentProcessingTests { // swiftlint:disable:this type_bo
                 displayName: "R4 Diagnostic Report"
             )
 
-            try resource.processAttachementsForR4(
+            try resource.processAttachmentsForR4(
                 r4Resource: diagReport,
                 encodedAttachments: encodedAttachments
             )
@@ -186,7 +186,7 @@ struct FHIRResourceAttachmentProcessingTests { // swiftlint:disable:this type_bo
                 displayName: "DSTU2 Diagnostic Report"
             )
 
-            try resource.processAttachementsForDSTU2(
+            try resource.processAttachmentsForDSTU2(
                 dstu2Resource: diagReport,
                 encodedAttachments: encodedAttachments
             )
@@ -236,7 +236,7 @@ struct FHIRResourceAttachmentProcessingTests { // swiftlint:disable:this type_bo
                 displayName: "R4 Document Reference"
             )
 
-            try resource.processAttachementsForR4(
+            try resource.processAttachmentsForR4(
                 r4Resource: docRef,
                 encodedAttachments: encodedAttachments
             )
@@ -268,7 +268,7 @@ struct FHIRResourceAttachmentProcessingTests { // swiftlint:disable:this type_bo
                 displayName: "DSTU2 Document Reference"
             )
 
-            try resource.processAttachementsForDSTU2(
+            try resource.processAttachmentsForDSTU2(
                 dstu2Resource: docRef,
                 encodedAttachments: encodedAttachments
             )
@@ -304,7 +304,7 @@ struct FHIRResourceAttachmentProcessingTests { // swiftlint:disable:this type_bo
                 displayName: "R4 Diagnostic Report"
             )
 
-            try resource.processAttachementsForR4(
+            try resource.processAttachmentsForR4(
                 r4Resource: diagReport,
                 encodedAttachments: encodedAttachments
             )
@@ -330,7 +330,7 @@ struct FHIRResourceAttachmentProcessingTests { // swiftlint:disable:this type_bo
                 displayName: "DSTU2 Diagnostic Report"
             )
 
-            try resource.processAttachementsForDSTU2(
+            try resource.processAttachmentsForDSTU2(
                 dstu2Resource: diagReport,
                 encodedAttachments: encodedAttachments
             )
@@ -370,7 +370,7 @@ struct FHIRResourceAttachmentProcessingTests { // swiftlint:disable:this type_bo
                 displayName: "R4 Diagnostic Report"
             )
 
-            try resource.processAttachementsForR4(
+            try resource.processAttachmentsForR4(
                 r4Resource: diagReport,
                 encodedAttachments: encodedAttachments
             )
@@ -406,7 +406,7 @@ struct FHIRResourceAttachmentProcessingTests { // swiftlint:disable:this type_bo
                 displayName: "DSTU2 Diagnostic Report"
             )
 
-            try resource.processAttachementsForDSTU2(
+            try resource.processAttachmentsForDSTU2(
                 dstu2Resource: diagReport,
                 encodedAttachments: encodedAttachments
             )

@@ -56,7 +56,7 @@ extension FHIRResource {
     ///   - healthKitSample: The HealthKit sample containing attachments.
     ///   - store: The health store to use. Defaults to a new `HKHealthStore` instance.
     ///   - attachmentsProvider: Optional custom provider for attachments. If nil, a default provider will be created.
-    mutating func loadAttachements(
+    mutating func loadAttachments(
         for healthKitSample: HKSample,
         using healthKit: HealthKit,
         attachmentsProvider: (any HealthKitAttachmentsProvider)? = nil
@@ -71,13 +71,13 @@ extension FHIRResource {
         // Otherwise we create a new content entry to inject this information in here.
         switch versionedResource {
         case let .r4(r4Resource):
-            try processAttachementsForR4(r4Resource: r4Resource, encodedAttachments: encodedAttachments)
+            try processAttachmentsForR4(r4Resource: r4Resource, encodedAttachments: encodedAttachments)
         case let .dstu2(dstu2Resource):
-            try processAttachementsForDSTU2(dstu2Resource: dstu2Resource, encodedAttachments: encodedAttachments)
+            try processAttachmentsForDSTU2(dstu2Resource: dstu2Resource, encodedAttachments: encodedAttachments)
         }
     }
 
-    func processAttachementsForR4(
+    func processAttachmentsForR4(
         r4Resource: ModelsR4.Resource,
         encodedAttachments: [(identifier: String, base64EncodedString: String)]
     ) throws {
@@ -120,7 +120,7 @@ extension FHIRResource {
         }
     }
 
-    func processAttachementsForDSTU2(
+    func processAttachmentsForDSTU2(
         dstu2Resource: ModelsDSTU2.Resource,
         encodedAttachments: [(identifier: String, base64EncodedString: String)]
     ) throws {

@@ -26,7 +26,7 @@ struct FHIRResourceStringifyTests {
 
         let originalBase64 = attachment.base64String
 
-        try resource.stringifyAttachements(using: service)
+        try resource.stringifyAttachments(using: service)
 
         let transformedContent = attachment.base64String
 
@@ -43,7 +43,7 @@ struct FHIRResourceStringifyTests {
 
         let originalBase64 = pdfAttachment.base64String
 
-        try resource.stringifyAttachements(using: service)
+        try resource.stringifyAttachments(using: service)
 
         let transformedContent = pdfAttachment.base64String
 
@@ -59,7 +59,7 @@ struct FHIRResourceStringifyTests {
 
         let originalContents = docRef.content.compactMap { $0.attachment.base64String }
 
-        try resource.stringifyAttachements(using: service)
+        try resource.stringifyAttachments(using: service)
 
         let transformedContents = docRef.content.compactMap { $0.attachment.base64String }
 
@@ -73,7 +73,7 @@ struct FHIRResourceStringifyTests {
         let docRef = try ModelsR4Mocks.createDocumentReference(attachments: [])
         let resource = FHIRResource(versionedResource: .r4(docRef), displayName: "Empty Document")
 
-        try resource.stringifyAttachements(using: service)
+        try resource.stringifyAttachments(using: service)
 
         #expect(docRef.content.isEmpty, "Content array should remain empty")
     }
@@ -88,7 +88,7 @@ struct FHIRResourceStringifyTests {
 
         let originalBase64 = attachment.base64String
 
-        try resource.stringifyAttachements(using: service)
+        try resource.stringifyAttachments(using: service)
 
         let transformedContent = attachment.base64String
         #expect(transformedContent != nil)
@@ -105,7 +105,7 @@ struct FHIRResourceStringifyTests {
 
         let originalBase64 = pdfAttachment.base64String
 
-        try resource.stringifyAttachements(using: service)
+        try resource.stringifyAttachments(using: service)
 
         let transformedContent = pdfAttachment.base64String
         #expect(transformedContent != nil)

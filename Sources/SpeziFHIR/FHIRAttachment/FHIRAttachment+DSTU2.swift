@@ -13,9 +13,9 @@ import UniformTypeIdentifiers
 extension ModelsDSTU2.Attachment: FHIRAttachment {
     var debugDescription: String {
         """
-        Could not transform attachement type: \(title?.primitiveDescription ?? "No title") to a string representation.
+        Could not transform attachment type: \(title?.primitiveDescription ?? "No title") to a string representation.
         
-        Attachement: \(id?.primitiveDescription ?? "No ID")
+        Attachment: \(id?.primitiveDescription ?? "No ID")
             Creation Date: \(creation?.primitiveDescription ?? "No Creation")
             MIME Type: \(mimeType?.preferredMIMEType ?? "No Content Type")
         """

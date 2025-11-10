@@ -18,13 +18,13 @@ extension FHIRResource {
     /// Creates a new ``FHIRResource`` instance using an `HKSample`.
     /// - Parameters:
     ///   - sample: The sample that should be transformed in a ``FHIRResource``.
-    ///   - healthKit: Optional `HealthKit` module used to query additional context such as symptoms and voltage measurements for electrocardiograms and attachements for clinical records.
-    ///   - loadHealthKitAttachements: Indicates if the `HKAttachmentStore` should be queried for any document references found in clinical records.
+    ///   - healthKit: Optional `HealthKit` module used to query additional context such as symptoms and voltage measurements for electrocardiograms and attachments for clinical records.
+    ///   - loadHealthKitAttachments: Indicates if the `HKAttachmentStore` should be queried for any document references found in clinical records.
     /// - Returns: Created ``FHIRResource`` instance.
     public static func initialize(
         basedOn sample: HKSample,
         using healthKit: HealthKit? = nil,
-        loadHealthKitAttachements: Bool = false
+        loadHealthKitAttachments: Bool = false
     ) async throws -> FHIRResource {
         switch sample {
         case let clinicalResource as HKClinicalRecord where clinicalResource.fhirResource?.fhirVersion == .primaryDSTU2():
@@ -40,8 +40,8 @@ extension FHIRResource {
                 versionedResource: .dstu2(fhirModelResource),
                 displayName: clinicalResource.displayName
             )
-            if loadHealthKitAttachements, let healthKit = healthKit {
-                try await resource.loadAttachements(for: sample, using: healthKit)
+            if loadHealthKitAttachments, let healthKit = healthKit {
+                try await resource.loadAttachments(for: sample, using: healthKit)
             }
             return resource
         case let clinicalResource as HKClinicalRecord:
@@ -51,8 +51,8 @@ extension FHIRResource {
                 versionedResource: .r4(fhirModelResource),
                 displayName: clinicalResource.displayName
             )
-            if loadHealthKitAttachements, let healthKit = healthKit {
-                try await resource.loadAttachements(for: sample, using: healthKit)
+            if loadHealthKitAttachments, let healthKit = healthKit {
+                try await resource.loadAttachments(for: sample, using: healthKit)
             }
             return resource
         case let electrocardiogram as HKElectrocardiogram:
