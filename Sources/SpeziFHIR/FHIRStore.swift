@@ -6,9 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Observation
-import class ModelsR4.Bundle
 import enum ModelsDSTU2.ResourceProxy
+import class ModelsR4.Bundle
+import Observation
 import Spezi
 import SpeziHealthKit
 

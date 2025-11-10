@@ -21,7 +21,7 @@ extension FHIRResource {
     ///   - healthKit: Optional `HealthKit` module used to query additional context such as symptoms and voltage measurements for electrocardiograms and attachments for clinical records.
     ///   - loadHealthKitAttachments: Indicates if the `HKAttachmentStore` should be queried for any document references found in clinical records.
     /// - Returns: Created ``FHIRResource`` instance.
-    public static func initialize(
+    public static func initialize( // swiftlint:disable:this function_body_length cyclomatic_complexity
         basedOn sample: HKSample,
         using healthKit: HealthKit? = nil,
         loadHealthKitAttachments: Bool = false
@@ -39,7 +39,7 @@ extension FHIRResource {
                     if domainResource.extension == nil {
                         domainResource.extension = []
                     }
-                    domainResource.extension!.append(
+                    domainResource.extension!.append( // swiftlint:disable:this force_unwrapping
                         ModelsDSTU2.Extension(
                             url: Self.fhirExtensionUrlHKSampleId.asFHIRURIPrimitive(),
                             value: .id(record.uuid.uuidString.asFHIRStringPrimitive())
@@ -60,7 +60,7 @@ extension FHIRResource {
                     if domainResource.extension == nil {
                         domainResource.extension = []
                     }
-                    domainResource.extension!.append(
+                    domainResource.extension!.append( // swiftlint:disable:this force_unwrapping
                         ModelsR4.Extension(
                             url: Self.fhirExtensionUrlHKSampleId.asFHIRURIPrimitive(),
                             value: .id(record.uuid.uuidString.asFHIRStringPrimitive())
@@ -76,7 +76,7 @@ extension FHIRResource {
                 }
                 return resource
             case .unknown:
-                fallthrough
+                fallthrough // swiftlint:disable:this no_fallthrough_only
             default:
                 throw HealthKitOnFHIRError.invalidFHIRResource
             }
