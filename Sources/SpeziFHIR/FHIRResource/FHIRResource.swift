@@ -25,7 +25,6 @@ public struct FHIRResource: Identifiable, Hashable {
     
     public struct ID: Hashable, Codable, Sendable {
         @_spi(Testing) public let fhirResourceId: String
-        
         @_spi(Testing) public let healthKitUUID: String?
     }
     
