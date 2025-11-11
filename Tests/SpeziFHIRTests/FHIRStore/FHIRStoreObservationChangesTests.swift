@@ -8,7 +8,7 @@
 
 import ModelsR4
 import Observation
-@testable import SpeziFHIR
+@testable @_spi(Testing) import SpeziFHIR
 import Testing
 
 
@@ -96,7 +96,7 @@ struct FHIRStoreObservationChangesTests {
                 observationsExpectation()
             }
             
-            store.remove(resource: resource.id)
+            store.removeResource(withId: resource.id.fhirResourceId)
             
             #expect(store.procedures.isEmpty)
             #expect(store.observations.isEmpty)

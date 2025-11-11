@@ -6,9 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Observation
-import class ModelsR4.Bundle
 import enum ModelsDSTU2.ResourceProxy
+import class ModelsR4.Bundle
+import Observation
 import Spezi
 import SpeziHealthKit
 
@@ -99,9 +99,7 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
     @MainActor
     public func insert(resource: FHIRResource) {
         _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
-
         _resources.append(resource)
-
         _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
     }
 
@@ -111,13 +109,10 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
     @MainActor
     public func insert<T: Collection>(resources: T) where T.Element == FHIRResource {
         let resourceCategories = Set(resources.map(\.category))
-
         for category in resourceCategories {
             _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
         }
-
         self._resources.append(contentsOf: resources)
-
         for category in resourceCategories {
             _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
         }
@@ -152,17 +147,28 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
 
     /// Removes a FHIR resource from the ``FHIRStore``.
     ///
-    /// - Parameter resource: The `FHIRResource` identifier to be inserted.
+    /// - Parameter fhirId: The FHIR `id` of the resource that should be removed.
     @MainActor
-    public func remove(resource resourceId: FHIRResource.ID) {
-        guard let resource = _resources.first(where: { $0.id == resourceId }) else {
+    public func removeResource(withId fhirId: String) {
+        guard let resource = _resources.first(where: { $0.fhirId == fhirId }) else {
             return
         }
-
         _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
-
-        _resources.removeAll { $0.id == resourceId }
-
+        _resources.removeAll { $0.fhirId == fhirId }
+        _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
+    }
+    
+    /// Removes a FHIR resource from the ``FHIRStore``.
+    ///
+    /// - Parameter healthKitId: The HealthKit `uuid` of the resource that should be removed.
+    @_spi(Internal)
+    @MainActor
+    public func removeResource(withHealthKitUUID healthKitId: String) {
+        guard let resource = _resources.first(where: { $0.healthKitSampleId == healthKitId }) else {
+            return
+        }
+        _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
+        _resources.removeAll { $0.healthKitSampleId == healthKitId }
         _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
     }
 
@@ -172,9 +178,7 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
         for category in FHIRResource.FHIRResourceCategory.allCases {
             _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
         }
-
         _resources = []
-
         for category in FHIRResource.FHIRResourceCategory.allCases {
             _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
         }

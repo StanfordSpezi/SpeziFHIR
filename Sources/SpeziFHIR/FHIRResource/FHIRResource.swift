@@ -23,6 +23,14 @@ public struct FHIRResource: Identifiable, Hashable {
         case dstu2(ModelsDSTU2.Resource)
     }
     
+    public struct ID: Hashable, Codable, Sendable {
+        @_spi(Testing) public let fhirResourceId: String
+        @_spi(Testing) public let healthKitUUID: String?
+    }
+    
+    public static let fhirExtensionUrlHKSampleId = URL(string: "https://bdh.stanford.edu/fhir/defs/HealthKitSampleID")!
+    // swiftlint:disable:previous force_unwrapping
+    
     
     /// The version-specific FHIR resource.
     public let versionedResource: VersionedFHIRResource
@@ -30,23 +38,36 @@ public struct FHIRResource: Identifiable, Hashable {
     public let displayName: String
     
     
-    /// Unique identifier for the FHIR resource.
-    public var id: String {
+    public var id: ID {
+        guard let fhirId else {
+            preconditionFailure(
+                "A stable identifier must be present when wrapping content in a FHIRResource. The identifier might have been changed."
+            )
+        }
+        return ID(fhirResourceId: fhirId, healthKitUUID: healthKitSampleId)
+    }
+    
+    /// The `id` of the underlying FHIR `Resource`.
+    public var fhirId: String? {
         switch versionedResource {
         case let .r4(resource):
-            guard let id = resource.id?.value?.string else {
-                preconditionFailure(
-                    "A stable identifier must be present when wrapping content in a FHIRResource. The identifier might have been changed."
-                )
-            }
-            return id
+            resource.id?.value?.string
         case let .dstu2(resource):
-            guard let id = resource.id?.value?.string else {
-                preconditionFailure(
-                    "A stable identifier must be present when wrapping content in a FHIRResource. The identifier might have been changed."
-                )
-            }
-            return id
+            resource.id?.value?.string
+        }
+    }
+    
+    /// The `uuid` of the `HKSample` from which this FHIRResource was created, if applicable.
+    var healthKitSampleId: String? {
+        switch versionedResource {
+        case let .r4(resource):
+            (resource as? ModelsR4.DomainResource)?
+                .extensions(for: Self.fhirExtensionUrlHKSampleId.absoluteString)
+                .first?.value?.idString
+        case let .dstu2(resource):
+            (resource as? ModelsDSTU2.DomainResource)?
+                .extensions(for: Self.fhirExtensionUrlHKSampleId.absoluteString)
+                .first?.value?.idString
         }
     }
     
@@ -208,6 +229,29 @@ public struct FHIRResource: Identifiable, Hashable {
             return (try? String(decoding: encoder.encode(resource), as: UTF8.self)) ?? "{}"
         case let .dstu2(resource):
             return (try? String(decoding: encoder.encode(resource), as: UTF8.self)) ?? "{}"
+        }
+    }
+}
+
+
+extension ModelsDSTU2.Extension.ValueX {
+    fileprivate var idString: String? {
+        switch self {
+        case .id(let value):
+            value.value?.string
+        default:
+            nil
+        }
+    }
+}
+
+extension ModelsR4.Extension.ValueX {
+    fileprivate var idString: String? {
+        switch self {
+        case .id(let value):
+            value.value?.string
+        default:
+            nil
         }
     }
 }

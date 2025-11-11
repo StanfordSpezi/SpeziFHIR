@@ -58,7 +58,7 @@ actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
         if useHealthKitResources {
             for sample in addedSamples {
                 do {
-                    try await fhirStore.add(sample: sample)
+                    try await fhirStore.add(sample)
                 } catch {
                     logger.error("Cloud not transform HealthKit sample with id: \(sample.id)")
                 }
@@ -70,7 +70,7 @@ actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
         for object in deletedObjects {
             samples.removeAll { $0.id == object.uuid }
             if useHealthKitResources {
-                await fhirStore.remove(sample: object)
+                await fhirStore.remove(object)
             }
         }
     }
@@ -107,7 +107,7 @@ actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
             for newHealthKitSample in records {
                 sampleTaskGroup.addTask { [self] in
                     do {
-                        try await fhirStore.add(sample: newHealthKitSample, loadHealthKitAttachements: true)
+                        try await fhirStore.add(newHealthKitSample, loadHealthKitAttachments: true)
                     } catch {
                         logger.error("Could not transform sample \(newHealthKitSample.id) to FHIR resource: \(error)")
                     }

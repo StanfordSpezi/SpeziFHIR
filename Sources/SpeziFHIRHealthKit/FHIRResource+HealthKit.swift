@@ -18,43 +18,68 @@ extension FHIRResource {
     /// Creates a new ``FHIRResource`` instance using an `HKSample`.
     /// - Parameters:
     ///   - sample: The sample that should be transformed in a ``FHIRResource``.
-    ///   - healthKit: Optional `HealthKit` module used to query additional context such as symptoms and voltage measurements for electrocardiograms and attachements for clinical records.
-    ///   - loadHealthKitAttachements: Indicates if the `HKAttachmentStore` should be queried for any document references found in clinical records.
+    ///   - healthKit: Optional `HealthKit` module used to query additional context such as symptoms and voltage measurements for electrocardiograms and attachments for clinical records.
+    ///   - loadHealthKitAttachments: Indicates if the `HKAttachmentStore` should be queried for any document references found in clinical records.
     /// - Returns: Created ``FHIRResource`` instance.
-    public static func initialize(
+    public static func initialize( // swiftlint:disable:this function_body_length cyclomatic_complexity
         basedOn sample: HKSample,
         using healthKit: HealthKit? = nil,
-        loadHealthKitAttachements: Bool = false
+        loadHealthKitAttachments: Bool = false
     ) async throws -> FHIRResource {
         switch sample {
-        case let clinicalResource as HKClinicalRecord where clinicalResource.fhirResource?.fhirVersion == .primaryDSTU2():
-            guard let fhirResource = clinicalResource.fhirResource else {
+        case let record as HKClinicalRecord:
+            guard let fhirResource = record.fhirResource else {
                 throw HealthKitOnFHIRError.invalidFHIRResource
             }
-            
             let decoder = JSONDecoder()
-            let resourceProxy = try decoder.decode(ModelsDSTU2.ResourceProxy.self, from: fhirResource.data)
-            let fhirModelResource = resourceProxy.get()
-            
-            var resource = FHIRResource(
-                versionedResource: .dstu2(fhirModelResource),
-                displayName: clinicalResource.displayName
-            )
-            if loadHealthKitAttachements, let healthKit = healthKit {
-                try await resource.loadAttachements(for: sample, using: healthKit)
+            switch fhirResource.fhirVersion.fhirRelease {
+            case .dstu2:
+                let resourceProxy = try decoder.decode(ModelsDSTU2.ResourceProxy.self, from: fhirResource.data)
+                if let domainResource = resourceProxy.get(if: ModelsDSTU2.DomainResource.self) {
+                    if domainResource.extension == nil {
+                        domainResource.extension = []
+                    }
+                    domainResource.extension!.append( // swiftlint:disable:this force_unwrapping
+                        ModelsDSTU2.Extension(
+                            url: Self.fhirExtensionUrlHKSampleId.asFHIRURIPrimitive(),
+                            value: .id(record.uuid.uuidString.asFHIRStringPrimitive())
+                        )
+                    )
+                }
+                var resource = FHIRResource(
+                    versionedResource: .dstu2(resourceProxy.get()),
+                    displayName: record.displayName
+                )
+                if loadHealthKitAttachments, let healthKit {
+                    try await resource.loadAttachments(for: record, using: healthKit)
+                }
+                return resource
+            case .r4:
+                let resourceProxy = try decoder.decode(ModelsR4.ResourceProxy.self, from: fhirResource.data)
+                if let domainResource = resourceProxy.get(if: ModelsR4.DomainResource.self) {
+                    if domainResource.extension == nil {
+                        domainResource.extension = []
+                    }
+                    domainResource.extension!.append( // swiftlint:disable:this force_unwrapping
+                        ModelsR4.Extension(
+                            url: Self.fhirExtensionUrlHKSampleId.asFHIRURIPrimitive(),
+                            value: .id(record.uuid.uuidString.asFHIRStringPrimitive())
+                        )
+                    )
+                }
+                var resource = FHIRResource(
+                    versionedResource: .r4(resourceProxy.get()),
+                    displayName: record.displayName
+                )
+                if loadHealthKitAttachments, let healthKit {
+                    try await resource.loadAttachments(for: record, using: healthKit)
+                }
+                return resource
+            case .unknown:
+                fallthrough // swiftlint:disable:this no_fallthrough_only
+            default:
+                throw HealthKitOnFHIRError.invalidFHIRResource
             }
-            return resource
-        case let clinicalResource as HKClinicalRecord:
-            let fhirModelResource = try clinicalResource.resource().get()
-            
-            var resource = FHIRResource(
-                versionedResource: .r4(fhirModelResource),
-                displayName: clinicalResource.displayName
-            )
-            if loadHealthKitAttachements, let healthKit = healthKit {
-                try await resource.loadAttachements(for: sample, using: healthKit)
-            }
-            return resource
         case let electrocardiogram as HKElectrocardiogram:
             guard let healthKit = healthKit else {
                 fallthrough

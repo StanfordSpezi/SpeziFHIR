@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import enum ModelsR4.ResourceProxy
 import enum ModelsDSTU2.ResourceProxy
+import enum ModelsR4.ResourceProxy
 
 
 // swiftlint:disable file_length

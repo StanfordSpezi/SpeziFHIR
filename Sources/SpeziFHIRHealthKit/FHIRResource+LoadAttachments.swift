@@ -56,7 +56,7 @@ extension FHIRResource {
     ///   - healthKitSample: The HealthKit sample containing attachments.
     ///   - store: The health store to use. Defaults to a new `HKHealthStore` instance.
     ///   - attachmentsProvider: Optional custom provider for attachments. If nil, a default provider will be created.
-    mutating func loadAttachements(
+    mutating func loadAttachments(
         for healthKitSample: HKSample,
         using healthKit: HealthKit,
         attachmentsProvider: (any HealthKitAttachmentsProvider)? = nil
@@ -70,18 +70,19 @@ extension FHIRResource {
         // We assume that the content type is a MIME type, we would need to more checks around the content.format to be fully correct.
         // Otherwise we create a new content entry to inject this information in here.
         switch versionedResource {
-        case let .r4(r4Resource):
-            try processAttachementsForR4(r4Resource: r4Resource, encodedAttachments: encodedAttachments)
-        case let .dstu2(dstu2Resource):
-            try processAttachementsForDSTU2(dstu2Resource: dstu2Resource, encodedAttachments: encodedAttachments)
+        case let .r4(resource):
+            try processAttachments(for: resource, encodedAttachments: encodedAttachments)
+        case let .dstu2(resource):
+            try processAttachments(for: resource, encodedAttachments: encodedAttachments)
         }
     }
 
-    func processAttachementsForR4(
-        r4Resource: ModelsR4.Resource,
+    func processAttachments(
+        for resource: ModelsR4.Resource,
         encodedAttachments: [(identifier: String, base64EncodedString: String)]
     ) throws {
-        if let documentReference = r4Resource as? ModelsR4.DocumentReference {
+        switch resource {
+        case let documentReference as ModelsR4.DocumentReference:
             for attachment in encodedAttachments {
                 let data = FHIRPrimitive(ModelsR4.Base64Binary(attachment.base64EncodedString))
                 if let matchingContent = documentReference.content.first(where: {
@@ -96,7 +97,7 @@ extension FHIRResource {
                     )
                 }
             }
-        } else if let diagnosticReport = r4Resource as? ModelsR4.DiagnosticReport {
+        case let diagnosticReport as ModelsR4.DiagnosticReport:
             for attachment in encodedAttachments {
                 let data = FHIRPrimitive(ModelsR4.Base64Binary(attachment.base64EncodedString))
                 if let presentedForms = diagnosticReport.presentedForm {
@@ -115,16 +116,17 @@ extension FHIRResource {
                     ]
                 }
             }
-        } else {
-            print("Unexpected FHIR type in the document parsing path: \(r4Resource.description)")
+        default:
+            print("Unexpected FHIR type in the document parsing path: \(resource.description)")
         }
     }
 
-    func processAttachementsForDSTU2(
-        dstu2Resource: ModelsDSTU2.Resource,
+    func processAttachments(
+        for resource: ModelsDSTU2.Resource,
         encodedAttachments: [(identifier: String, base64EncodedString: String)]
     ) throws {
-        if let documentReference = dstu2Resource as? ModelsDSTU2.DocumentReference {
+        switch resource {
+        case let documentReference as ModelsDSTU2.DocumentReference:
             for attachment in encodedAttachments {
                 let data = FHIRPrimitive(ModelsDSTU2.Base64Binary(attachment.base64EncodedString))
                 if let matchingContent = documentReference.content.first(where: {
@@ -139,7 +141,7 @@ extension FHIRResource {
                     )
                 }
             }
-        } else if let diagnosticReport = dstu2Resource as? ModelsDSTU2.DiagnosticReport {
+        case let diagnosticReport as ModelsDSTU2.DiagnosticReport:
             for attachment in encodedAttachments {
                 let data = FHIRPrimitive(ModelsDSTU2.Base64Binary(attachment.base64EncodedString))
                 if let presentedForms = diagnosticReport.presentedForm {
@@ -158,8 +160,8 @@ extension FHIRResource {
                     ]
                 }
             }
-        } else {
-            print("Unexpected FHIR type in the document parsing path: \(dstu2Resource.description)")
+        default:
+            print("Unexpected FHIR type in the document parsing path: \(resource.description)")
         }
     }
 }

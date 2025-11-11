@@ -6,12 +6,15 @@
 // SPDX-License-Identifier: MIT
 //
 
+import ModelsDSTU2
 import ModelsR4
 
 
-extension Resource: @retroactive Identifiable {
-    public typealias ID = FHIRPrimitive<FHIRString>?
+extension ModelsDSTU2.Resource: @retroactive Identifiable {
+    public typealias ID = ModelsDSTU2.FHIRPrimitive<ModelsDSTU2.FHIRString>?
 }
 
 
-extension FHIRPrimitive: @retroactive Identifiable where PrimitiveType: Identifiable { }
+extension ModelsR4.Resource: @retroactive Identifiable {
+    public typealias ID = ModelsR4.FHIRPrimitive<ModelsR4.FHIRString>?
+}
