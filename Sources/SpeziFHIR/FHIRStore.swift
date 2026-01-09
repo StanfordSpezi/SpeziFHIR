@@ -24,66 +24,66 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
     // with specific keyPaths in the `insert`, `remove`, and other mutation methods. This ensures that
     // only observers of the relevant category (e.g., observations, conditions) are notified when
     // resources of that category are modified.
-    @ObservationIgnored @MainActor private var _resources: [FHIRResource] = []
+    @ObservationIgnored @MainActor private var _resources: Set<FHIRResource> = []
     @ObservationIgnored @Dependency(HealthKit.self) package var healthKit
 
 
     /// `FHIRResource`s with category `allergyIntolerance`.
-    @MainActor public var allergyIntolerances: [FHIRResource] {
+    @MainActor public var allergyIntolerances: Set<FHIRResource> {
         access(keyPath: \.allergyIntolerances)
         return _resources.filter { $0.category == .allergyIntolerance }
     }
 
     /// `FHIRResource`s with category `condition`.
-    @MainActor public var conditions: [FHIRResource] {
+    @MainActor public var conditions: Set<FHIRResource> {
         access(keyPath: \.conditions)
         return _resources.filter { $0.category == .condition }
     }
 
     /// `FHIRResource`s with category `diagnostic`.
-    @MainActor public var diagnostics: [FHIRResource] {
+    @MainActor public var diagnostics: Set<FHIRResource> {
         access(keyPath: \.diagnostics)
         return _resources.filter { $0.category == .diagnostic }
     }
     
     /// `FHIRResource`s with category `documentReference`.
-    @MainActor public var documents: [FHIRResource] {
+    @MainActor public var documents: Set<FHIRResource> {
         access(keyPath: \.documents)
         return _resources.filter { $0.category == .document }
     }
 
     /// `FHIRResource`s with category `encounter`.
-    @MainActor public var encounters: [FHIRResource] {
+    @MainActor public var encounters: Set<FHIRResource> {
         access(keyPath: \.encounters)
         return _resources.filter { $0.category == .encounter }
     }
 
     /// `FHIRResource`s with category `immunization`
-    @MainActor public var immunizations: [FHIRResource] {
+    @MainActor public var immunizations: Set<FHIRResource> {
         access(keyPath: \.immunizations)
         return _resources.filter { $0.category == .immunization }
     }
 
     /// `FHIRResource`s with category `medication`.
-    @MainActor public var medications: [FHIRResource] {
+    @MainActor public var medications: Set<FHIRResource> {
         access(keyPath: \.medications)
         return _resources.filter { $0.category == .medication }
     }
 
     /// `FHIRResource`s with category `observation`.
-    @MainActor public var observations: [FHIRResource] {
+    @MainActor public var observations: Set<FHIRResource> {
         access(keyPath: \.observations)
         return _resources.filter { $0.category == .observation }
     }
 
     /// `FHIRResource`s with category `procedure`.
-    @MainActor public var procedures: [FHIRResource] {
+    @MainActor public var procedures: Set<FHIRResource> {
         access(keyPath: \.procedures)
         return _resources.filter { $0.category == .procedure }
     }
 
     /// `FHIRResource`s with category `other`.
-    @MainActor public var otherResources: [FHIRResource] {
+    @MainActor public var otherResources: Set<FHIRResource> {
         access(keyPath: \.otherResources)
         return _resources.filter { $0.category == .other }
     }
@@ -97,23 +97,29 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
     ///
     /// - Parameter resource: The `FHIRResource` to be inserted.
     @MainActor
-    public func insert(resource: FHIRResource) {
+    @discardableResult
+    public func insert(resource: FHIRResource) -> Bool {
+        guard !_resources.contains(resource) else {
+            return false
+        }
         _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
-        _resources.append(resource)
+        _resources.insert(resource)
         _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
+        return true
     }
 
     /// Inserts a ``Collection`` of FHIR resources into the ``FHIRStore``.
     ///
     /// - Parameter resources: The `FHIRResource`s to be inserted.
     @MainActor
-    public func insert<T: Collection>(resources: T) where T.Element == FHIRResource {
-        let resourceCategories = Set(resources.map(\.category))
+    public func insert(resources: some Collection<FHIRResource>) {
+        let resources = resources.filter { !_resources.contains($0) }
+        let resourceCategories = Array(resources.mapIntoSet(\.category))
         for category in resourceCategories {
             _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
         }
-        self._resources.append(contentsOf: resources)
-        for category in resourceCategories {
+        _resources.formUnion(resources)
+        for category in resourceCategories.reversed() {
             _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
         }
     }
@@ -181,6 +187,15 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
         _resources = []
         for category in FHIRResource.FHIRResourceCategory.allCases {
             _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
+        }
+    }
+}
+
+
+extension Set {
+    fileprivate mutating func removeAll(where predicate: (Element) -> Bool) {
+        for element in self where predicate(element) {
+            remove(element)
         }
     }
 }
