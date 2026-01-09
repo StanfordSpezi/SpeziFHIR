@@ -192,9 +192,27 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
 }
 
 
-extension FHIRStore {
+extension FHIRStore: @MainActor Collection {
     @MainActor public var isEmpty: Bool {
         _resources.isEmpty
+    }
+    
+    @MainActor public var startIndex: Set<FHIRResource>.Index {
+        _resources.startIndex
+    }
+    
+    @MainActor public var endIndex: Set<FHIRResource>.Index {
+        _resources.endIndex
+    }
+    
+    @MainActor
+    public func index(after idx: Set<FHIRResource>.Index) -> Set<FHIRResource>.Index {
+        _resources.index(after: idx)
+    }
+    
+    @MainActor
+    public subscript(position: Set<FHIRResource>.Index) -> FHIRResource {
+        _resources[position]
     }
 }
 
