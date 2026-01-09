@@ -173,6 +173,7 @@ struct FHIRStoreTests {
         let bundle = try ModelsR4Mocks.createBundle()
         let condition1 = try ModelsR4Mocks.createCondition()
         let condition2 = try ModelsR4Mocks.createCondition()
+        #expect(store.isEmpty)
         
         bundle.entry = [
             BundleEntry(resource: .condition(condition1)),
@@ -180,9 +181,7 @@ struct FHIRStoreTests {
         ]
         
         await store.load(bundle: bundle)
-        
-        #expect(store.conditions.count == 2)
-        #expect(store.conditions[0].id.fhirResourceId == "condition-id")
-        #expect(store.conditions[1].id.fhirResourceId == "condition-id")
+        #expect(store.conditions.count == 1)
+        #expect(try #require(store.conditions.first).id.fhirResourceId == "condition-id")
     }
 }
