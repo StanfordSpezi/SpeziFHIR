@@ -91,36 +91,40 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
     
     /// Create an empty ``FHIRStore``.
     public required init() {}
-    
-    
-    /// Inserts a FHIR resource into the ``FHIRStore``.
+}
+
+
+// MARK: FHIRStore Resource Insertion
+
+extension FHIRStore {
+    /// Inserts a FHIR resource into the ``FHIRStore``, unless it is already in the store.
     ///
-    /// - Parameter resource: The `FHIRResource` to be inserted.
+    /// - parameter resource: The `FHIRResource` to be inserted.
+    /// - returns: A `Bool` indicating whether the resource was inserted into the store. (I.e., `false` if the store already contained a resource with an equivalent id.)
     @MainActor
     @discardableResult
-    public func insert(resource: FHIRResource) -> Bool {
-        guard !_resources.contains(resource) else {
+    public func insert(_ resource: FHIRResource) -> Bool {
+        guard !self.contains(resource) else {
             return false
         }
-        _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
-        _resources.insert(resource)
-        _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
-        return true
+        return mutatingResourceCategories(CollectionOfOne(resource.category)) {
+            _resources.insert(resource).inserted
+        }
     }
     
-    /// Inserts a ``Collection`` of FHIR resources into the ``FHIRStore``.
+    /// Inserts multiple ``FHIRResource``s into the store.
+    ///
+    /// Any resources that already exist in the store will be skipped; only new resources will be inserted
     ///
     /// - Parameter resources: The `FHIRResource`s to be inserted.
     @MainActor
-    public func insert(resources: some Collection<FHIRResource>) {
-        let resources = resources.filter { !_resources.contains($0) }
-        let resourceCategories = Array(resources.mapIntoSet(\.category))
-        for category in resourceCategories {
-            _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
+    public func insert(contentsOf resourcesToInsert: some Sequence<FHIRResource>) {
+        let resourcesToInsert = resourcesToInsert.filter { !self._resources.contains($0) }
+        guard !resourcesToInsert.isEmpty else {
+            return
         }
-        _resources.formUnion(resources)
-        for category in resourceCategories.reversed() {
-            _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
+        mutatingResourceCategories(resourcesToInsert.lazy.map(\.category)) {
+            _resources.formUnion(resourcesToInsert)
         }
     }
     
@@ -128,69 +132,92 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
     ///
     /// - Parameter bundle: The FHIR `Bundle` containing resources to be loaded.
     public func load(bundle: sending Bundle) async {
-        let resourceProxies = bundle.entry?.compactMap { $0.resource } ?? []
-        var resources: [FHIRResource] = []
-        
-        for resourceProxy in resourceProxies {
-            if Task.isCancelled {
-                return
-            }
-            
-            resources.append(
-                FHIRResource(
-                    resource: resourceProxy.get(),
-                    displayName: resourceProxy.displayName
-                )
-            )
-        }
-        
-        if Task.isCancelled {
+        guard let resourceProxies = bundle.entry?.compactMap(\.resource), !resourceProxies.isEmpty else {
             return
         }
-        
-        await insert(resources: resources)
+        await insert(contentsOf: resourceProxies.lazy.map {
+            FHIRResource(resource: $0.get(), displayName: $0.displayName)
+        })
     }
-    
+}
+
+
+// MARK: FHIRStore Resource Removal
+
+extension FHIRStore {
     /// Removes a FHIR resource from the ``FHIRStore``.
     ///
     /// - Parameter fhirId: The FHIR `id` of the resource that should be removed.
+    /// - returns: The removed ``FHIRResource``, if applicable.
     @MainActor
-    public func removeResource(withId fhirId: String) {
+    @discardableResult
+    public func removeResource(withId fhirId: String) -> FHIRResource? {
         guard let resource = _resources.first(where: { $0.fhirId == fhirId }) else {
-            return
+            return nil
         }
-        _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
-        _resources.removeAll { $0.fhirId == fhirId }
-        _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
+        return mutatingResourceCategories(CollectionOfOne(resource.category)) {
+            _resources.remove(resource)
+        }
     }
     
     /// Removes a FHIR resource from the ``FHIRStore``.
     ///
     /// - Parameter healthKitId: The HealthKit `uuid` of the resource that should be removed.
+    /// - returns: The removed ``FHIRResource``, if applicable.
     @_spi(Internal)
     @MainActor
-    public func removeResource(withHealthKitUUID healthKitId: String) {
+    @discardableResult
+    public func removeResource(withHealthKitUUID healthKitId: String) -> FHIRResource? {
         guard let resource = _resources.first(where: { $0.healthKitSampleId == healthKitId }) else {
+            return nil
+        }
+        return mutatingResourceCategories(CollectionOfOne(resource.category)) {
+            _resources.remove(resource)
+        }
+    }
+    
+    /// Removes all ``FHIRResource``s that satisfy the predicate.
+    @MainActor
+    public func removeAllResources(where predicate: (FHIRResource) throws -> Bool) rethrows {
+        let resourcesToRemove = try _resources.filter(predicate)
+        guard !resourcesToRemove.isEmpty else {
             return
         }
-        _$observationRegistrar.willSet(self, keyPath: resource.category.storeKeyPath)
-        _resources.removeAll { $0.healthKitSampleId == healthKitId }
-        _$observationRegistrar.didSet(self, keyPath: resource.category.storeKeyPath)
+        mutatingResourceCategories(resourcesToRemove.lazy.map(\.category)) {
+            _resources.subtract(resourcesToRemove)
+        }
     }
     
     /// Removes all resources from the ``FHIRStore``.
     @MainActor
     public func removeAllResources() {
-        for category in FHIRResource.FHIRResourceCategory.allCases {
-            _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
-        }
-        _resources = []
-        for category in FHIRResource.FHIRResourceCategory.allCases {
-            _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
-        }
+        removeAllResources { _ in true }
     }
 }
 
+
+// MARK: FHIRStore Helpers
+
+extension FHIRStore {
+    @MainActor
+    private func mutatingResourceCategories<Result>(
+        _ categories: some Sequence<FHIRResource.FHIRResourceCategory>,
+        _ operation: () -> Result
+    ) -> Result {
+        let categories = Array(Set(categories))
+        for category in categories {
+            _$observationRegistrar.willSet(self, keyPath: category.storeKeyPath)
+        }
+        let result = operation()
+        for category in categories.reversed() {
+            _$observationRegistrar.didSet(self, keyPath: category.storeKeyPath)
+        }
+        return result
+    }
+}
+
+
+// MARK: FHIRStore + Collection
 
 extension FHIRStore: @MainActor Collection {
     @MainActor public var isEmpty: Bool {
@@ -203,6 +230,13 @@ extension FHIRStore: @MainActor Collection {
     
     @MainActor public var endIndex: Set<FHIRResource>.Index {
         _resources.endIndex
+    }
+    
+    @MainActor
+    public func _customContainsEquatableElement( // swiftlint:disable:this identifier_name
+        _ element: FHIRResource
+    ) -> Bool? { // swiftlint:disable:this discouraged_optional_boolean
+        _resources.contains(element)
     }
     
     @MainActor

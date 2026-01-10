@@ -27,12 +27,13 @@ extension FHIRStore {
         if loadHealthKitAttachments {
             try await resource.loadAttachments(for: sample, using: healthKit)
         }
-        await insert(resource: resource)
+        await insert(resource)
     }
     
     /// Remove a HealthKit sample delete object from the FHIR store.
     /// - Parameter sample: The sample delete object that should be removed.
-    public func remove(_ deletedObject: HKDeletedObject) async {
-        await removeResource(withHealthKitUUID: deletedObject.uuid.uuidString)
+    @MainActor
+    public func remove(_ deletedObject: HKDeletedObject) {
+        removeResource(withHealthKitUUID: deletedObject.uuid.uuidString)
     }
 }

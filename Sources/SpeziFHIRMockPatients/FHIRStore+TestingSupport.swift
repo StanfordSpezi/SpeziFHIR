@@ -12,20 +12,19 @@ import SpeziFHIR
 
 extension FHIRStore {
     /// Loads a mock resource into the `FHIRStore` for testing purposes.
+    @MainActor
     public func loadTestingResources() async {
+        removeAllResources()
+        
         let mockObservation = Observation(
             code: CodeableConcept(coding: [Coding(code: "1234".asFHIRStringPrimitive())]),
             id: FHIRPrimitive<FHIRString>("1234"),
             issued: FHIRPrimitive<Instant>(try? Instant(date: .now)),
             status: FHIRPrimitive(ObservationStatus.final)
         )
-        
-        let mockFHIRResource = FHIRResource(
+        insert(FHIRResource(
             versionedResource: .r4(mockObservation),
             displayName: "Mock Resource"
-        )
-        
-        await removeAllResources()
-        await insert(resource: mockFHIRResource)
+        ))
     }
 }
