@@ -131,11 +131,12 @@ extension FHIRStore {
     /// Loads resources from a given FHIR `Bundle` into the ``FHIRStore``.
     ///
     /// - Parameter bundle: The FHIR `Bundle` containing resources to be loaded.
-    public func load(bundle: sending Bundle) async {
+    @MainActor
+    public func load(bundle: sending Bundle) {
         guard let resourceProxies = bundle.entry?.compactMap(\.resource), !resourceProxies.isEmpty else {
             return
         }
-        await insert(contentsOf: resourceProxies.lazy.map {
+        insert(contentsOf: resourceProxies.lazy.map {
             FHIRResource(resource: $0.get(), displayName: $0.displayName)
         })
     }

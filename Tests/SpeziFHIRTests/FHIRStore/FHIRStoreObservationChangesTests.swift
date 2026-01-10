@@ -31,7 +31,7 @@ struct FHIRStoreObservationChangesTests {
                 observationsExpectation()
             }
             
-            store.insert(resource: resource)
+            store.insert(resource)
             
             #expect(store.procedures.isEmpty)
             #expect(store.observations.count == 1)
@@ -73,7 +73,7 @@ struct FHIRStoreObservationChangesTests {
                 changeExpectation()
             }
             
-            store.insert(resources: [observationResource, medicationResource])
+            store.insert(contentsOf: [observationResource, medicationResource])
             
             #expect(store.procedures.isEmpty)
             #expect(store.observations.count == 1)
@@ -86,7 +86,7 @@ struct FHIRStoreObservationChangesTests {
         let observation = try ModelsR4Mocks.createObservation()
         let resource = FHIRResource(resource: observation, displayName: "Test Observation")
         
-        store.insert(resource: resource)
+        store.insert(resource)
         
         await confirmation { observationsExpectation in
             withObservationTracking {
@@ -133,7 +133,7 @@ struct FHIRStoreObservationChangesTests {
         let other = try ModelsR4Mocks.createProvenance()
         let otherResource = FHIRResource(resource: other, displayName: "Test Other")
         
-        store.insert(resources: [
+        store.insert(contentsOf: [
             allergyIntoleranceResource,
             conditionResource,
             diagnosticResource,
