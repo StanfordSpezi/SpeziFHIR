@@ -18,14 +18,18 @@ import SpeziHealthKit
 /// The ``FHIRStore`` is automatically injected in the environment if you use the ``FHIR`` standard or can be used as a standalone module.
 @Observable
 public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable, @unchecked Sendable { // unchecked bc of the HealthKit dependency
-    // The `_resources` array needs to be marked with `@ObservationIgnored` to prevent changes to this array
-    // from triggering updates to all computed properties.
-    // Instead, we explicitly control change notifications through `willSet`/`didSet` calls
-    // with specific keyPaths in the `insert`, `remove`, and other mutation methods. This ensures that
-    // only observers of the relevant category (e.g., observations, conditions) are notified when
-    // resources of that category are modified.
-    @ObservationIgnored @MainActor private var _resources: Set<FHIRResource> = []
     @ObservationIgnored @Dependency(HealthKit.self) package var healthKit
+    
+    /// The actual ``FHIRResource``s held by the ``FHIRStore``
+    ///
+    /// The `_resources` property needs to be marked with `@ObservationIgnored` to prevent changes to it
+    /// from triggering updates to all computed properties.
+    /// Instead, we explicitly control change notifications through `willSet`/`didSet` calls
+    /// with specific keyPaths in the `insert`, `remove`, and other mutation methods.
+    /// This ensures that only observers of the relevant category (e.g., observations, conditions) are notified when
+    /// resources of that category are modified.
+    /// See also the `mutatingResourceCategories` function
+    @ObservationIgnored @MainActor @usableFromInline var _resources: Set<FHIRResource> = [] // swiftlint:disable:this identifier_name
     
     
     /// `FHIRResource`s with category `allergyIntolerance`.
@@ -221,19 +225,37 @@ extension FHIRStore {
 // MARK: FHIRStore + Collection
 
 extension FHIRStore: @MainActor Collection {
-    @MainActor public var isEmpty: Bool {
+    public typealias Element = FHIRResource
+    
+    public struct Index: Comparable {
+        @usableFromInline let _index: Set<FHIRResource>.Index // swiftlint:disable:this identifier_name
+        
+        @inlinable
+        init(_ index: Set<FHIRResource>.Index) {
+            _index = index
+        }
+        
+        @inlinable
+        public static func < (lhs: Self, rhs: Self) -> Bool {
+            lhs._index < rhs._index
+        }
+    }
+    
+    
+    @MainActor @inlinable public var isEmpty: Bool {
         _resources.isEmpty
     }
     
-    @MainActor public var startIndex: Set<FHIRResource>.Index {
-        _resources.startIndex
+    @MainActor @inlinable public var startIndex: Index {
+        Index(_resources.startIndex)
     }
     
-    @MainActor public var endIndex: Set<FHIRResource>.Index {
-        _resources.endIndex
+    @MainActor @inlinable public var endIndex: Index {
+        Index(_resources.endIndex)
     }
     
     @MainActor
+    @inlinable
     public func _customContainsEquatableElement( // swiftlint:disable:this identifier_name
         _ element: FHIRResource
     ) -> Bool? { // swiftlint:disable:this discouraged_optional_boolean
@@ -241,21 +263,14 @@ extension FHIRStore: @MainActor Collection {
     }
     
     @MainActor
-    public func index(after idx: Set<FHIRResource>.Index) -> Set<FHIRResource>.Index {
-        _resources.index(after: idx)
+    @inlinable
+    public func index(after idx: Index) -> Index {
+        Index(_resources.index(after: idx._index))
     }
     
     @MainActor
-    public subscript(position: Set<FHIRResource>.Index) -> FHIRResource {
-        _resources[position]
-    }
-}
-
-
-extension Set {
-    fileprivate mutating func removeAll(where predicate: (Element) -> Bool) {
-        for element in self where predicate(element) {
-            remove(element)
-        }
+    @inlinable
+    public subscript(position: Index) -> FHIRResource {
+        _resources[position._index]
     }
 }
