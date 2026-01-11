@@ -17,11 +17,11 @@ extension FHIRResource {
 }
 
 
-extension Array where Element == FHIRResource {
+extension Set where Element == FHIRResource {
     /// Filters the FHIR resources using the provided search text.
     /// - Parameter searchText: Filters the FHIR resources using the provided search text.
     /// - Returns: The filtered FHIR resources.
-    public func filterByDisplayName(with searchText: String) -> [FHIRResource] {
+    public func filterByDisplayName(with searchText: String) -> Self {
         if searchText.isEmpty {
             return self
         }

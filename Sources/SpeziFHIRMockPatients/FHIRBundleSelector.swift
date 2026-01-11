@@ -24,10 +24,7 @@ public struct FHIRBundleSelector: View {
 
     @Environment(FHIRStore.self) private var store
     @State private var selectedBundleId: PatientIdentifiedBundle.ID?
-    @State private var fhirResourceLoadingTask: Task<Void, Never>?
-
     private let bundles: [PatientIdentifiedBundle]
-
 
     public var body: some View {
         Picker(
@@ -63,19 +60,12 @@ public struct FHIRBundleSelector: View {
             }
             // Remove existing resources and load the newly selected bundle
             .onChange(of: selectedBundleId) { _, newValue in
-                fhirResourceLoadingTask?.cancel()
-                fhirResourceLoadingTask = nil
-
                 guard let newValue,
                       let selected = bundles.first(where: { $0.id == newValue }) else {
                     return
                 }
-
                 store.removeAllResources()
-
-                fhirResourceLoadingTask = Task {
-                    await store.load(bundle: selected.bundle)
-                }
+                store.load(bundle: selected.bundle)
             }
     }
     
@@ -85,7 +75,6 @@ public struct FHIRBundleSelector: View {
             guard let id = $0.patient?.identifier?.first?.value?.value?.string else {
                 return nil
             }
-            
             return PatientIdentifiedBundle(id: id, bundle: $0)
         }
     }

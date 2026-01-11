@@ -14,29 +14,27 @@ import Testing
 @Suite
 @MainActor
 struct FHIRStoreTests {
-    private var store = FHIRStore()
+    private let store = FHIRStore()
     
 
     @Test
-    func testInitialState() async {
-        await MainActor.run {
-            #expect(store.allergyIntolerances.isEmpty)
-            #expect(store.conditions.isEmpty)
-            #expect(store.diagnostics.isEmpty)
-            #expect(store.encounters.isEmpty)
-            #expect(store.immunizations.isEmpty)
-            #expect(store.medications.isEmpty)
-            #expect(store.observations.isEmpty)
-            #expect(store.procedures.isEmpty)
-            #expect(store.otherResources.isEmpty)
-        }
+    func testInitialState() {
+        #expect(store.allergyIntolerances.isEmpty)
+        #expect(store.conditions.isEmpty)
+        #expect(store.diagnostics.isEmpty)
+        #expect(store.encounters.isEmpty)
+        #expect(store.immunizations.isEmpty)
+        #expect(store.medications.isEmpty)
+        #expect(store.observations.isEmpty)
+        #expect(store.procedures.isEmpty)
+        #expect(store.otherResources.isEmpty)
     }
 
     @Test
     func testInsertSingleResource() throws {
         let observation = try ModelsR4Mocks.createObservation()
         let resource = FHIRResource(resource: observation, displayName: "Test Observation")
-        store.insert(resource: resource)
+        store.insert(resource)
 
         #expect(store.observations.count == 1)
         #expect(store.observations.first?.displayName == "Test Observation")
@@ -59,7 +57,7 @@ struct FHIRStoreTests {
             FHIRResource(resource: claim, displayName: "Claim")
         ]
 
-        store.insert(resources: resources)
+        store.insert(contentsOf: resources)
         
         #expect(store.observations.count == 2)
         #expect(store.procedures.count == 1)
@@ -72,7 +70,7 @@ struct FHIRStoreTests {
         let medication = ModelsR4Mocks.createMedication()
         let resource = FHIRResource(resource: medication, displayName: "Medication")
             
-        store.insert(resource: resource)
+        store.insert(resource)
         #expect(store.medications.count == 1)
         
         store.removeResource(withId: resource.id.fhirResourceId)
@@ -93,7 +91,7 @@ struct FHIRStoreTests {
             FHIRResource(resource: medication, displayName: "Medication")
         ]
         
-        store.insert(resources: resources)
+        store.insert(contentsOf: resources)
         store.removeAllResources()
 
         #expect(store.observations.isEmpty)
@@ -102,11 +100,9 @@ struct FHIRStoreTests {
     }
 
     @Test
-    func testLoadEmptyBundle() async {
+    func testLoadEmptyBundle() {
         let bundle = ModelsR4.Bundle(type: FHIRPrimitive<BundleType>(.transaction))
-
-        await store.load(bundle: bundle)
-
+        store.load(bundle: bundle)
         #expect(store.allergyIntolerances.isEmpty)
         #expect(store.conditions.isEmpty)
         #expect(store.observations.isEmpty)
@@ -119,9 +115,8 @@ struct FHIRStoreTests {
     }
 
     @Test
-    func testLoadBundleWithMultipleResources() async throws {
-        await store.load(bundle: try ModelsR4Mocks.createBundle())
-        
+    func testLoadBundleWithMultipleResources() throws {
+        store.load(bundle: try ModelsR4Mocks.createBundle())
         #expect(store.conditions.count == 1)
         #expect(store.observations.count == 1)
         #expect(store.conditions.first?.fhirId == "condition-id")
@@ -129,60 +124,35 @@ struct FHIRStoreTests {
     }
 
     @Test
-    func testLoadBundleCancellation() async throws {
-        let bundle = try ModelsR4Mocks.createBundle()
-            
-        var entries: [BundleEntry] = []
-        for _ in 0..<100 {
-            let condition = try ModelsR4Mocks.createCondition()
-            entries.append(BundleEntry(resource: .condition(condition)))
-        }
-        bundle.entry = entries
-
-        let task = _Concurrency.Task {
-            await store.load(bundle: bundle)
-        }
-
-        task.cancel()
-
-        await MainActor.run {
-            #expect(store.conditions.isEmpty)
-        }
-    }
-
-    @Test
-    func testLoadBundleWithInvalidResources() async throws {
+    func testLoadBundleWithInvalidResources() throws {
         let bundle = try ModelsR4Mocks.createBundle()
         let condition = try ModelsR4Mocks.createCondition()
         let emptyEntry = BundleEntry()
-        
         bundle.entry = [
             emptyEntry,
             BundleEntry(resource: .condition(condition))
         ]
         
-        await store.load(bundle: bundle)
-        
+        store.load(bundle: bundle)
         #expect(store.conditions.count == 1)
         #expect(store.conditions.first?.id.fhirResourceId == "condition-id")
         #expect(store.otherResources.isEmpty)
     }
 
     @Test
-    func testLoadBundleWithDuplicateResources() async throws {
+    func testLoadBundleWithDuplicateResources() throws {
+        #expect(store.isEmpty)
+        
         let bundle = try ModelsR4Mocks.createBundle()
         let condition1 = try ModelsR4Mocks.createCondition()
         let condition2 = try ModelsR4Mocks.createCondition()
-        
         bundle.entry = [
             BundleEntry(resource: .condition(condition1)),
             BundleEntry(resource: .condition(condition2))
         ]
         
-        await store.load(bundle: bundle)
-        
-        #expect(store.conditions.count == 2)
-        #expect(store.conditions[0].id.fhirResourceId == "condition-id")
-        #expect(store.conditions[1].id.fhirResourceId == "condition-id")
+        store.load(bundle: bundle)
+        #expect(store.conditions.count == 1)
+        #expect(try #require(store.conditions.first).id.fhirResourceId == "condition-id")
     }
 }

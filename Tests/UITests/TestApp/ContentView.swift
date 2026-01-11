@@ -27,49 +27,50 @@ struct ContentView: View {
         NavigationStack {   // swiftlint:disable:this closure_body_length
             List {
                 Section {
-                    Text("Allergy Intolerances: \(fhirStore.allergyIntolerances.count)")
-                    Text("Conditions: \(fhirStore.conditions.count)")
-                    Text("Diagnostics: \(fhirStore.diagnostics.count)")
-                    Text("Documents: \(fhirStore.documents.count)")
-                    Text("Encounters: \(fhirStore.encounters.count)")
-                    Text("Immunizations: \(fhirStore.immunizations.count)")
-                    Text("Medications: \(fhirStore.medications.count)")
-                    Text("Observations: \(fhirStore.observations.count)")
-                    Text("Procedures: \(fhirStore.procedures.count)")
-                    Text("Other Resources: \(fhirStore.otherResources.count)")
+                    numResourcesRow("Allergy Intolerances", \.allergyIntolerances)
+                    numResourcesRow("Conditions", \.conditions)
+                    numResourcesRow("Diagnostics", \.diagnostics)
+                    numResourcesRow("Documents", \.documents)
+                    numResourcesRow("Encounters", \.encounters)
+                    numResourcesRow("Immunizations", \.immunizations)
+                    numResourcesRow("Medications", \.medications)
+                    numResourcesRow("Observations", \.observations)
+                    numResourcesRow("Procedures", \.procedures)
+                    numResourcesRow("Other Resources", \.otherResources)
                 }
                 Section {
                     presentPatientSelectionButton
                     collectFromHealthKitButton
                 }
             }
-                .viewStateAlert(state: $viewState)
-                .sheet(isPresented: $presentPatientSelection) {
-                    MockPatientSelection(presentPatientSelection: $presentPatientSelection)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            fhirStore.insert(
-                                resource: .init(
-                                    resource: ModelsR4.Account(id: .init(stringLiteral: additionalFHIRResourceId), status: .init()),
-                                    displayName: "Random Account FHIR Resource"
-                                )
-                            )
-                        } label: {
-                            Label("Add", systemImage: "doc.badge.plus")
-                                .accessibilityLabel("Add FHIR Resource")
-                        }
-                    }
-                    ToolbarItem {
-                        Button {
-                            fhirStore.removeResource(withId: additionalFHIRResourceId)
-                        } label: {
-                            Label("Remove", systemImage: "folder.badge.minus")
-                                .accessibilityLabel("Remove FHIR Resource")
-                        }
+            .viewStateAlert(state: $viewState)
+            .sheet(isPresented: $presentPatientSelection) {
+                MockPatientSelection(presentPatientSelection: $presentPatientSelection)
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        let resource = ModelsR4.Account(
+                            id: "\(additionalFHIRResourceId):\(UUID().uuidString)".asFHIRStringPrimitive(),
+                            status: .init()
+                        )
+                        fhirStore.insert(FHIRResource(resource: resource, displayName: "Random Account FHIR Resource"))
+                    } label: {
+                        Label("Add", systemImage: "doc.badge.plus")
+                            .accessibilityLabel("Add FHIR Resource")
                     }
                 }
+                ToolbarItem {
+                    Button {
+                        fhirStore.removeAllResources {
+                            ($0.fhirId ?? "").starts(with: additionalFHIRResourceId)
+                        }
+                    } label: {
+                        Label("Remove", systemImage: "folder.badge.minus")
+                            .accessibilityLabel("Remove FHIR Resource")
+                    }
+                }
+            }
         }
     }
     
@@ -89,5 +90,12 @@ struct ContentView: View {
             try await healthKit.askForAuthorization()
             await standard.fetchRecordsFromHealthKit()
         }
+    }
+    
+    private func numResourcesRow(
+        _ title: String,
+        _ resourcesKeyPath: KeyPath<FHIRStore, some Collection<FHIRResource>>
+    ) -> some View {
+        LabeledContent(title, value: fhirStore[keyPath: resourcesKeyPath].count, format: .number)
     }
 }

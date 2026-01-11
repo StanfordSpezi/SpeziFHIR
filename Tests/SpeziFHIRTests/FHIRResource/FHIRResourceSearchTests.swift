@@ -38,19 +38,16 @@ extension FHIRResourceTests {
             versionedResource: .r4(observation),
             displayName: "Test Resource1"
         )
-        
         let resource2 = FHIRResource(
             versionedResource: .r4(patient),
             displayName: "Test Resource2"
         )
-        
         let resource3 = FHIRResource(
             versionedResource: .r4(medicationRequest),
             displayName: "Test Resource3"
         )
         
-        let resources = [resource1, resource2, resource3]
-        
+        let resources: Set = [resource1, resource2, resource3]
         #expect(resources.filterByDisplayName(with: "test").count == 3)
         #expect(resources.filterByDisplayName(with: "resource1").count == 1)
         #expect(resources.filterByDisplayName(with: "xyz").isEmpty)
