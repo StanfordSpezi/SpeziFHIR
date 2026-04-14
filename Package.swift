@@ -27,10 +27,10 @@ let package = Package(
         .library(name: "SpeziFHIRMockPatients", targets: ["SpeziFHIRMockPatients"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/FHIRModels.git", from: "0.7.0"),
-        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR.git", from: "1.0.0"),
+        .package(url: "https://github.com/apple/FHIRModels.git", "0.8.0"..<"0.9.0"),
+        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR.git", from: "2.0.0-beta.3"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.8.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", from: "1.2.0")
+        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", from: "1.4.2")
     ] + swiftLintPackage(),
     targets: [
         .target(
