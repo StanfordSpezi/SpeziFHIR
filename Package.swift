@@ -1,5 +1,4 @@
-// swift-tools-version:6.1
-
+// swift-tools-version:6.2
 //
 // This source file is part of the Stanford Spezi open-source project
 //
@@ -23,15 +22,15 @@ let package = Package(
     ],
     products: [
         .library(name: "SpeziFHIR", targets: ["SpeziFHIR"]),
-        .library(name: "SpeziFHIRHealthKit", targets: ["SpeziFHIRHealthKit"]),
-        .library(name: "SpeziFHIRMockPatients", targets: ["SpeziFHIRMockPatients"])
+        .library(name: "FHIRModelsExtensions", targets: ["FHIRModelsExtensions"]),
+        .library(name: "FHIRPathParser", targets: ["FHIRPathParser"]),
+        .library(name: "FHIRQuestionnaires", targets: ["FHIRQuestionnaires"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/FHIRModels.git", "0.8.0"..<"0.9.0"),
-        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR.git", from: "2.0.0-beta.3"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.8.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", from: "1.4.2")
-    ] + swiftLintPackage(),
+        .package(url: "https://github.com/antlr/antlr4.git", from: "4.13.1")
+    ],
     targets: [
         .target(
             name: "SpeziFHIR",
@@ -39,60 +38,52 @@ let package = Package(
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "ModelsR4", package: "FHIRModels"),
                 .product(name: "ModelsDSTU2", package: "FHIRModels"),
-                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
-                .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
             ],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
-            plugins: [] + swiftLintPlugin()
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")]
         ),
         .target(
-            name: "SpeziFHIRHealthKit",
+            name: "FHIRModelsExtensions",
             dependencies: [
-                .target(name: "SpeziFHIR"),
-                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
-                .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
-            ],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
-            plugins: [] + swiftLintPlugin()
-        ),
-        .target(
-            name: "SpeziFHIRMockPatients",
-            dependencies: [
-                .target(name: "SpeziFHIR"),
+                "FHIRPathParser",
                 .product(name: "ModelsR4", package: "FHIRModels")
             ],
-            resources: [.process("Resources")],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
-            plugins: [] + swiftLintPlugin()
+            swiftSettings: [
+                .enableUpcomingFeature("ExistentialAny"),
+                .enableUpcomingFeature("InternalImportsByDefault")
+            ]
+        ),
+        .target(
+            name: "FHIRPathParser",
+            dependencies: [
+                .product(name: "Antlr4", package: "antlr4")
+            ],
+            exclude: [
+                "ANTLUtils"
+            ]
+        ),
+        .target(
+            name: "FHIRQuestionnaires",
+            dependencies: [
+                .product(name: "ModelsR4", package: "FHIRModels")
+            ],
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "SpeziFHIRTests",
             dependencies: [
-                .target(name: "SpeziFHIR"),
-                .target(name: "SpeziFHIRHealthKit"),
-                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
-                .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
+                "SpeziFHIR"
             ],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
-            plugins: [] + swiftLintPlugin()
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")]
+        ),
+        .testTarget(
+            name: "FHIRModelsExtensionsTests",
+            dependencies: [
+                "FHIRModelsExtensions", "FHIRQuestionnaires"
+            ]
+        ),
+        .testTarget(
+            name: "FHIRPathParserTests",
+            dependencies: ["FHIRPathParser"]
         )
     ]
 )
-
-
-func swiftLintPlugin() -> [Target.PluginUsage] {
-    // Fully quit Xcode and open again with `open --env SPEZI_DEVELOPMENT_SWIFTLINT /Applications/Xcode.app`
-    if ProcessInfo.processInfo.environment["SPEZI_DEVELOPMENT_SWIFTLINT"] != nil {
-        [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
-    } else {
-        []
-    }
-}
-
-func swiftLintPackage() -> [PackageDescription.Package.Dependency] {
-    if ProcessInfo.processInfo.environment["SPEZI_DEVELOPMENT_SWIFTLINT"] != nil {
-        [.package(url: "https://github.com/realm/SwiftLint.git", from: "0.55.1")]
-    } else {
-        []
-    }
-}
