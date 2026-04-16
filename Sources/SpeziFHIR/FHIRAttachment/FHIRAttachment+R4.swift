@@ -33,7 +33,7 @@ extension ModelsR4.Attachment: FHIRAttachment {
         data?.value?.dataString
     }
     
-    mutating func setContent(from string: String) {
+    mutating func setData(from string: String) {
         data = FHIRPrimitive(ModelsR4.Base64Binary(string))
     }
 }

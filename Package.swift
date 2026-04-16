@@ -49,8 +49,8 @@ let package = Package(
             name: "FHIRModelsExtensions",
             dependencies: [
                 "FHIRPathParser",
-                .product(name: "ModelsBuild", package: "FHIRModels"),
-                .product(name: "ModelsR4", package: "FHIRModels")
+                .product(name: "ModelsR4", package: "FHIRModels"),
+                .product(name: "ModelsDSTU2", package: "FHIRModels")
             ],
             swiftSettings: [
                 .enableUpcomingFeature("ExistentialAny"),

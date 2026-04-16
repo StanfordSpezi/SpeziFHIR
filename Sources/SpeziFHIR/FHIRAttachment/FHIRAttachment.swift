@@ -46,5 +46,5 @@ protocol FHIRAttachment: Sendable {
 
     /// Encodes the provided string content into the FHIR attachment.
     /// - Parameter string: The string content to encode into the FHIR  attachment.
-    mutating func setContent(from string: String)
+    mutating func setData(from string: String)
 }

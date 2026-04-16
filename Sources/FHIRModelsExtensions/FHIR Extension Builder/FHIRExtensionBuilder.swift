@@ -9,10 +9,6 @@
 public import ModelsR4
 
 
-/// Namespace containing URLs of some custom FHIR Extensions.
-public enum FHIRExtensionUrls {}
-
-
 /// Type-erased version of a ``FHIRExtensionBuilder``
 public protocol FHIRExtensionBuilderProtocol<Input> {
     /// The extension builder's input type.
@@ -37,7 +33,7 @@ public protocol FHIRExtensionBuilderProtocol<Input> {
 /// - ``apply(typeErasedInput:to:)``
 ///
 /// ### Supporting Types
-/// - ``FHIRExtensionUrls``
+/// - ``FHIRExtensionURL``
 /// - ``FHIRExtensionBuilderProtocol``
 ///
 /// ### Other
@@ -46,18 +42,19 @@ public protocol FHIRExtensionBuilderProtocol<Input> {
 public struct FHIRExtensionBuilder<Input>: FHIRExtensionBuilderProtocol, Sendable {
     private let impl: @Sendable (_ input: Input, _ observation: inout Observation) throws -> Void
     
-    /// Creates a new Extension Builder.
+    /// Creates an Extension Builder.
     public init(_ action: @escaping @Sendable (_ input: Input, _ observation: inout Observation) throws -> Void) {
         self.impl = action
     }
     
-    /// Creates a new Extension Builder.
+    /// Creates an Extension Builder.
     public init(_ action: @escaping @Sendable (_ observation: inout Observation) throws -> Void) where Input == Void {
         self.init { _, observation in
             try action(&observation)
         }
     }
     
+    /// Applies an extension builder to an input.
     public func apply(input: Input, to observation: inout Observation) throws {
         try impl(input, &observation)
     }

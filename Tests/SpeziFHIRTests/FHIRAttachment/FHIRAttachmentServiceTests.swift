@@ -18,7 +18,7 @@ private struct MockFHIRAttachment: FHIRAttachment {
     var base64String: String?
     var encodedContent: String?
     
-    mutating func setContent(from string: String) {
+    mutating func setData(from string: String) {
         encodedContent = string
     }
 }

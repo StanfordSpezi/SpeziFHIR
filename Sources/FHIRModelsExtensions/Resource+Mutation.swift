@@ -19,14 +19,18 @@ extension FHIRType {
     /// Appends multiple elements to a `Collection`-typed property.
     @inlinable
     public mutating func appendElements<C: RangeReplaceableCollection>(
-        _ elements: some Collection<C.Element>,
+        _ elements: some Sequence<C.Element>,
         to keyPath: WritableKeyPath<Self, C?>
     ) {
         if self[keyPath: keyPath] == nil {
             self[keyPath: keyPath] = C()
-            self[keyPath: keyPath]!.reserveCapacity(elements.count) // swiftlint:disable:this force_unwrapping
+            // swiftlint:disable force_unwrapping
+            self[keyPath: keyPath]!.reserveCapacity(elements.underestimatedCount)
         } else {
-            self[keyPath: keyPath]!.reserveCapacity(self[keyPath: keyPath]!.count + elements.count) // swiftlint:disable:this force_unwrapping
+            self[keyPath: keyPath]!.reserveCapacity(
+                self[keyPath: keyPath]!.count + elements.underestimatedCount
+            )
+            // swiftlint:enable force_unwrapping
         }
         self[keyPath: keyPath]?.append(contentsOf: elements)
     }

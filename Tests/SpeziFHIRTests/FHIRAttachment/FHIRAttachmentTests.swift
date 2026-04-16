@@ -120,7 +120,7 @@ struct FHIRAttachmentTests {
     func testEncodeContent(_ model: FHIRModel) {
         var attachment = FHIRAttachmentTestHelper.createAttachment(model: model)
         let testContent = "This is test content"
-        attachment.setContent(from: testContent)
+        attachment.setData(from: testContent)
         #expect(attachment.base64String == testContent, "\(model.description) attachment should encode content correctly")
     }
 }

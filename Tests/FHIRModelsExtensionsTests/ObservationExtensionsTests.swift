@@ -167,33 +167,33 @@ struct ObservationExtensionsTests {
     
     @Test
     func fhirExtension() throws {
-        let extension1Url = try #require("https://bdh.stanford.edu/fhir/testDef1".asFHIRURIPrimitive())
-        let extension2Url = try #require("https://bdh.stanford.edu/fhir/testDef2".asFHIRURIPrimitive())
+        let extension1Url = FHIRExtensionURL("https://bdh.stanford.edu/fhir/testDef1")
+        let extension2Url = FHIRExtensionURL("https://bdh.stanford.edu/fhir/testDef2")
         let extension1: (Int) -> Extension = { Extension(url: extension1Url, value: .integer($0.asFHIRIntegerPrimitive())) }
         let extension2: (Int) -> Extension = { Extension(url: extension2Url, value: .integer($0.asFHIRIntegerPrimitive())) }
         
         var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         #expect(observation.extension == nil)
         
-        observation.appendExtension(extension1(0), replaceAllExistingWithSameUrl: false)
+        observation.append(extension: extension1(0), behaviour: .additive)
         #expect(observation.extension == [extension1(0)])
         
-        observation.appendExtension(extension2(0), replaceAllExistingWithSameUrl: false)
+        observation.append(extension: extension2(0), behaviour: .additive)
         #expect(observation.extension == [extension1(0), extension2(0)])
         
-        observation.appendExtension(extension1(1), replaceAllExistingWithSameUrl: true)
+        observation.append(extension: extension1(1), behaviour: .replace)
         #expect(observation.extension == [extension2(0), extension1(1)])
         
-        observation.appendExtension(extension1(2), replaceAllExistingWithSameUrl: false)
+        observation.append(extension: extension1(2), behaviour: .additive)
         #expect(observation.extension == [extension2(0), extension1(1), extension1(2)])
         
-        observation.appendExtension(extension1(3), replaceAllExistingWithSameUrl: true)
+        observation.append(extension: extension1(3), behaviour: .replace)
         #expect(observation.extension == [extension2(0), extension1(3)])
         
-        observation.appendExtension(extension2(1), replaceAllExistingWithSameUrl: false)
+        observation.append(extension: extension2(1), behaviour: .additive)
         #expect(observation.extension == [extension2(0), extension1(3), extension2(1)])
         
-        observation.appendExtension(extension2(2), replaceAllExistingWithSameUrl: false)
+        observation.append(extension: extension2(2), behaviour: .additive)
         #expect(observation.extension == [extension2(0), extension1(3), extension2(1), extension2(2)])
         
         observation.removeFirstExtension(withUrl: extension1Url)
@@ -220,22 +220,22 @@ struct ObservationExtensionsTests {
         try observation.encodeAbsoluteTimeRangeIntoExtension()
         let extensions = try #require(observation.extension)
         #expect(extensions.count == 2)
-        #expect(observation.extensions(for: FHIRExtensionUrls.absoluteTimeRangeStart) == [
-            Extension(url: FHIRExtensionUrls.absoluteTimeRangeStart, value: .decimal(startDate.timeIntervalSince1970.asFHIRDecimalPrimitive()))
+        #expect(observation.extensions(for: .absoluteTimeRangeStart) == [
+            Extension(url: .absoluteTimeRangeStart, value: .decimal(startDate.timeIntervalSince1970.asFHIRDecimalPrimitive()))
         ])
-        #expect(observation.extensions(for: FHIRExtensionUrls.absoluteTimeRangeEnd) == [
-            Extension(url: FHIRExtensionUrls.absoluteTimeRangeEnd, value: .decimal(endDate.timeIntervalSince1970.asFHIRDecimalPrimitive()))
+        #expect(observation.extensions(for: .absoluteTimeRangeEnd) == [
+            Extension(url: .absoluteTimeRangeEnd, value: .decimal(endDate.timeIntervalSince1970.asFHIRDecimalPrimitive()))
         ])
     }
     
     
     @Test
     func voidExtensionBuilder() throws {
-        let url = try #require("https://bdh.stanford.edu/fhir/defs/timeZone".asFHIRURIPrimitive())
+        let url = FHIRExtensionURL("https://bdh.stanford.edu/fhir/defs/timeZone")
         let timeZone = try #require(TimeZone(identifier: "Europe/Berlin"))
         let trackTimeZone = FHIRExtensionBuilder { (observation: inout Observation) in
             let ext = Extension(url: url, value: .string(timeZone.identifier.asFHIRStringPrimitive()))
-            observation.appendExtension(ext, replaceAllExistingWithSameUrl: true)
+            observation.append(extension: ext, behaviour: .replace)
         }
         var observation = Observation(code: CodeableConcept(), status: .init(.final))
         #expect(observation.extension == nil)

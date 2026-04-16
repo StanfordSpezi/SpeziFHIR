@@ -6,9 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-// swiftlint:disable discouraged_optional_collection
-
 public import ModelsR4
+
 
 extension Observation {
     /// Appends an `Identifier` to the `Observation`
@@ -19,7 +18,7 @@ extension Observation {
     
     /// Appends multiple `Identifier`s to the `Observation`
     @inlinable
-    public mutating func appendIdentifiers(_ identifiers: some Collection<Identifier>) {
+    public mutating func appendIdentifiers(_ identifiers: some Sequence<Identifier>) {
         appendElements(identifiers, to: \.identifier)
     }
     
@@ -31,7 +30,7 @@ extension Observation {
     
     /// Appends multiple `CodeableConcept`s to the `Observation`
     @inlinable
-    public mutating func appendCategories(_ categories: some Collection<CodeableConcept>) {
+    public mutating func appendCategories(_ categories: some Sequence<CodeableConcept>) {
         appendElements(categories, to: \.category)
     }
     
@@ -43,7 +42,7 @@ extension Observation {
     
     /// Appends multiple `Coding`s to the `Observation`
     @inlinable
-    public mutating func appendCodings(_ codings: some Collection<Coding>) {
+    public mutating func appendCodings(_ codings: some Sequence<Coding>) {
         appendElements(codings, to: \.code.coding)
     }
     
@@ -55,54 +54,7 @@ extension Observation {
     
     /// Appends multiple `ObservationComponent`s to the `Observation`
     @inlinable
-    public mutating func appendComponents(_ components: some Collection<ObservationComponent>) {
+    public mutating func appendComponents(_ components: some Sequence<ObservationComponent>) {
         appendElements(components, to: \.component)
-    }
-}
-
-
-extension ModelsR4._FHIRTypeWithExtensions {
-    /// Retrieves all FHIR Extensions for the specified url.
-    @inlinable
-    public func extensions(for url: FHIRPrimitive<FHIRURI>) -> [Extension] {
-        `extension`.map { $0.filter { $0.url == url } } ?? []
-    }
-}
-
-
-extension ModelsR4._FHIRTypeWithExtensions {
-    /// Appends an `Extension` to the `DomainResource`
-    @inlinable
-    public mutating func appendExtension(_ extension: Extension, replaceAllExistingWithSameUrl: Bool) {
-        appendExtensions(CollectionOfOne(`extension`), replaceAllExistingWithSameUrl: replaceAllExistingWithSameUrl)
-    }
-    
-    /// Appends multiple `Extension`s to the `DomainResource`
-    @inlinable
-    public mutating func appendExtensions(_ extensions: some Collection<Extension>, replaceAllExistingWithSameUrl: Bool) {
-        if replaceAllExistingWithSameUrl {
-            for element in extensions {
-                removeAllExtensions(withUrl: element.url)
-            }
-        }
-        appendElements(extensions, to: \.extension)
-    }
-    
-    /// Removes the first extension element that matches the specified url.
-    ///
-    /// - returns: the removed extension element, if any.
-    @inlinable
-    @discardableResult
-    public mutating func removeFirstExtension(withUrl url: FHIRPrimitive<FHIRURI>) -> Extension? {
-        removeFirstElement(of: \.extension) { $0.url == url }
-    }
-    
-    /// Removes all extension elements that matches the specified url.
-    ///
-    /// - returns: the removed extension elements, if any.
-    @inlinable
-    @discardableResult
-    public mutating func removeAllExtensions(withUrl url: FHIRPrimitive<FHIRURI>) -> [Extension]? {
-        removeAllElements(of: \.extension) { $0.url == url }
     }
 }

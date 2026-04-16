@@ -39,7 +39,7 @@ struct FHIRAttachmentService {
     ///           such as missing MIME type, invalid base64 data, or unsupported content type.
     func stringify(attachment: inout some FHIRAttachment) throws { // instead of this maybe have it as an extension on the attachment iself?
         let content = try processAttachment(attachment)
-        attachment.setContent(from: content)
+        attachment.setData(from: content)
     }
 
     private func processAttachment(_ attachment: some FHIRAttachment) throws -> String {
