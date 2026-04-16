@@ -11,8 +11,7 @@ import Foundation
 import ModelsR4
 import Testing
 
-
-@MainActor
+@Suite
 struct FHIRExtensionsTests {
     @Test
     func dateTimeUtils() throws {

@@ -6,30 +6,21 @@
 // SPDX-License-Identifier: MIT
 //
 
-public import ModelsR4
+public import FMCore
 
 
-/// we need this as a protocol extension, bc we can't use `Self` in the KeyPath type if it's a normal extension on eg Resource.
-@_marker
-@_documentation(visibility: internal)
-public protocol FHIRResourceMutationExtensions {}
-
-extension ModelsR4.FHIRAbstractResource: FHIRResourceMutationExtensions {}
-extension ModelsR4.Element: FHIRResourceMutationExtensions {}
-
-
-extension FHIRResourceMutationExtensions {
+extension FHIRType {
     /// Appends an element to a `Collection`-typed property.
     @inlinable
-    public func appendElement<C: RangeReplaceableCollection>(_ element: C.Element, to keyPath: ReferenceWritableKeyPath<Self, C?>) {
+    public mutating func appendElement<C: RangeReplaceableCollection>(_ element: C.Element, to keyPath: WritableKeyPath<Self, C?>) {
         appendElements(CollectionOfOne(element), to: keyPath)
     }
     
     /// Appends multiple elements to a `Collection`-typed property.
     @inlinable
-    public func appendElements<C: RangeReplaceableCollection>(
+    public mutating func appendElements<C: RangeReplaceableCollection>(
         _ elements: some Collection<C.Element>,
-        to keyPath: ReferenceWritableKeyPath<Self, C?>
+        to keyPath: WritableKeyPath<Self, C?>
     ) {
         if self[keyPath: keyPath] == nil {
             self[keyPath: keyPath] = C()
@@ -46,8 +37,8 @@ extension FHIRResourceMutationExtensions {
     ///
     /// - returns: the removed element, if any.
     @inlinable
-    public func removeFirstElement<C: RangeReplaceableCollection>(
-        of keyPath: ReferenceWritableKeyPath<Self, C?>,
+    public mutating func removeFirstElement<C: RangeReplaceableCollection>(
+        of keyPath: WritableKeyPath<Self, C?>,
         where predicate: (C.Element) -> Bool
     ) -> C.Element? {
         guard var elements = self[keyPath: keyPath], let idx = elements.firstIndex(where: predicate) else {
@@ -64,8 +55,8 @@ extension FHIRResourceMutationExtensions {
     ///
     /// - returns: the removed elements, if any.
     @inlinable
-    public func removeAllElements<C: RangeReplaceableCollection>(
-        of keyPath: ReferenceWritableKeyPath<Self, C?>,
+    public mutating func removeAllElements<C: RangeReplaceableCollection>(
+        of keyPath: WritableKeyPath<Self, C?>,
         where predicate: (C.Element) -> Bool
     ) -> [C.Element]? { // swiftlint:disable:this discouraged_optional_collection
         guard var elements = self[keyPath: keyPath] else {

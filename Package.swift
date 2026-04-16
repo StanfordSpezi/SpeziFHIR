@@ -10,6 +10,8 @@
 import class Foundation.ProcessInfo
 import PackageDescription
 
+let enableSwiftLintPlugin = true
+
 
 let package = Package(
     name: "SpeziFHIR",
@@ -27,10 +29,11 @@ let package = Package(
         .library(name: "FHIRQuestionnaires", targets: ["FHIRQuestionnaires"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/FHIRModels.git", "0.8.0"..<"0.9.0"),
+//        .package(url: "https://github.com/apple/FHIRModels.git", .upToNextMinor(from: "0.9.0")),
+        .package(url: "https://github.com/lukaskollmer/FHIRModels.git", branch: "lukas/try-to-fix"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.8.0"),
         .package(url: "https://github.com/antlr/antlr4.git", from: "4.13.1")
-    ],
+    ] + swiftLintPackage,
     targets: [
         .target(
             name: "SpeziFHIR",
@@ -39,18 +42,21 @@ let package = Package(
                 .product(name: "ModelsR4", package: "FHIRModels"),
                 .product(name: "ModelsDSTU2", package: "FHIRModels"),
             ],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")]
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
+            plugins: [] + swiftLintPlugin
         ),
         .target(
             name: "FHIRModelsExtensions",
             dependencies: [
                 "FHIRPathParser",
+                .product(name: "ModelsBuild", package: "FHIRModels"),
                 .product(name: "ModelsR4", package: "FHIRModels")
             ],
             swiftSettings: [
                 .enableUpcomingFeature("ExistentialAny"),
                 .enableUpcomingFeature("InternalImportsByDefault")
-            ]
+            ],
+            plugins: [] + swiftLintPlugin
         ),
         .target(
             name: "FHIRPathParser",
@@ -66,24 +72,47 @@ let package = Package(
             dependencies: [
                 .product(name: "ModelsR4", package: "FHIRModels")
             ],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            plugins: [] + swiftLintPlugin
         ),
         .testTarget(
             name: "SpeziFHIRTests",
             dependencies: [
                 "SpeziFHIR"
             ],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")]
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
+            plugins: [] + swiftLintPlugin
         ),
         .testTarget(
             name: "FHIRModelsExtensionsTests",
             dependencies: [
                 "FHIRModelsExtensions", "FHIRQuestionnaires"
-            ]
+            ],
+            plugins: [] + swiftLintPlugin
         ),
         .testTarget(
             name: "FHIRPathParserTests",
-            dependencies: ["FHIRPathParser"]
+            dependencies: ["FHIRPathParser"],
+            plugins: [] + swiftLintPlugin
         )
     ]
 )
+
+
+// MARK: SwiftLint support
+
+var swiftLintPlugin: [Target.PluginUsage] {
+    if enableSwiftLintPlugin {
+        [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+    } else {
+        []
+    }
+}
+
+var swiftLintPackage: [PackageDescription.Package.Dependency] {
+    if enableSwiftLintPlugin {
+        [.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", from: "0.63.2")]
+    } else {
+        []
+    }
+}

@@ -19,7 +19,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
 
     static func createCarePlan(date: Date? = nil) throws -> ModelsR4.CarePlan {
-        let period = ModelsR4.Period()
+        var period = ModelsR4.Period()
         if let date = date {
             period.start = try FHIRPrimitive(DateTime(date: date))
         }
@@ -33,7 +33,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createCareTeam(date: Date? = nil) throws -> ModelsR4.CareTeam {
-        let period = ModelsR4.Period()
+        var period = ModelsR4.Period()
         if let date = date {
             period.start = try FHIRPrimitive(DateTime(date: date))
         }
@@ -45,7 +45,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createClaim(date: Date? = nil) throws -> ModelsR4.Claim {
-        let period = ModelsR4.Period()
+        var period = ModelsR4.Period()
         if let date = date {
             period.end = try FHIRPrimitive(DateTime(date: date))
         }
@@ -78,7 +78,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createCondition(date: Date? = nil) throws -> ModelsR4.Condition {
-        let condition = ModelsR4.Condition(
+        var condition = ModelsR4.Condition(
             id: "condition-id".asFHIRStringPrimitive(),
             subject: Reference(id: "patient-id".asFHIRStringPrimitive())
         )
@@ -96,7 +96,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createDiagnosticReport(date: Date? = nil) throws -> ModelsR4.DiagnosticReport {
-        let diagnosticReport = ModelsR4.DiagnosticReport(
+        var diagnosticReport = ModelsR4.DiagnosticReport(
             code: CodeableConcept(coding: [Coding(code: "code".asFHIRStringPrimitive())]),
             id: "diagnostic-report-id".asFHIRStringPrimitive(),
             status: FHIRPrimitive(.final)
@@ -113,7 +113,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
                 contentType: "text/plain".asFHIRStringPrimitive()
             )
         )
-        let documentReference = ModelsR4.DocumentReference(
+        var documentReference = ModelsR4.DocumentReference(
             content: [content],
             id: "document-reference-id".asFHIRStringPrimitive(),
             status: FHIRPrimitive(.current)
@@ -125,7 +125,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createEncounter(date: Date? = nil) throws -> ModelsR4.Encounter {
-        let period = ModelsR4.Period()
+        var period = ModelsR4.Period()
         if let date = date {
             period.end = try FHIRPrimitive(DateTime(date: date))
         }
@@ -141,7 +141,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createExplanationOfBenefit(date: Date? = nil) throws -> ModelsR4.ExplanationOfBenefit {
-        let period = ModelsR4.Period()
+        var period = ModelsR4.Period()
         if let date = date {
             period.end = try FHIRPrimitive(DateTime(date: date))
         }
@@ -232,7 +232,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createMedicationRequest(date: Date? = nil) throws -> ModelsR4.MedicationRequest {
-        let medicationRequest = ModelsR4.MedicationRequest(
+        var medicationRequest = ModelsR4.MedicationRequest(
             id: "medication-request-id".asFHIRStringPrimitive(),
             intent: FHIRPrimitive(.order),
             medication: .codeableConcept(
@@ -277,7 +277,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createObservation(issuedDate: Date? = nil, effectiveDate: Date? = nil) throws -> ModelsR4.Observation {
-        let observation = ModelsR4.Observation(
+        var observation = ModelsR4.Observation(
             code: CodeableConcept(coding: [Coding(code: "code".asFHIRStringPrimitive())]),
             id: "observation-id".asFHIRStringPrimitive(),
             status: FHIRPrimitive(.final)
@@ -298,7 +298,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createProcedure(date: Date? = nil) throws -> ModelsR4.Procedure {
-        let procedure = ModelsR4.Procedure(
+        var procedure = ModelsR4.Procedure(
             id: "procedure-id".asFHIRStringPrimitive(),
             status: FHIRPrimitive(.completed),
             subject: Reference(id: "patient-id".asFHIRStringPrimitive())
@@ -314,7 +314,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
             preconditionFailure("Failed to create UTC timezone")
         }
 
-        let patient = ModelsR4.Patient(
+        var patient = ModelsR4.Patient(
             id: "patient-id".asFHIRStringPrimitive()
         )
         if let date = date {
@@ -342,7 +342,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createSupplyDelivery(date: Date? = nil) throws -> ModelsR4.SupplyDelivery {
-        let supplyDelivery = ModelsR4.SupplyDelivery(
+        var supplyDelivery = ModelsR4.SupplyDelivery(
             id: "supply-delivery-id".asFHIRStringPrimitive(),
             status: FHIRPrimitive(.completed)
         )
@@ -353,15 +353,13 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createBundle() throws -> ModelsR4.Bundle {
-        let bundle = Bundle(type: FHIRPrimitive(BundleType.transaction))
+        var bundle = Bundle(type: FHIRPrimitive(BundleType.transaction))
         let condition = try ModelsR4Mocks.createCondition()
         let observation = try ModelsR4Mocks.createObservation()
-
         bundle.entry = [
             BundleEntry(resource: .condition(condition)),
             BundleEntry(resource: .observation(observation))
         ]
-
         return bundle
     }
 
@@ -372,17 +370,15 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
         content: String,
         creationDate: Date? = nil
     ) throws -> ModelsR4.Attachment {
-        let attachment = ModelsR4.Attachment(
+        var attachment = ModelsR4.Attachment(
             contentType: FHIRPrimitive(stringLiteral: contentType),
             data: FHIRPrimitive(ModelsR4.Base64Binary(content)),
             id: id.asFHIRStringPrimitive(),
             title: FHIRPrimitive(ModelsR4.FHIRString(title))
         )
-
         if let creationDate {
             attachment.creation = FHIRPrimitive(try DateTime(date: creationDate))
         }
-
         return attachment
     }
 
@@ -402,24 +398,18 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
                 )
             ]
         )
-
-
         let contentItems = attachments.map { attachment in
             ModelsR4.DocumentReferenceContent(attachment: attachment)
         }
-
-        let documentReference = ModelsR4.DocumentReference(
+        var documentReference = ModelsR4.DocumentReference(
             content: contentItems,
             status: FHIRPrimitive(status),
             type: documentType
         )
-
         documentReference.id = id.asFHIRStringPrimitive()
-
         if let date {
             documentReference.date = FHIRPrimitive<Instant>(try? Instant(date: date))
         }
-
         return documentReference
     }
 
@@ -430,7 +420,6 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
     ) throws -> ModelsR4.Attachment {
         // This is a minimal base64-encoded text with the text "Welcome to SpeziFHIR"
         let textBase64 = "V2VsY29tZSB0byBTcGV6aUZISVI="
-
         return try createAttachment(
             id: id,
             title: title,
@@ -468,9 +457,7 @@ enum ModelsR4Mocks { // swiftlint:disable:this type_body_length
             contentType: "text/plain",
             content: "V2VsY29tZSB0byBTcGV6aUZISVI="
         )
-
         let pdfAttachment = try createPDFAttachment()
-
         return try createDocumentReference(
             id: id,
             attachments: [textAttachment, pdfAttachment],

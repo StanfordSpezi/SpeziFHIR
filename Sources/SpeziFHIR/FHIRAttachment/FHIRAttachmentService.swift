@@ -37,28 +37,24 @@ struct FHIRAttachmentService {
     /// - Parameter attachment: The FHIR attachment to transform.
     /// - Throws: `FHIRAttachmentError` if the transformation fails for any reason,
     ///           such as missing MIME type, invalid base64 data, or unsupported content type.
-    func stringify(attachment: some FHIRAttachment) throws {
+    func stringify(attachment: inout some FHIRAttachment) throws { // instead of this maybe have it as an extension on the attachment iself?
         let content = try processAttachment(attachment)
-        attachment.encode(content: content)
+        attachment.setContent(from: content)
     }
 
     private func processAttachment(_ attachment: some FHIRAttachment) throws -> String {
         guard let contentType = attachment.mimeType else {
             throw FHIRAttachmentError.missingMimeType
         }
-
         guard let encodedString = attachment.base64String else {
             throw FHIRAttachmentError.missingBase64String
         }
-
         guard let data = base64Decoder.decode(string: encodedString) else {
             throw FHIRAttachmentError.invalidBase64Data
         }
-
         guard let extractor = contentExtractor(for: contentType) else {
             throw FHIRAttachmentError.unsupportedContentType(contentType)
         }
-
         let content = try extractor.extractContent(from: data)
         return content
     }

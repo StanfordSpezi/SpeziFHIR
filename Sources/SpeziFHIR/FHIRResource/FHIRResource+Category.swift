@@ -149,8 +149,6 @@ extension FHIRResource {
                 return FHIRResourceCategory.other
             case .documentReference:
                 return FHIRResourceCategory.document
-            case .domainResource:
-                return FHIRResourceCategory.other
             case .effectEvidenceSynthesis:
                 return FHIRResourceCategory.other
             case .encounter:
@@ -305,8 +303,6 @@ extension FHIRResource {
                 return FHIRResourceCategory.other
             case .researchSubject:
                 return FHIRResourceCategory.other
-            case .resource:
-                return FHIRResourceCategory.other
             case .riskAssessment:
                 return FHIRResourceCategory.other
             case .riskEvidenceSynthesis:
@@ -430,8 +426,6 @@ extension FHIRResource {
                 return FHIRResourceCategory.other
             case .documentReference:
                 return FHIRResourceCategory.document
-            case .domainResource:
-                return FHIRResourceCategory.other
             case .eligibilityRequest:
                 return FHIRResourceCategory.other
             case .eligibilityResponse:
@@ -529,8 +523,6 @@ extension FHIRResource {
             case .referralRequest:
                 return FHIRResourceCategory.other
             case .relatedPerson:
-                return FHIRResourceCategory.other
-            case .resource:
                 return FHIRResourceCategory.other
             case .riskAssessment:
                 return FHIRResourceCategory.other

@@ -7,7 +7,7 @@
 //
 
 import enum ModelsDSTU2.ResourceProxy
-import class ModelsR4.Bundle
+import struct ModelsR4.Bundle
 import Observation
 import Spezi
 

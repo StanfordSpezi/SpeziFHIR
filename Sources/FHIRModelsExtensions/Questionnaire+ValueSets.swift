@@ -12,13 +12,12 @@ public import ModelsR4
 extension Questionnaire {
     /// Get ValueSets defined as a contained resource within a FHIR `Questionnaire`
     /// - Returns: An array of `ValueSet`
+    @inlinable
     public func getContainedValueSets() -> [ValueSet] {
-        guard let contained = self.contained else {
-            return []
+        if let contained {
+            contained.compactMap { $0.get(if: ValueSet.self) }
+        } else {
+            []
         }
-        let valueSets = contained.compactMap { resource in
-            resource.get() as? ValueSet
-        }
-        return valueSets
     }
 }

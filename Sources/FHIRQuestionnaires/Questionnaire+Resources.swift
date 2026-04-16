@@ -7,7 +7,7 @@
 //
 
 import Foundation
-@_exported import class ModelsR4.Questionnaire
+import struct ModelsR4.Questionnaire
 
 
 extension Questionnaire {

@@ -13,6 +13,7 @@ import ModelsR4
 import Testing
 
 
+@Suite
 struct FHIRToResearchKitTests {
     /// - Note: "FHIR extensions" here meaning Swift extensions on FHIR types, not actual FHIR extensions.
     @Test

@@ -60,7 +60,7 @@ struct FHIRResourceTests {
 
     @Test
     func testModelsR4ResourceDates() throws {
-        let modelsR4Resources: [(ModelsR4.Resource, String)] = try [
+        let modelsR4Resources: [(any ModelsR4.Resource, String)] = try [
             (ModelsR4Mocks.createCarePlan(date: Self.testDate), "CarePlan"),
             (ModelsR4Mocks.createCareTeam(date: Self.testDate), "CareTeam"),
             (ModelsR4Mocks.createClaim(date: Self.testDate), "Claim"),
@@ -96,7 +96,7 @@ struct FHIRResourceTests {
 
     @Test
     func testModelsDSTU2ResourceDates() throws {
-        let modelsDSTU2Resources: [(ModelsDSTU2.Resource, String)] = try [
+        let modelsDSTU2Resources: [(any ModelsDSTU2.Resource, String)] = try [
             (ModelsDSTU2Mocks.createObservation(issuedDate: Self.testDate), "Observation with issued date"),
             (ModelsDSTU2Mocks.createObservation(effectiveDate: Self.testDate), "Observation with effective date"),
             (ModelsDSTU2Mocks.createMedicationOrder(date: Self.testDate), "MedicationOrder"),

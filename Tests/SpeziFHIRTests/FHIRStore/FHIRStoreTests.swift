@@ -16,7 +16,7 @@ import Testing
 struct FHIRStoreTests {
     private let store = FHIRStore()
     
-
+    
     @Test
     func testInitialState() {
         #expect(store.allergyIntolerances.isEmpty)
@@ -29,7 +29,8 @@ struct FHIRStoreTests {
         #expect(store.procedures.isEmpty)
         #expect(store.otherResources.isEmpty)
     }
-
+    
+    
     @Test
     func testInsertSingleResource() throws {
         let observation = try ModelsR4Mocks.createObservation()
@@ -40,7 +41,8 @@ struct FHIRStoreTests {
         #expect(store.observations.first?.displayName == "Test Observation")
         #expect(store.conditions.isEmpty)
     }
-
+    
+    
     @Test
     func testInsertMultipleResources() throws {
         let observation1 = try ModelsR4Mocks.createObservation()
@@ -64,7 +66,8 @@ struct FHIRStoreTests {
         #expect(store.medications.count == 1)
         #expect(store.otherResources.count == 1)
     }
-
+    
+    
     @Test
     func testRemoveResource() {
         let medication = ModelsR4Mocks.createMedication()
@@ -76,7 +79,8 @@ struct FHIRStoreTests {
         store.removeResource(withId: resource.id.fhirResourceId)
         #expect(store.medications.isEmpty)
     }
-
+    
+    
     @Test
     func testRemoveAllResources() throws {
         let observation1 = try ModelsR4Mocks.createObservation()
@@ -98,7 +102,8 @@ struct FHIRStoreTests {
         #expect(store.conditions.isEmpty)
         #expect(store.medications.isEmpty)
     }
-
+    
+    
     @Test
     func testLoadEmptyBundle() {
         let bundle = ModelsR4.Bundle(type: FHIRPrimitive<BundleType>(.transaction))
@@ -113,7 +118,8 @@ struct FHIRStoreTests {
         #expect(store.procedures.isEmpty)
         #expect(store.otherResources.isEmpty)
     }
-
+    
+    
     @Test
     func testLoadBundleWithMultipleResources() throws {
         store.load(bundle: try ModelsR4Mocks.createBundle())
@@ -122,10 +128,11 @@ struct FHIRStoreTests {
         #expect(store.conditions.first?.fhirId == "condition-id")
         #expect(store.observations.first?.fhirId == "observation-id")
     }
-
+    
+    
     @Test
     func testLoadBundleWithInvalidResources() throws {
-        let bundle = try ModelsR4Mocks.createBundle()
+        var bundle = try ModelsR4Mocks.createBundle()
         let condition = try ModelsR4Mocks.createCondition()
         let emptyEntry = BundleEntry()
         bundle.entry = [
@@ -138,12 +145,12 @@ struct FHIRStoreTests {
         #expect(store.conditions.first?.id.fhirResourceId == "condition-id")
         #expect(store.otherResources.isEmpty)
     }
-
+    
+    
     @Test
     func testLoadBundleWithDuplicateResources() throws {
         #expect(store.isEmpty)
-        
-        let bundle = try ModelsR4Mocks.createBundle()
+        var bundle = try ModelsR4Mocks.createBundle()
         let condition1 = try ModelsR4Mocks.createCondition()
         let condition2 = try ModelsR4Mocks.createCondition()
         bundle.entry = [

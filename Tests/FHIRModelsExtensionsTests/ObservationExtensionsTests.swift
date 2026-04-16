@@ -12,11 +12,11 @@ import ModelsR4
 import Testing
 
 
-@MainActor // to work around https://github.com/apple/FHIRModels/issues/36
+@Suite
 struct ObservationExtensionsTests {
     @Test
     func collectionExtensionsIdentifier() throws {
-        let observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
+        var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         
         // First test all extensions with no value beeing present (collection is nil)
         observation.appendIdentifier(Identifier(id: "ID1"))
@@ -40,7 +40,7 @@ struct ObservationExtensionsTests {
     
     @Test
     func collectionExtensionsCoding() throws {
-        let observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
+        var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         
         // First test all extensions with no value beeing present (collection is nil)
         observation.appendCoding(
@@ -94,7 +94,7 @@ struct ObservationExtensionsTests {
     
     @Test
     func collectionExtensionsCategories() throws {
-        let observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
+        var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         
         // First test all extensions with no value beeing present (collection is nil)
         observation.appendCategory(CodeableConcept(id: "Concept1"))
@@ -118,7 +118,7 @@ struct ObservationExtensionsTests {
     
     @Test
     func collectionExtensionsComponents() throws {
-        let observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
+        var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         
         // First test all extensions with no value beeing present (collection is nil)
         observation.appendComponent(
@@ -172,7 +172,7 @@ struct ObservationExtensionsTests {
         let extension1: (Int) -> Extension = { Extension(url: extension1Url, value: .integer($0.asFHIRIntegerPrimitive())) }
         let extension2: (Int) -> Extension = { Extension(url: extension2Url, value: .integer($0.asFHIRIntegerPrimitive())) }
         
-        let observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
+        var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         #expect(observation.extension == nil)
         
         observation.appendExtension(extension1(0), replaceAllExistingWithSameUrl: false)
@@ -213,7 +213,7 @@ struct ObservationExtensionsTests {
         let startDate = try #require(cal.date(from: .init(year: 2025, month: 07, day: 09, hour: 12, minute: 31)))
         let endDate = try #require(cal.date(byAdding: .minute, value: 15, to: startDate))
         
-        let observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
+        var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         try observation.setEffective(startDate: startDate, endDate: endDate, timeZone: .current)
         #expect(observation.extension == nil)
         
@@ -231,13 +231,13 @@ struct ObservationExtensionsTests {
     
     @Test
     func voidExtensionBuilder() throws {
-        nonisolated(unsafe) let url = try #require("https://bdh.stanford.edu/fhir/defs/timeZone".asFHIRURIPrimitive())
+        let url = try #require("https://bdh.stanford.edu/fhir/defs/timeZone".asFHIRURIPrimitive())
         let timeZone = try #require(TimeZone(identifier: "Europe/Berlin"))
-        let trackTimeZone = FHIRExtensionBuilder { observation in
+        let trackTimeZone = FHIRExtensionBuilder { (observation: inout Observation) in
             let ext = Extension(url: url, value: .string(timeZone.identifier.asFHIRStringPrimitive()))
             observation.appendExtension(ext, replaceAllExistingWithSameUrl: true)
         }
-        let observation = Observation(code: CodeableConcept(), status: .init(.final))
+        var observation = Observation(code: CodeableConcept(), status: .init(.final))
         #expect(observation.extension == nil)
         try observation.apply(trackTimeZone)
         let exts = try #require(observation.extension)

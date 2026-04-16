@@ -33,7 +33,7 @@ extension ModelsDSTU2.Attachment: FHIRAttachment {
         data?.value?.dataString
     }
 
-    func encode(content: String) {
-        data = FHIRPrimitive(ModelsDSTU2.Base64Binary(content))
+    mutating func setContent(from string: String) {
+        data = FHIRPrimitive(ModelsDSTU2.Base64Binary(string))
     }
 }
