@@ -1,5 +1,5 @@
 //
-// This source file is part of the HealthKitOnFHIR open source project
+// This source file is part of the Stanford Spezi open source project
 //
 // SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
@@ -12,13 +12,13 @@ public import FMCore
 extension FHIRType {
     /// Appends an element to a `Collection`-typed property.
     @inlinable
-    public mutating func appendElement<C: RangeReplaceableCollection>(_ element: C.Element, to keyPath: WritableKeyPath<Self, C?>) {
-        appendElements(CollectionOfOne(element), to: keyPath)
+    public mutating func append<C: RangeReplaceableCollection>(_ element: C.Element, to keyPath: WritableKeyPath<Self, C?>) {
+        append(CollectionOfOne(element), to: keyPath)
     }
     
     /// Appends multiple elements to a `Collection`-typed property.
     @inlinable
-    public mutating func appendElements<C: RangeReplaceableCollection>(
+    public mutating func append<C: RangeReplaceableCollection>(
         _ elements: some Sequence<C.Element>,
         to keyPath: WritableKeyPath<Self, C?>
     ) {
@@ -41,7 +41,7 @@ extension FHIRType {
     ///
     /// - returns: the removed element, if any.
     @inlinable
-    public mutating func removeFirstElement<C: RangeReplaceableCollection>(
+    public mutating func removeFirst<C: RangeReplaceableCollection>(
         of keyPath: WritableKeyPath<Self, C?>,
         where predicate: (C.Element) -> Bool
     ) -> C.Element? {
@@ -59,7 +59,7 @@ extension FHIRType {
     ///
     /// - returns: the removed elements, if any.
     @inlinable
-    public mutating func removeAllElements<C: RangeReplaceableCollection>(
+    public mutating func removeAll<C: RangeReplaceableCollection>(
         of keyPath: WritableKeyPath<Self, C?>,
         where predicate: (C.Element) -> Bool
     ) -> [C.Element]? { // swiftlint:disable:this discouraged_optional_collection

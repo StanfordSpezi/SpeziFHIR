@@ -1,5 +1,5 @@
 //
-// This source file is part of the HealthKitOnFHIR open source project
+// This source file is part of the Stanford Spezi open source project
 //
 // SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
@@ -12,49 +12,49 @@ public import ModelsR4
 extension Observation {
     /// Appends an `Identifier` to the `Observation`
     @inlinable
-    public mutating func appendIdentifier(_ identifier: Identifier) {
-        appendElement(identifier, to: \.identifier)
+    public mutating func append(identifier: Identifier) {
+        append(identifier, to: \.identifier)
     }
     
     /// Appends multiple `Identifier`s to the `Observation`
     @inlinable
-    public mutating func appendIdentifiers(_ identifiers: some Sequence<Identifier>) {
-        appendElements(identifiers, to: \.identifier)
+    public mutating func append(identifiers: some Sequence<Identifier>) {
+        append(identifiers, to: \.identifier)
     }
     
     /// Appends a `CodeableConcept` to the `Observation`
     @inlinable
-    public mutating func appendCategory(_ category: CodeableConcept) {
-        appendElement(category, to: \.category)
+    public mutating func append(category: CodeableConcept) {
+        append(category, to: \.category)
     }
     
     /// Appends multiple `CodeableConcept`s to the `Observation`
     @inlinable
-    public mutating func appendCategories(_ categories: some Sequence<CodeableConcept>) {
-        appendElements(categories, to: \.category)
+    public mutating func append(categories: some Sequence<CodeableConcept>) {
+        append(categories, to: \.category)
     }
     
     /// Appends a `Coding` to the `Observation`
     @inlinable
-    public mutating func appendCoding(_ coding: Coding) {
-        appendElement(coding, to: \.code.coding)
+    public mutating func append(coding: Coding) {
+        append(coding, to: \.code.coding)
     }
     
     /// Appends multiple `Coding`s to the `Observation`
     @inlinable
-    public mutating func appendCodings(_ codings: some Sequence<Coding>) {
-        appendElements(codings, to: \.code.coding)
+    public mutating func append(codings: some Sequence<Coding>) {
+        append(codings, to: \.code.coding)
     }
     
     /// Appends an `ObservationComponent` to the `Observation`
     @inlinable
-    public mutating func appendComponent(_ component: ObservationComponent) {
-        appendElement(component, to: \.component)
+    public mutating func append(component: ObservationComponent) {
+        append(component, to: \.component)
     }
     
     /// Appends multiple `ObservationComponent`s to the `Observation`
     @inlinable
-    public mutating func appendComponents(_ components: some Sequence<ObservationComponent>) {
-        appendElements(components, to: \.component)
+    public mutating func append(components: some Sequence<ObservationComponent>) {
+        append(components, to: \.component)
     }
 }

@@ -6,10 +6,12 @@
 // SPDX-License-Identifier: MIT
 //
 
+// swiftlint:disable file_types_order
+
+import Foundation
 import PDFKit
 
 
-// swiftlint:disable file_types_order
 /// Protocol for creating PDFDocument objects - makes testing possible.
 protocol PDFDocumentProviding {
     /// Creates a PDF document from raw data.
@@ -17,6 +19,7 @@ protocol PDFDocumentProviding {
     /// - Returns: A PDFDocument if valid, nil otherwise.
     func createPDFDocument(from data: Data) -> PDFDocument?
 }
+
 
 /// Default implementation using the PDFDocument class from PDFKit.
 struct DefaultPDFDocumentProvider: PDFDocumentProviding {

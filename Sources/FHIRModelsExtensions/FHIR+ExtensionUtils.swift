@@ -60,7 +60,7 @@ extension ModelsR4._FHIRTypeWithExtensions {
                 removeAllExtensions(withUrl: element.url)
             }
         }
-        appendElements(extensions, to: \.extension)
+        append(extensions, to: \.extension)
     }
 }
 
@@ -73,7 +73,7 @@ extension ModelsR4._FHIRTypeWithExtensions {
     /// - returns: the removed extension element, if any.
     @inlinable @discardableResult
     public mutating func removeFirstExtension(withUrl url: FHIRPrimitive<FHIRURI>) -> Extension? {
-        removeFirstElement(of: \.extension) { $0.url == url }
+        removeFirst(of: \.extension) { $0.url == url }
     }
     
     /// Removes the first extension that matches the specified url.
@@ -90,7 +90,7 @@ extension ModelsR4._FHIRTypeWithExtensions {
     /// - returns: the removed extension elements, if any.
     @inlinable @discardableResult
     public mutating func removeAllExtensions(withUrl url: FHIRPrimitive<FHIRURI>) -> [Extension]? {
-        removeAllElements(of: \.extension) { $0.url == url }
+        removeAll(of: \.extension) { $0.url == url }
     }
     
     /// Removes all extension that matches the specified url.

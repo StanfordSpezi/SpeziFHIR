@@ -12,9 +12,7 @@ import Observation
 import Spezi
 
 
-/// `Module` to manage FHIR resources grouped into automatically computed and updated categories.
-///
-/// The ``FHIRStore`` is automatically injected in the environment if you use the ``FHIR`` standard or can be used as a standalone module.
+/// In-memory datastore to manage FHIR resources grouped into automatically computed and updated categories.
 @Observable
 public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable, Sendable {
     /// The actual ``FHIRResource``s held by the ``FHIRStore``
@@ -89,7 +87,6 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
         return _resources.filter { $0.category == .other }
     }
     
-    
     /// Create an empty ``FHIRStore``.
     public required init() {}
 }
@@ -133,7 +130,7 @@ extension FHIRStore {
     ///
     /// - Parameter bundle: The FHIR `Bundle` containing resources to be loaded.
     @MainActor
-    public func load(bundle: sending Bundle) {
+    public func load(bundle: ModelsR4.Bundle) {
         guard let resourceProxies = bundle.entry?.compactMap(\.resource), !resourceProxies.isEmpty else {
             return
         }

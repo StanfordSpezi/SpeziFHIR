@@ -19,13 +19,13 @@ struct ObservationExtensionsTests {
         var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         
         // First test all extensions with no value beeing present (collection is nil)
-        observation.appendIdentifier(Identifier(id: "ID1"))
+        observation.append(identifier: Identifier(id: "ID1"))
         
         // Assertions for the nil/non-present case:
         #expect(observation.identifier?.first == Identifier(id: "ID1"))
         
         // Now Append multiple elements and in a non-nil collection:
-        observation.appendIdentifiers([
+        observation.append(identifiers: [
             Identifier(id: "ID2"),
             Identifier(id: "ID3")
         ])
@@ -43,8 +43,8 @@ struct ObservationExtensionsTests {
         var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         
         // First test all extensions with no value beeing present (collection is nil)
-        observation.appendCoding(
-            Coding(
+        observation.append(
+            coding: Coding(
                 code: "Code1",
                 display: "Display1",
                 system: FHIRPrimitive(FHIRURI(stringLiteral: "https://test1.system"))
@@ -59,7 +59,7 @@ struct ObservationExtensionsTests {
         ))
         
         // Now Append multiple elements and in a non-nil collection:
-        observation.appendCodings([
+        observation.append(codings: [
             Coding(
                 code: "Code2",
                 display: "Display2",
@@ -97,13 +97,13 @@ struct ObservationExtensionsTests {
         var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         
         // First test all extensions with no value beeing present (collection is nil)
-        observation.appendCategory(CodeableConcept(id: "Concept1"))
+        observation.append(category: CodeableConcept(id: "Concept1"))
         
         // Assertions for the nil/non-present case:
         #expect(observation.category?.first == CodeableConcept(id: "Concept1"))
         
         // Now Append multiple elements and in a non-nil collection:
-        observation.appendCategories([
+        observation.append(categories: [
             CodeableConcept(id: "Concept2"),
             CodeableConcept(id: "Concept3")
         ])
@@ -121,8 +121,8 @@ struct ObservationExtensionsTests {
         var observation = Observation(code: CodeableConcept(), status: FHIRPrimitive(.final))
         
         // First test all extensions with no value beeing present (collection is nil)
-        observation.appendComponent(
-            ObservationComponent(
+        observation.append(
+            component: ObservationComponent(
                 code: CodeableConcept(id: "Concept4"),
                 value: .boolean(true.asPrimitive())
             )
@@ -136,7 +136,7 @@ struct ObservationExtensionsTests {
         
         
         // Now Append multiple elements and in a non-nil collection:
-        observation.appendComponents([
+        observation.append(components: [
             ObservationComponent(
                 code: CodeableConcept(id: "Concept5"),
                 value: .string("Test".asFHIRStringPrimitive())
