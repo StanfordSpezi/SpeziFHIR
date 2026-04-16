@@ -6,28 +6,20 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import UniformTypeIdentifiers
 
 
 /// Service to handle FHIR attachment content extraction.
 struct FHIRAttachmentService {
     private let contentExtractors: [any ContentExtractor]
-    private let base64Decoder: any Base64Decoding
-
-
+    
     /// Creates a new attachment service instance.
-    /// - Parameters:
-    ///   - contentExtractors: Collection of content extractors to use (defaults to text and PDF).
-    ///   - base64Decoder: The base64 decoder to use.
-    init(
-        contentExtractors: [any ContentExtractor] = [TextContentExtractor(), PDFContentExtractor()],
-        base64Decoder: any Base64Decoding = DefaultBase64Decoder()
-    ) {
+    /// - parameter contentExtractors: Collection of content extractors to use (defaults to text and PDF).
+    init(contentExtractors: [any ContentExtractor] = [TextContentExtractor(), PDFContentExtractor()]) {
         self.contentExtractors = contentExtractors
-        self.base64Decoder = base64Decoder
     }
-
-
+    
     /// Transforms a FHIR attachment's base64-encoded data into human-readable text.
     ///
     /// This method extracts text content from various attachment formats (PDF, text files, etc.)
@@ -41,7 +33,7 @@ struct FHIRAttachmentService {
         let content = try processAttachment(attachment)
         attachment.setData(from: content)
     }
-
+    
     private func processAttachment(_ attachment: some FHIRAttachment) throws -> String {
         guard let contentType = attachment.mimeType else {
             throw FHIRAttachmentError.missingMimeType
@@ -49,7 +41,7 @@ struct FHIRAttachmentService {
         guard let encodedString = attachment.base64String else {
             throw FHIRAttachmentError.missingBase64String
         }
-        guard let data = base64Decoder.decode(string: encodedString) else {
+        guard let data = Data(base64Encoded: encodedString) else {
             throw FHIRAttachmentError.invalidBase64Data
         }
         guard let extractor = contentExtractor(for: contentType) else {
@@ -58,10 +50,8 @@ struct FHIRAttachmentService {
         let content = try extractor.extractContent(from: data)
         return content
     }
-
+    
     private func contentExtractor(for contentType: UTType) -> (any ContentExtractor)? {
-         contentExtractors.first { extractor in
-             extractor.isCompatible(with: contentType)
-         }
+         contentExtractors.first { $0.isCompatible(with: contentType) }
     }
 }

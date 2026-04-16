@@ -28,12 +28,10 @@ private struct MockFHIRAttachment: FHIRAttachment {
 struct FHIRAttachmentServiceTests {
     @Test("Successfully stringifies text content")
     func testStringifyTextContent() throws {
-        let base64Decoder = DefaultBase64Decoder()
         let textType = UTType(mimeType: "text/plain")
         let textContentExtractor = TextContentExtractor()
         let service = FHIRAttachmentService(
-            contentExtractors: [textContentExtractor],
-            base64Decoder: base64Decoder
+            contentExtractors: [textContentExtractor]
         )
         var attachment = MockFHIRAttachment()
         attachment.mimeType = textType
@@ -45,12 +43,10 @@ struct FHIRAttachmentServiceTests {
     
     @Test("Successfully stringifies PDF content")
     func testStringifyPDFContent() throws {
-        let base64Decoder = DefaultBase64Decoder()
         let pdfType = UTType(mimeType: "application/pdf")
         let pdfContentExtractor = PDFContentExtractor(pdfDocumentProvider: DefaultPDFDocumentProvider())
         let service = FHIRAttachmentService(
-            contentExtractors: [pdfContentExtractor],
-            base64Decoder: base64Decoder
+            contentExtractors: [pdfContentExtractor]
         )
         var attachment = MockFHIRAttachment()
         attachment.mimeType = pdfType
@@ -91,8 +87,7 @@ struct FHIRAttachmentServiceTests {
     
     @Test("Throws error when base64 data is invalid")
     func testInvalidBase64Data() throws {
-        let base64Decoder = DefaultBase64Decoder()
-        let service = FHIRAttachmentService(base64Decoder: base64Decoder)
+        let service = FHIRAttachmentService()
         var attachment = MockFHIRAttachment()
         attachment.mimeType = UTType(mimeType: "text/plain")
         attachment.base64String = "invalid-base64-string"
@@ -106,11 +101,9 @@ struct FHIRAttachmentServiceTests {
     
     @Test("Throws error when content type is unsupported")
     func testUnsupportedContentType() throws {
-        let base64Decoder = DefaultBase64Decoder()
         let textContextExtractor = TextContentExtractor()
         let service = FHIRAttachmentService(
-            contentExtractors: [textContextExtractor],
-            base64Decoder: base64Decoder
+            contentExtractors: [textContextExtractor]
         )
         let customType = UTType(mimeType: "application/custom")
         var attachment = MockFHIRAttachment()
@@ -128,10 +121,8 @@ struct FHIRAttachmentServiceTests {
     
     @Test("Throws error when no extractors are available")
     func testServiceWithEmptyExtractors() throws {
-        let mockDecoder = DefaultBase64Decoder()
         let service = FHIRAttachmentService(
-            contentExtractors: [],
-            base64Decoder: mockDecoder
+            contentExtractors: []
         )
         let textPlainType = UTType(mimeType: "text/plain")
         var attachment = MockFHIRAttachment()
