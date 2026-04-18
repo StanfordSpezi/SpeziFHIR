@@ -9,7 +9,6 @@
 import os
 import Spezi
 import SpeziFHIR
-import SpeziFHIRHealthKit
 import SpeziHealthKit
 
 
@@ -58,7 +57,8 @@ actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
         if useHealthKitResources {
             for sample in addedSamples {
                 do {
-                    try await fhirStore.add(sample)
+                    // TODO
+//                    try await fhirStore.add(sample)
                 } catch {
                     logger.error("Cloud not transform HealthKit sample with id: \(sample.id)")
                 }
@@ -70,7 +70,8 @@ actor TestingStandard: Standard, HealthKitConstraint, EnvironmentAccessible {
         for object in deletedObjects {
             samples.removeAll { $0.id == object.uuid }
             if useHealthKitResources {
-                await fhirStore.remove(object)
+                // TODO
+//                await fhirStore.remove(object)
             }
         }
     }

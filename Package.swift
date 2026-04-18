@@ -10,7 +10,12 @@
 import class Foundation.ProcessInfo
 import PackageDescription
 
-let enableSwiftLintPlugin = true
+let enableSwiftLintPlugin = false
+
+let defaultSwiftSettings: [SwiftSetting] = [
+    .enableUpcomingFeature("ExistentialAny"),
+    .enableUpcomingFeature("InternalImportsByDefault")
+]
 
 
 let package = Package(
@@ -26,7 +31,9 @@ let package = Package(
         .library(name: "SpeziFHIR", targets: ["SpeziFHIR"]),
         .library(name: "FHIRModelsExtensions", targets: ["FHIRModelsExtensions"]),
         .library(name: "FHIRPathParser", targets: ["FHIRPathParser"]),
-        .library(name: "FHIRQuestionnaires", targets: ["FHIRQuestionnaires"])
+        .library(name: "FHIRQuestionnaires", targets: ["FHIRQuestionnaires"]),
+        // TODO remove!
+        .library(name: "SpeziFHIRMockPatients", targets: ["SpeziFHIRMockPatients"])
     ],
     dependencies: [
 //        .package(url: "https://github.com/apple/FHIRModels.git", .upToNextMinor(from: "0.9.0")),
@@ -38,11 +45,12 @@ let package = Package(
         .target(
             name: "SpeziFHIR",
             dependencies: [
+                "FHIRModelsExtensions",
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "ModelsR4", package: "FHIRModels"),
                 .product(name: "ModelsDSTU2", package: "FHIRModels"),
             ],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
+            swiftSettings: defaultSwiftSettings,
             plugins: [] + swiftLintPlugin
         ),
         .target(
@@ -52,10 +60,7 @@ let package = Package(
                 .product(name: "ModelsR4", package: "FHIRModels"),
                 .product(name: "ModelsDSTU2", package: "FHIRModels")
             ],
-            swiftSettings: [
-                .enableUpcomingFeature("ExistentialAny"),
-                .enableUpcomingFeature("InternalImportsByDefault")
-            ],
+            swiftSettings: defaultSwiftSettings,
             plugins: [] + swiftLintPlugin
         ),
         .target(
@@ -73,6 +78,7 @@ let package = Package(
                 .product(name: "ModelsR4", package: "FHIRModels")
             ],
             resources: [.process("Resources")],
+            swiftSettings: defaultSwiftSettings,
             plugins: [] + swiftLintPlugin
         ),
         .testTarget(
@@ -80,7 +86,7 @@ let package = Package(
             dependencies: [
                 "SpeziFHIR"
             ],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
+            swiftSettings: defaultSwiftSettings,
             plugins: [] + swiftLintPlugin
         ),
         .testTarget(
@@ -88,12 +94,21 @@ let package = Package(
             dependencies: [
                 "FHIRModelsExtensions", "FHIRQuestionnaires"
             ],
+            swiftSettings: defaultSwiftSettings,
             plugins: [] + swiftLintPlugin
         ),
         .testTarget(
             name: "FHIRPathParserTests",
             dependencies: ["FHIRPathParser"],
+            swiftSettings: defaultSwiftSettings,
             plugins: [] + swiftLintPlugin
+        ),
+        .target(
+            name: "SpeziFHIRMockPatients",
+            dependencies: [
+                "SpeziFHIR"
+            ],
+            resources: [.process("Resources")]
         )
     ]
 )

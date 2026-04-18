@@ -7,7 +7,7 @@
 //
 
 import Foundation
-@preconcurrency import class ModelsR4.Bundle
+@preconcurrency import struct ModelsR4.Bundle
 import SpeziFoundation
 
 

@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import class ModelsR4.Bundle
-import class ModelsR4.Patient
+import struct ModelsR4.Bundle
+import struct ModelsR4.Patient
 
 
 extension ModelsR4.Bundle {

@@ -13,7 +13,8 @@ public import ModelsR4
 
 /// Helper type for contructing and managing FHIR Extension URLs.
 public struct FHIRExtensionURL: Sendable {
-    @usableFromInline let url: URL
+    /// The underlying `URL`.
+    public let url: URL
     
     /// Creates a FHIR Extension URL.
     @inlinable

@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
-import struct ModelsR4.Questionnaire
+private import Foundation
+public import struct ModelsR4.Questionnaire
 
 
 extension Questionnaire {

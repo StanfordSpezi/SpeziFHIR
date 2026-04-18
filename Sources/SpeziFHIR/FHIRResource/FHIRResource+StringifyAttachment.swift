@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import ModelsDSTU2
-import ModelsR4
+private import ModelsDSTU2
+private import ModelsR4
 
 
 extension FHIRResource {

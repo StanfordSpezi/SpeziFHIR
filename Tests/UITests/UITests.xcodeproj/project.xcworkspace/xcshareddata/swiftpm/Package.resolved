@@ -1,5 +1,5 @@
 {
-  "originHash" : "c56297d1af992fd09ea5674cf963fe0e6d4bbc7621bc5ad711eafc2dca180194",
+  "originHash" : "83ebe51461dfe6c71a2d3777238254956177a9e66a9e77407b1ca185065ef02c",
   "pins" : [
     {
       "identity" : "antlr4",
@@ -13,28 +13,10 @@
     {
       "identity" : "fhirmodels",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/FHIRModels",
+      "location" : "https://github.com/lukaskollmer/FHIRModels.git",
       "state" : {
-        "revision" : "a05392269b630a8d661bda720d149fee2f0257e2",
-        "version" : "0.8.0"
-      }
-    },
-    {
-      "identity" : "fhirmodelsextensions",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordBDHG/FHIRModelsExtensions.git",
-      "state" : {
-        "revision" : "530f535a50c3a88be5350fab153853da4e1ea693",
-        "version" : "0.1.2"
-      }
-    },
-    {
-      "identity" : "healthkitonfhir",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordBDHG/HealthKitOnFHIR.git",
-      "state" : {
-        "revision" : "25b9ca380ccd98a07f32940083d9e2da05d89bf0",
-        "version" : "2.0.0-beta.3"
+        "branch" : "lukas/try-to-fix",
+        "revision" : "bac7be36102318f83930fa2b86639f985fda21c7"
       }
     },
     {

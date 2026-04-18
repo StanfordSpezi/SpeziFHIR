@@ -6,10 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
-import enum ModelsDSTU2.ResourceProxy
-import struct ModelsR4.Bundle
-import Observation
-import Spezi
+public import struct ModelsR4.Bundle
+public import Observation
+public import Spezi
 
 
 /// In-memory datastore to manage FHIR resources grouped into automatically computed and updated categories.

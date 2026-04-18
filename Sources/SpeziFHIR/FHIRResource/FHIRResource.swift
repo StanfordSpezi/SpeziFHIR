@@ -6,10 +6,18 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
-import ModelsDSTU2
-import ModelsR4
+// swiftlint:disable file_types_order
 
+public import FHIRModelsExtensions
+public import Foundation
+public import ModelsDSTU2
+public import ModelsR4
+
+
+extension FHIRExtensionURL {
+    /// The resource's associated HealthKit HKSample identifier, if applicable.
+    public static let hkSampleId = Self("https://bdh.stanford.edu/fhir/defs/HealthKitSampleID")
+}
 
 /// Represents a FHIR (Fast Healthcare Interoperability Resources) entity.
 ///
@@ -50,9 +58,6 @@ public struct FHIRResource: Identifiable, Hashable, Sendable {
         @_spi(Testing) public let healthKitUUID: String?
     }
     
-    public static let fhirExtensionUrlHKSampleId = URL(string: "https://bdh.stanford.edu/fhir/defs/HealthKitSampleID")!
-    // swiftlint:disable:previous force_unwrapping
-    
     
     /// The version-specific FHIR resource.
     public let versionedResource: VersionedFHIRResource
@@ -83,12 +88,12 @@ public struct FHIRResource: Identifiable, Hashable, Sendable {
     var healthKitSampleId: String? {
         switch versionedResource {
         case .r4(let resource):
-            (resource as? any ModelsR4.DomainResource)?
-                .extensions(for: Self.fhirExtensionUrlHKSampleId.absoluteString)
+            return (resource as? any ModelsR4.DomainResource)?
+                .extensions(for: .hkSampleId)
                 .first?.value?.idString
         case .dstu2(let resource):
-            (resource as? any ModelsDSTU2.DomainResource)?
-                .extensions(for: Self.fhirExtensionUrlHKSampleId.absoluteString)
+            return (resource as? any ModelsDSTU2.DomainResource)?
+                .extensions(for: FHIRExtensionURL.hkSampleId.url.absoluteString)
                 .first?.value?.idString
         }
     }

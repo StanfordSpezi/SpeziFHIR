@@ -18,6 +18,7 @@ extension FHIRResource {
 
 
 extension Set where Element == FHIRResource {
+    // TODO who uses this? why is it in this package? (remove!)
     /// Filters the FHIR resources using the provided search text.
     /// - Parameter searchText: Filters the FHIR resources using the provided search text.
     /// - Returns: The filtered FHIR resources.

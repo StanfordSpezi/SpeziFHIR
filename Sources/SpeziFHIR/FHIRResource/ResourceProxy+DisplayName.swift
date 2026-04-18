@@ -6,10 +6,11 @@
 // SPDX-License-Identifier: MIT
 //
 
-import ModelsR4
+public import ModelsR4
 
 
 extension ResourceProxy {
+    // TODO remove?
     /// Provides a best-effort human readable display name for the resource.
     public var displayName: String {
         switch self {
