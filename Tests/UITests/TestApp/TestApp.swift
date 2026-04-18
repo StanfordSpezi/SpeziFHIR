@@ -16,8 +16,10 @@ struct UITestsApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .spezi(appDelegate)
+            NavigationStack {
+                ContentView()
+            }
+            .spezi(appDelegate)
         }
     }
 }

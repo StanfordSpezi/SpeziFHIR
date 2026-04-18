@@ -8,16 +8,16 @@
 
 import Spezi
 import SpeziFHIR
-import SpeziHealthKit
+//import SpeziHealthKit
 
 
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
         Configuration(standard: TestingStandard()) {
             FHIRStore()
-            HealthKit {
-                RequestReadAccess(other: TestingStandard.recordTypes)
-            }
+//            HealthKit {
+//                RequestReadAccess(other: TestingStandard.recordTypes)
+//            }
         }
     }
 }

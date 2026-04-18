@@ -31,9 +31,7 @@ let package = Package(
         .library(name: "SpeziFHIR", targets: ["SpeziFHIR"]),
         .library(name: "FHIRModelsExtensions", targets: ["FHIRModelsExtensions"]),
         .library(name: "FHIRPathParser", targets: ["FHIRPathParser"]),
-        .library(name: "FHIRQuestionnaires", targets: ["FHIRQuestionnaires"]),
-        // TODO remove!
-        .library(name: "SpeziFHIRMockPatients", targets: ["SpeziFHIRMockPatients"])
+        .library(name: "FHIRQuestionnaires", targets: ["FHIRQuestionnaires"])
     ],
     dependencies: [
 //        .package(url: "https://github.com/apple/FHIRModels.git", .upToNextMinor(from: "0.9.0")),
@@ -48,7 +46,7 @@ let package = Package(
                 "FHIRModelsExtensions",
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "ModelsR4", package: "FHIRModels"),
-                .product(name: "ModelsDSTU2", package: "FHIRModels"),
+                .product(name: "ModelsDSTU2", package: "FHIRModels")
             ],
             swiftSettings: defaultSwiftSettings,
             plugins: [] + swiftLintPlugin
@@ -102,13 +100,6 @@ let package = Package(
             dependencies: ["FHIRPathParser"],
             swiftSettings: defaultSwiftSettings,
             plugins: [] + swiftLintPlugin
-        ),
-        .target(
-            name: "SpeziFHIRMockPatients",
-            dependencies: [
-                "SpeziFHIR"
-            ],
-            resources: [.process("Resources")]
         )
     ]
 )

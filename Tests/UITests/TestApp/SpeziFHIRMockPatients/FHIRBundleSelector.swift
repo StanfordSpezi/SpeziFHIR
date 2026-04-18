@@ -15,7 +15,7 @@ import SwiftUI
 /// Loads resources from a FHIR bundle from a provided set of bundles.
 ///
 /// The View assumes that the bundle contains a `ModelsR4.Patient` resource to identify the bundle and provide a human-readable name.
-public struct FHIRBundleSelector: View {
+struct FHIRBundleSelector: View {
     private struct PatientIdentifiedBundle: Identifiable {
         let id: String
         let bundle: ModelsR4.Bundle
@@ -26,11 +26,8 @@ public struct FHIRBundleSelector: View {
     @State private var selectedBundleId: PatientIdentifiedBundle.ID?
     private let bundles: [PatientIdentifiedBundle]
 
-    public var body: some View {
-        Picker(
-            String(localized: "Select Mock Patient", bundle: .module),
-            selection: $selectedBundleId
-        ) {
+    var body: some View {
+        Picker("Select Mock Patient", selection: $selectedBundleId) {
             ForEach(bundles) { bundle in
                 Text(bundle.bundle.patientName)
                     .tag(bundle.id as String?)
@@ -70,7 +67,7 @@ public struct FHIRBundleSelector: View {
     }
     
     
-    public init(bundles: [ModelsR4.Bundle]) {
+    init(bundles: [ModelsR4.Bundle]) {
         self.bundles = bundles.compactMap {
             guard let id = $0.patient?.identifier?.first?.value?.value?.string else {
                 return nil

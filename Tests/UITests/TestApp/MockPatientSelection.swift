@@ -6,28 +6,21 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SpeziFHIRMockPatients
+import SpeziViews
 import SwiftUI
 
 
 struct MockPatientSelection: View {
-    @Binding var presentPatientSelection: Bool
-    
-    
     var body: some View {
         NavigationStack {
             List {
                 FHIRMockPatientSelection()
             }
-                .toolbar {
-                    Button {
-                        presentPatientSelection.toggle()
-                    } label: {
-                        Label("Close", systemImage: "xmark")
-                            .accessibilityLabel("Close Mock Patient Selection")
-                    }
-                }
-                .navigationTitle("Select Mock Patient")
+            .toolbar {
+                DismissButton()
+//                    .accessibilityLabel("Close Mock Patient Selection")
+            }
+            .navigationTitle("Select Mock Patient")
         }
     }
 }

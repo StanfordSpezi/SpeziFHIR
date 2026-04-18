@@ -1,5 +1,5 @@
 {
-  "originHash" : "83ebe51461dfe6c71a2d3777238254956177a9e66a9e77407b1ca185065ef02c",
+  "originHash" : "f26fee6fda4c1418180a4e16507ff18e13a3edd753580c84e37733c68eecac29",
   "pins" : [
     {
       "identity" : "antlr4",
@@ -47,24 +47,6 @@
       }
     },
     {
-      "identity" : "spezihealthkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordSpezi/SpeziHealthKit.git",
-      "state" : {
-        "revision" : "a86db5cf2a6fbc62a9c161b135d87a97911d2533",
-        "version" : "1.4.2"
-      }
-    },
-    {
-      "identity" : "spezistorage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/StanfordSpezi/SpeziStorage.git",
-      "state" : {
-        "revision" : "79ce6a23f61d38b175b8ee681cc74d7fc93fb8cb",
-        "version" : "2.1.4"
-      }
-    },
-    {
       "identity" : "speziviews",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/StanfordSpezi/SpeziViews.git",
@@ -80,15 +62,6 @@
       "state" : {
         "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
         "version" : "1.2.1"
-      }
-    },
-    {
-      "identity" : "swift-async-algorithms",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-async-algorithms.git",
-      "state" : {
-        "revision" : "9d349bcc328ac3c31ce40e746b5882742a0d1272",
-        "version" : "1.1.3"
       }
     },
     {

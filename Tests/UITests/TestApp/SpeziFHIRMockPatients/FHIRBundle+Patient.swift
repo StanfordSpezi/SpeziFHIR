@@ -20,9 +20,8 @@ extension ModelsR4.Bundle {
               let name = patient.name?.first,
               let givenName = name.given?.first?.value?.string,
               let familyName = name.family?.value?.string else {
-            return String(localized: "Unknown Patient", bundle: .module)
+            return "Unknown Patient"
         }
-        
         return givenName + " " + familyName
     }
 }
