@@ -9,7 +9,6 @@
 private import FHIRPathParser
 public import Foundation
 public import ModelsR4
-private import OSLog
 
 
 extension QuestionnaireItem {
@@ -36,8 +35,7 @@ extension QuestionnaireItem {
         static let dateMinValue = "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue"
     }
 
-    private static let logger = Logger(subsystem: "edu.stanford.spezi.researchkit-on-fhir", category: "FHIRExtensions")
-
+    
     /// Is the question hidden
     /// - Returns: A boolean representing whether the question should be shown to the user
     public var hidden: Bool {
