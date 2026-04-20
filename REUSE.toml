@@ -1,0 +1,10 @@
+version = 1
+
+[[annotations]]
+path = [
+    "Sources/FHIRPathParser/Generated/**",
+    "Sources/FHIRQuestionnaires/Resources/**",
+    "Tests/UITests/TestApp/Resources/**"
+]
+SPDX-FileCopyrightText = "2026 Stanford University and the project authors (see CONTRIBUTORS.md)"
+SPDX-License-Identifier = "MIT"
