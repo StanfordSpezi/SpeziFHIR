@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 
 public import ModelsR4
 public import enum UIKit.UIKeyboardType
