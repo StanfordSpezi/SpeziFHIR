@@ -27,7 +27,12 @@ public struct FHIRExtensionURL: Sendable {
     /// - Important: The input String **must** be a valud `URL`; the initializer will otherwise crash the program.
     @inlinable
     public init(_ url: String) {
+        #if canImport(Darwin)
         self.url = try! URL(url, strategy: .url) // swiftlint:disable:this force_try
+        #else
+        // https://github.com/swiftlang/swift-foundation/issues/1919
+        self.url = URL(string: url)! // swiftlint:disable:this force_unwrapping
+        #endif
     }
 }
 

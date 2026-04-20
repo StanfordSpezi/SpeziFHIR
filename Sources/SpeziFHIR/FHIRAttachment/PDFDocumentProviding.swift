@@ -8,6 +8,8 @@
 
 // swiftlint:disable file_types_order
 
+#if canImport(PDFKit)
+
 import Foundation
 import PDFKit
 
@@ -27,3 +29,5 @@ struct DefaultPDFDocumentProvider: PDFDocumentProviding {
         PDFDocument(data: data)
     }
 }
+
+#endif

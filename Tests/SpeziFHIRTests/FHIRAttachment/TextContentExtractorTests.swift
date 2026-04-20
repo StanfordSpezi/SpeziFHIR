@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+#if canImport(UniformTypeIdentifiers)
+
 import Foundation
 @testable import SpeziFHIR
 import Testing
@@ -56,3 +58,5 @@ struct TextContentExtractorTests {
         }
     }
 }
+
+#endif

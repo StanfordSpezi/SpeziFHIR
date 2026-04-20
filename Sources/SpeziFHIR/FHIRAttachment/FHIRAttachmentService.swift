@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+#if canImport(UniformTypeIdentifiers)
+
 import Foundation
 import UniformTypeIdentifiers
 
@@ -55,3 +57,5 @@ struct FHIRAttachmentService {
          contentExtractors.first { $0.isCompatible(with: contentType) }
     }
 }
+
+#endif

@@ -6,13 +6,16 @@
 // SPDX-License-Identifier: MIT
 //
 
+#if canImport(UniformTypeIdentifiers)
+
 import ModelsDSTU2
 import ModelsR4
 @testable import SpeziFHIR
 import Testing
 import UniformTypeIdentifiers
 
-@Suite("FHIR Resource Attachment Stringification")
+
+@Suite
 struct FHIRResourceStringifyTests {
     private let service = FHIRAttachmentService()
     
@@ -117,3 +120,5 @@ struct FHIRResourceStringifyTests {
         #expect(transformedContent == "PDF: Welcome to SpeziFHIR", "Extracted content should contain PDF text")
     }
 }
+
+#endif

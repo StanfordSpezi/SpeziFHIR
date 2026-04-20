@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+#if canImport(UniformTypeIdentifiers)
+
 import ModelsDSTU2
 import ModelsR4
 @testable import SpeziFHIR
@@ -124,3 +126,5 @@ struct FHIRAttachmentTests {
         #expect(attachment.base64String == testContent, "\(model.description) attachment should encode content correctly")
     }
 }
+
+#endif

@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+#if canImport(PDFKit) && canImport(UniformTypeIdentifiers)
+
 private import ModelsDSTU2
 private import ModelsR4
 
@@ -40,3 +42,5 @@ extension FHIRResource {
         }
     }
 }
+
+#endif

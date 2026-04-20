@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+#if canImport(PDFKit) && canImport(UniformTypeIdentifiers)
+
 import PDFKit
 @testable import SpeziFHIR
 import Testing
@@ -139,3 +141,5 @@ struct FHIRAttachmentServiceTests {
         }
     }
 }
+
+#endif

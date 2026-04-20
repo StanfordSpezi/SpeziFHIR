@@ -13,7 +13,7 @@ public import Spezi
 
 /// In-memory datastore to manage FHIR resources grouped into automatically computed and updated categories.
 @Observable
-public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable, Sendable {
+public final class FHIRStore: Module, DefaultInitializable, Sendable {
     /// The actual ``FHIRResource``s held by the ``FHIRStore``
     ///
     /// The `_resources` property needs to be marked with `@ObservationIgnored` to prevent changes to it
@@ -25,7 +25,19 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
     /// See also the `mutatingResourceCategories` function
     @ObservationIgnored @MainActor @usableFromInline var _resources: Set<FHIRResource> = [] // swiftlint:disable:this identifier_name
     
-    
+    /// Create an empty ``FHIRStore``.
+    public required init() {}
+}
+
+
+#if canImport(SwiftUI)
+extension FHIRStore: EnvironmentAccessible {}
+#endif
+
+
+// MARK: FHIRStore Resource Accessors
+
+extension FHIRStore {
     /// `FHIRResource`s with category `allergyIntolerance`.
     @MainActor public var allergyIntolerances: Set<FHIRResource> {
         access(keyPath: \.allergyIntolerances)
@@ -85,9 +97,6 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
         access(keyPath: \.otherResources)
         return _resources.filter { $0.category == .other }
     }
-    
-    /// Create an empty ``FHIRStore``.
-    public required init() {}
 }
 
 

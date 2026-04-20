@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+#if canImport(UniformTypeIdentifiers)
+
 import ModelsDSTU2
 import UniformTypeIdentifiers
 
@@ -37,3 +39,5 @@ extension ModelsDSTU2.Attachment: FHIRAttachment {
         data = FHIRPrimitive(ModelsDSTU2.Base64Binary(string))
     }
 }
+
+#endif

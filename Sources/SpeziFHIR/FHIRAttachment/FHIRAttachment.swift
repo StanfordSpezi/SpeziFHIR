@@ -6,7 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import PDFKit
+#if canImport(UniformTypeIdentifiers)
+
 import UniformTypeIdentifiers
 
 
@@ -48,3 +49,5 @@ protocol FHIRAttachment: Sendable {
     /// - Parameter string: The string content to encode into the FHIR  attachment.
     mutating func setData(from string: String)
 }
+
+#endif
