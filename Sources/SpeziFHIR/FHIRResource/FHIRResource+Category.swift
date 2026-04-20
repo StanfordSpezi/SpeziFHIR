@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import enum ModelsDSTU2.ResourceProxy
-import enum ModelsR4.ResourceProxy
+private import enum ModelsDSTU2.ResourceProxy
+private import enum ModelsR4.ResourceProxy
 
 
 // swiftlint:disable file_length
@@ -15,7 +15,7 @@ import enum ModelsR4.ResourceProxy
 extension FHIRResource {
     /// Enum representing different categories of FHIR resources.
     /// This categorization helps in classifying FHIR resources into common healthcare scenarios and types.
-    package enum FHIRResourceCategory: CaseIterable {
+    public enum FHIRResourceCategory: CaseIterable {
         /// Represents an allergy or intolerance-type resource.
         case allergyIntolerance
         ///  Represents a condition-type resource (e.g., diagnoses, patient conditions).
@@ -61,7 +61,7 @@ extension FHIRResource {
     /// Category of the FHIR resource.
     ///
     /// Analyzes the type of the underlying resource and assigns it to an appropriate category.
-    package var category: FHIRResourceCategory {
+    public var category: FHIRResourceCategory {
         switch versionedResource {
         case let .r4(resource):
             switch ResourceProxy(with: resource) {
@@ -149,8 +149,6 @@ extension FHIRResource {
                 return FHIRResourceCategory.other
             case .documentReference:
                 return FHIRResourceCategory.document
-            case .domainResource:
-                return FHIRResourceCategory.other
             case .effectEvidenceSynthesis:
                 return FHIRResourceCategory.other
             case .encounter:
@@ -305,8 +303,6 @@ extension FHIRResource {
                 return FHIRResourceCategory.other
             case .researchSubject:
                 return FHIRResourceCategory.other
-            case .resource:
-                return FHIRResourceCategory.other
             case .riskAssessment:
                 return FHIRResourceCategory.other
             case .riskEvidenceSynthesis:
@@ -430,8 +426,6 @@ extension FHIRResource {
                 return FHIRResourceCategory.other
             case .documentReference:
                 return FHIRResourceCategory.document
-            case .domainResource:
-                return FHIRResourceCategory.other
             case .eligibilityRequest:
                 return FHIRResourceCategory.other
             case .eligibilityResponse:
@@ -529,8 +523,6 @@ extension FHIRResource {
             case .referralRequest:
                 return FHIRResourceCategory.other
             case .relatedPerson:
-                return FHIRResourceCategory.other
-            case .resource:
                 return FHIRResourceCategory.other
             case .riskAssessment:
                 return FHIRResourceCategory.other

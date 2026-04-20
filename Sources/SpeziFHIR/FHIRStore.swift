@@ -6,20 +6,14 @@
 // SPDX-License-Identifier: MIT
 //
 
-import enum ModelsDSTU2.ResourceProxy
-import class ModelsR4.Bundle
-import Observation
-import Spezi
-import SpeziHealthKit
+public import struct ModelsR4.Bundle
+public import Observation
+public import Spezi
 
 
-/// `Module` to manage FHIR resources grouped into automatically computed and updated categories.
-///
-/// The ``FHIRStore`` is automatically injected in the environment if you use the ``FHIR`` standard or can be used as a standalone module.
+/// In-memory datastore to manage FHIR resources grouped into automatically computed and updated categories.
 @Observable
-public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializable, @unchecked Sendable { // unchecked bc of the HealthKit dependency
-    @ObservationIgnored @Dependency(HealthKit.self) package var healthKit
-    
+public final class FHIRStore: Module, DefaultInitializable, Sendable {
     /// The actual ``FHIRResource``s held by the ``FHIRStore``
     ///
     /// The `_resources` property needs to be marked with `@ObservationIgnored` to prevent changes to it
@@ -31,7 +25,19 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
     /// See also the `mutatingResourceCategories` function
     @ObservationIgnored @MainActor @usableFromInline var _resources: Set<FHIRResource> = [] // swiftlint:disable:this identifier_name
     
-    
+    /// Create an empty ``FHIRStore``.
+    public required init() {}
+}
+
+
+#if canImport(SwiftUI)
+extension FHIRStore: EnvironmentAccessible {}
+#endif
+
+
+// MARK: FHIRStore Resource Accessors
+
+extension FHIRStore {
     /// `FHIRResource`s with category `allergyIntolerance`.
     @MainActor public var allergyIntolerances: Set<FHIRResource> {
         access(keyPath: \.allergyIntolerances)
@@ -91,10 +97,6 @@ public final class FHIRStore: Module, EnvironmentAccessible, DefaultInitializabl
         access(keyPath: \.otherResources)
         return _resources.filter { $0.category == .other }
     }
-    
-    
-    /// Create an empty ``FHIRStore``.
-    public required init() {}
 }
 
 
@@ -136,7 +138,7 @@ extension FHIRStore {
     ///
     /// - Parameter bundle: The FHIR `Bundle` containing resources to be loaded.
     @MainActor
-    public func load(bundle: sending Bundle) {
+    public func load(bundle: ModelsR4.Bundle) {
         guard let resourceProxies = bundle.entry?.compactMap(\.resource), !resourceProxies.isEmpty else {
             return
         }

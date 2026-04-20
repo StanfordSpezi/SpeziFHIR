@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+#if canImport(UniformTypeIdentifiers)
+
 import ModelsR4
 import UniformTypeIdentifiers
 
@@ -32,8 +34,10 @@ extension ModelsR4.Attachment: FHIRAttachment {
     var base64String: String? {
         data?.value?.dataString
     }
-
-    func encode(content: String) {
-        data = FHIRPrimitive(ModelsR4.Base64Binary(content))
+    
+    mutating func setData(from string: String) {
+        data = FHIRPrimitive(ModelsR4.Base64Binary(string))
     }
 }
+
+#endif

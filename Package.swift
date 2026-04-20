@@ -1,5 +1,4 @@
-// swift-tools-version:6.1
-
+// swift-tools-version:6.2
 //
 // This source file is part of the Stanford Spezi open-source project
 //
@@ -10,6 +9,13 @@
 
 import class Foundation.ProcessInfo
 import PackageDescription
+
+let enableSwiftLintPlugin = false
+
+let defaultSwiftSettings: [SwiftSetting] = [
+    .enableUpcomingFeature("ExistentialAny"),
+    .enableUpcomingFeature("InternalImportsByDefault")
+]
 
 
 let package = Package(
@@ -23,75 +29,95 @@ let package = Package(
     ],
     products: [
         .library(name: "SpeziFHIR", targets: ["SpeziFHIR"]),
-        .library(name: "SpeziFHIRHealthKit", targets: ["SpeziFHIRHealthKit"]),
-        .library(name: "SpeziFHIRMockPatients", targets: ["SpeziFHIRMockPatients"])
+        .library(name: "FHIRModelsExtensions", targets: ["FHIRModelsExtensions"]),
+        .library(name: "FHIRPathParser", targets: ["FHIRPathParser"]),
+        .library(name: "FHIRQuestionnaires", targets: ["FHIRQuestionnaires"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/FHIRModels.git", from: "0.7.0"),
-        .package(url: "https://github.com/StanfordBDHG/HealthKitOnFHIR.git", from: "1.0.0"),
+//        .package(url: "https://github.com/apple/FHIRModels.git", .upToNextMinor(from: "0.9.0")),
+        .package(url: "https://github.com/lukaskollmer/FHIRModels.git", branch: "lukas/try-to-fix"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.8.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziHealthKit.git", from: "1.2.0")
-    ] + swiftLintPackage(),
+        .package(url: "https://github.com/antlr/antlr4.git", from: "4.13.1")
+    ] + swiftLintPackage,
     targets: [
         .target(
             name: "SpeziFHIR",
             dependencies: [
+                "FHIRModelsExtensions",
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "ModelsR4", package: "FHIRModels"),
-                .product(name: "ModelsDSTU2", package: "FHIRModels"),
-                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
-                .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
+                .product(name: "ModelsDSTU2", package: "FHIRModels")
             ],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
-            plugins: [] + swiftLintPlugin()
+            swiftSettings: defaultSwiftSettings,
+            plugins: [] + swiftLintPlugin
         ),
         .target(
-            name: "SpeziFHIRHealthKit",
+            name: "FHIRModelsExtensions",
             dependencies: [
-                .target(name: "SpeziFHIR"),
-                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
-                .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
+                "FHIRPathParser",
+                .product(name: "ModelsR4", package: "FHIRModels"),
+                .product(name: "ModelsDSTU2", package: "FHIRModels")
             ],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
-            plugins: [] + swiftLintPlugin()
+            swiftSettings: defaultSwiftSettings,
+            plugins: [] + swiftLintPlugin
         ),
         .target(
-            name: "SpeziFHIRMockPatients",
+            name: "FHIRPathParser",
             dependencies: [
-                .target(name: "SpeziFHIR"),
+                .product(name: "Antlr4", package: "antlr4")
+            ],
+            exclude: [
+                "ANTLUtils"
+            ]
+        ),
+        .target(
+            name: "FHIRQuestionnaires",
+            dependencies: [
                 .product(name: "ModelsR4", package: "FHIRModels")
             ],
             resources: [.process("Resources")],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
-            plugins: [] + swiftLintPlugin()
+            swiftSettings: defaultSwiftSettings,
+            plugins: [] + swiftLintPlugin
         ),
         .testTarget(
             name: "SpeziFHIRTests",
             dependencies: [
-                .target(name: "SpeziFHIR"),
-                .target(name: "SpeziFHIRHealthKit"),
-                .product(name: "HealthKitOnFHIR", package: "HealthKitOnFHIR"),
-                .product(name: "SpeziHealthKit", package: "SpeziHealthKit")
+                "SpeziFHIR"
             ],
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
-            plugins: [] + swiftLintPlugin()
+            swiftSettings: defaultSwiftSettings,
+            plugins: [] + swiftLintPlugin
+        ),
+        .testTarget(
+            name: "FHIRModelsExtensionsTests",
+            dependencies: [
+                "FHIRModelsExtensions", "FHIRQuestionnaires"
+            ],
+            swiftSettings: defaultSwiftSettings,
+            plugins: [] + swiftLintPlugin
+        ),
+        .testTarget(
+            name: "FHIRPathParserTests",
+            dependencies: ["FHIRPathParser"],
+            swiftSettings: defaultSwiftSettings,
+            plugins: [] + swiftLintPlugin
         )
     ]
 )
 
 
-func swiftLintPlugin() -> [Target.PluginUsage] {
-    // Fully quit Xcode and open again with `open --env SPEZI_DEVELOPMENT_SWIFTLINT /Applications/Xcode.app`
-    if ProcessInfo.processInfo.environment["SPEZI_DEVELOPMENT_SWIFTLINT"] != nil {
-        [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
+// MARK: SwiftLint support
+
+var swiftLintPlugin: [Target.PluginUsage] {
+    if enableSwiftLintPlugin {
+        [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
     } else {
         []
     }
 }
 
-func swiftLintPackage() -> [PackageDescription.Package.Dependency] {
-    if ProcessInfo.processInfo.environment["SPEZI_DEVELOPMENT_SWIFTLINT"] != nil {
-        [.package(url: "https://github.com/realm/SwiftLint.git", from: "0.55.1")]
+var swiftLintPackage: [PackageDescription.Package.Dependency] {
+    if enableSwiftLintPlugin {
+        [.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", from: "0.63.2")]
     } else {
         []
     }

@@ -379,6 +379,7 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - .swiftpm
   - .derivedData
   - Tests/UITests/.derivedData
+  - Sources/FHIRPathParser/Generated
 
 closure_body_length: # Closure bodies should not span too many lines.
   - 35 # warning - default: 20

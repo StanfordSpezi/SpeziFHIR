@@ -47,7 +47,7 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
     }
 
     static func createObservation(issuedDate: Date? = nil, effectiveDate: Date? = nil) throws -> ModelsDSTU2.Observation {
-        let observation = ModelsDSTU2.Observation(
+        var observation = ModelsDSTU2.Observation(
             code: CodeableConcept(
                 coding: [
                     Coding(code: "code".asFHIRStringPrimitive())
@@ -118,7 +118,7 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createMedicationOrder(date: Date? = nil) throws -> ModelsDSTU2.MedicationOrder {
-        let medicationOrder = ModelsDSTU2.MedicationOrder(
+        var medicationOrder = ModelsDSTU2.MedicationOrder(
             id: "medication-order-id".asFHIRStringPrimitive(),
             medication: .codeableConcept(
                 CodeableConcept(coding: [
@@ -134,7 +134,7 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createMedicationStatement(date: Date? = nil) throws -> ModelsDSTU2.MedicationStatement {
-        let medicationStatement = ModelsDSTU2.MedicationStatement(
+        var medicationStatement = ModelsDSTU2.MedicationStatement(
             id: "medication-statement-id".asFHIRStringPrimitive(),
             medication: .codeableConcept(
                 CodeableConcept(coding: [
@@ -151,7 +151,7 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createCondition(date: Date? = nil) throws -> ModelsDSTU2.Condition {
-        let condition = ModelsDSTU2.Condition(
+        var condition = ModelsDSTU2.Condition(
             code: CodeableConcept(
                 coding: [
                     Coding(code: "condition-code".asFHIRStringPrimitive())
@@ -172,7 +172,7 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
     }
     
     static func createProcedure(date: Date? = nil, usePeriod: Bool = false) throws -> ModelsDSTU2.Procedure {
-        let procedure = ModelsDSTU2.Procedure(
+        var procedure = ModelsDSTU2.Procedure(
             code: CodeableConcept(
                 coding: [
                     Coding(code: "procedure-code".asFHIRStringPrimitive())
@@ -183,9 +183,8 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
             subject: Reference(id: "patient-id".asFHIRStringPrimitive())
         )
         if let date = date {
-            let period = ModelsDSTU2.Period()
+            var period = ModelsDSTU2.Period()
             period.end = try FHIRPrimitive(DateTime(date: date))
-            
             let performed: ModelsDSTU2.Procedure.PerformedX = usePeriod ?
                 .period(period) :
                 .dateTime(FHIRPrimitive(try DateTime(date: date)))
@@ -216,17 +215,15 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
         content: String,
         creation: Date? = nil
     ) throws -> ModelsDSTU2.Attachment {
-        let attachment = ModelsDSTU2.Attachment(
+        var attachment = ModelsDSTU2.Attachment(
             contentType: FHIRPrimitive(stringLiteral: contentType),
             data: FHIRPrimitive(ModelsDSTU2.Base64Binary(content)),
             id: id.asFHIRStringPrimitive(),
             title: FHIRPrimitive(ModelsDSTU2.FHIRString(title))
         )
-
         if let creation {
             attachment.creation = FHIRPrimitive(try DateTime(date: creation))
         }
-
         return attachment
     }
 
@@ -246,26 +243,23 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
                 )
             ]
         )
-
-        let contentItems = attachments.map { attachment in
-            ModelsDSTU2.DocumentReferenceContent(attachment: attachment)
+        let contentItems = attachments.map { _ -> ModelsDSTU2.DocumentReferenceContent in
+            // TODO // swiftlint:disable:this todo
+            var content = ModelsDSTU2.DocumentReferenceContent()
+//            content.attachment = attachment
+            return content
         }
-
         let indexedInstant = FHIRPrimitive(try Instant(date: Date()))
-
-        let documentReference = ModelsDSTU2.DocumentReference(
+        var documentReference = ModelsDSTU2.DocumentReference(
             content: contentItems,
             indexed: indexedInstant,
             status: FHIRPrimitive(status),
             type: documentType
         )
-
         documentReference.id = id.asFHIRStringPrimitive()
-
         if let created {
             documentReference.created = FHIRPrimitive(try DateTime(date: created))
         }
-
         return documentReference
     }
 
@@ -276,7 +270,6 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
     ) throws -> ModelsDSTU2.Attachment {
         // This is a minimal base64-encoded text with the text "Welcome to SpeziFHIR"
         let textBase64 = "V2VsY29tZSB0byBTcGV6aUZISVI="
-
         return try createAttachment(
             id: id,
             title: title,
@@ -294,7 +287,6 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
         // This is a minimal base64-encoded PDF with the text "PDF: Welcome to SpeziFHIR"
         // swiftlint:disable:next line_length
         let pdfBase64 = "JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GMSA0IDAgUiA+PiA+PiAvQ29udGVudHMgNSAwIFIgPj4KZW5kb2JqCjQgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhID4+CmVuZG9iago1IDAgb2JqCjw8IC9MZW5ndGggNDQgPj4Kc3RyZWFtCkJUCi9GMSAxNiBUZgo1MCA3MDAgVGQKKFBERjogV2VsY29tZSB0byBTcGV6aUZISVIpIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmCjAwMDAwMDAwMDkgMDAwMDAgbgowMDAwMDAwMDU4IDAwMDAwIG4KMDAwMDAwMDExNSAwMDAwMCBuCjAwMDAwMDAyMjkgMDAwMDAgbgowMDAwMDAwMjk1IDAwMDAwIG4KdHJhaWxlcgo8PCAvU2l6ZSA2IC9Sb290IDEgMCBSID4+CnN0YXJ0eHJlZgozOTEKJSVFT0Y="
-
         return try createAttachment(
             id: id,
             title: title,

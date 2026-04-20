@@ -16,7 +16,7 @@ extension FHIRResourceTests {
     @Test
     func testModelsR4Categories() throws {
         // Define test cases as tuples of (resource creator function, expected category)
-        let testCases: [(resource: () throws -> ModelsR4.Resource, category: FHIRResource.FHIRResourceCategory)] = [
+        let testCases: [(resource: () throws -> any ModelsR4.Resource, category: FHIRResource.FHIRResourceCategory)] = [
             // Observation cases
             ({ try ModelsR4Mocks.createObservation() }, .observation),
             ({ ModelsR4Mocks.createObservationDefinition() }, .observation),
@@ -51,7 +51,7 @@ extension FHIRResourceTests {
     
     @Test
     func testModelsDSTU2Categories() throws {
-        let testCases: [(resource: () throws -> ModelsDSTU2.Resource, category: FHIRResource.FHIRResourceCategory)] = [
+        let testCases: [(resource: () throws -> any ModelsDSTU2.Resource, category: FHIRResource.FHIRResourceCategory)] = [
             // Single resource cases
             ({ ModelsDSTU2Mocks.createAllergyIntolerance() }, .allergyIntolerance),
             ({ ModelsDSTU2Mocks.createEncounter() }, .encounter),

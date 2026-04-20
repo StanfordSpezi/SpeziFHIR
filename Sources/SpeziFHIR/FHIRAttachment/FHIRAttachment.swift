@@ -6,7 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import PDFKit
+#if canImport(UniformTypeIdentifiers)
+
 import UniformTypeIdentifiers
 
 
@@ -31,8 +32,9 @@ enum FHIRAttachmentError: Error, Equatable {
     case unsupportedContentType(UTType)
 }
 
+
 /// Uniform interface for FHIR attachment types.
-protocol FHIRAttachment: AnyObject {
+protocol FHIRAttachment: Sendable {
     /// Debug description of the attachment.
     var debugDescription: String { get }
 
@@ -44,6 +46,8 @@ protocol FHIRAttachment: AnyObject {
     var base64String: String? { get }
 
     /// Encodes the provided string content into the FHIR attachment.
-    /// - Parameter content: The string content to encode into the FHIR  attachment.
-    func encode(content: String)
+    /// - Parameter string: The string content to encode into the FHIR  attachment.
+    mutating func setData(from string: String)
 }
+
+#endif

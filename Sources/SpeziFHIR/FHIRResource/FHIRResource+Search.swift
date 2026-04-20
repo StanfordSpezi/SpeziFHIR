@@ -18,6 +18,7 @@ extension FHIRResource {
 
 
 extension Set where Element == FHIRResource {
+    // NOTE: Should consider removing this at some point?
     /// Filters the FHIR resources using the provided search text.
     /// - Parameter searchText: Filters the FHIR resources using the provided search text.
     /// - Returns: The filtered FHIR resources.
