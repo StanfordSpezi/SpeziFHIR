@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-#if canImport(UniformTypeIdentifiers)
+#if canImport(PDFKit) && canImport(UniformTypeIdentifiers)
 
 import Foundation
 import PDFKit

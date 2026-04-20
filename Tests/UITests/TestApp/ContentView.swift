@@ -8,13 +8,11 @@
 
 import ModelsR4
 import SpeziFHIR
-//import SpeziHealthKit
 import SpeziViews
 import SwiftUI
 
 
 struct ContentView: View {
-//    @Environment(HealthKit.self) private var healthKit
     @Environment(FHIRStore.self) private var fhirStore
     @Environment(TestingStandard.self) private var standard
     @State private var presentPatientSelection = false
@@ -39,7 +37,6 @@ struct ContentView: View {
             }
             Section {
                 presentPatientSelectionButton
-//                    collectFromHealthKitButton
             }
         }
         .viewStateAlert(state: $viewState)
@@ -77,13 +74,6 @@ struct ContentView: View {
             presentPatientSelection.toggle()
         }
     }
-    
-//    @ViewBuilder private var collectFromHealthKitButton: some View {
-//        AsyncButton("Load HealthKit Clinical Records", state: $viewState) {
-//            try await healthKit.askForAuthorization()
-//            await standard.fetchRecordsFromHealthKit()
-//        }
-//    }
     
     private func numResourcesRow(
         _ title: String,

@@ -18,7 +18,7 @@ struct MockPatientSelection: View {
             }
             .toolbar {
                 DismissButton()
-//                    .accessibilityLabel("Close Mock Patient Selection")
+                    .accessibilityLabel("Close Mock Patient Selection")
             }
             .navigationTitle("Select Mock Patient")
         }
