@@ -13,6 +13,10 @@ private import ModelsR4
 
 
 extension FHIRResource {
+    private enum ProcessingError: Error {
+        case dstu2AttachmentsUnavailable
+    }
+    
     /// Best effort function to transform the base64 data representatino of any ``FHIRAttachment`` to a string-based respresentation of the data type.
     ///
     /// This funcationality is especially useful if the data content is inspected for debug purposes or passing it ot a LLM component.
@@ -34,8 +38,9 @@ extension FHIRResource {
             guard var docRef = resource as? ModelsDSTU2.DocumentReference else {
                 return
             }
+            throw ProcessingError.dstu2AttachmentsUnavailable
             for idx in docRef.content.indices {
-                // TODO(DSTU2)
+                // TODO(DSTU2) // swiftlint:disable:this todo
 //                try service.stringify(attachment: &docRef.content[idx].attachment)
             }
             self = .init(versionedResource: .dstu2(docRef), displayName: self.displayName)

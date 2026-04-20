@@ -243,10 +243,10 @@ enum ModelsDSTU2Mocks { // swiftlint:disable:this type_body_length
                 )
             ]
         )
-        let contentItems = attachments.map { attachment -> ModelsDSTU2.DocumentReferenceContent in
-//            ModelsDSTU2.DocumentReferenceContent(attachment: attachment)
+        let contentItems = attachments.map { _ -> ModelsDSTU2.DocumentReferenceContent in
+            // TODO // swiftlint:disable:this todo
             var content = ModelsDSTU2.DocumentReferenceContent()
-//            content.attachment = attachment // TODO!!!
+//            content.attachment = attachment
             return content
         }
         let indexedInstant = FHIRPrimitive(try Instant(date: Date()))
